@@ -21,7 +21,7 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
   - Decided 21 Sep: **Railway** for always-on services, **Vercel** for the web terminal. Railway project `oneticker` created with a `tape` service (deploys `main` from GitHub, `/data` volume for SQLite, idles until T3). Vercel project still to create once `apps/web` exists (T6).
 
 ### T1 · Web3 API client and probe · A · Mon 21 to Tue 22
-- [ ] `packages/clients/web3`: HMAC signing with the `/build` prefix, one rate limiter per endpoint, `OCResult` unwrapping, typed errors, and a hook that records every call for `api_calls`.
+- [x] `packages/clients/web3`: HMAC signing with the `/build` prefix, one rate limiter per endpoint, `OCResult` unwrapping, typed errors, and a hook that records every call for `api_calls`.
 - [ ] `scripts/probe.ts` calls `rwa/platforms`, `rwa/tokens`, `rwa/search`, `rwa/price`, `rwa/underlying-market`, `market/price`, and an aggregator quote for every candidate venue, saving each response to `fixtures/`.
 - [ ] Unverified items 1, 2 and 3 in `docs/RESEARCH.md` answered with fixture evidence.
 - [ ] `instruments.json` written: 5 instruments, up to 3 venues each, addresses and execution paths confirmed.
