@@ -47,7 +47,11 @@ Desk research from 20 Sep 2026. **Source** means a primary or reputable source w
 
 Base `https://web3.binance.com/build`. WebSocket `wss://web3-stream.binance.com/w3w`. Auth and rate limits in `CLAUDE.md`.
 
-**RWA / tokenized stocks** (all under `/api/v1/dex/market/rwa/`): `platforms`, `price` (on-chain and reference price), `search`, `underlying-profile`, `tokens`, `underlying-market`.
+**Official connector** (Source, 21 Sep, from code not calls): `@binance-web3/wallet` 12.3.0, github.com/binance/binance-web3-connector-js, covers RWA, market, trading, transaction, DeFi, B402 and wallet modules. Param names below come from it.
+
+**RWA / tokenized stocks** (all under `/api/v1/dex/market/rwa/`, all GET): `platforms` (`platformId?`), `tokens` (`binanceChainId?`, `platformId?`, `tabId?`), `search` (`keyword`, `platformId?`), `price` (`binanceChainId`, `tokenContractAddresses` comma-separated, max 100), `underlying-profile` and `underlying-market` (`binanceChainId`, `tokenContractAddress`). `platformId` enum is `ondo | bstock` only: **xStocks does not appear in the RWA endpoints** (Source: connector enum; confirm with a fixture).
+
+**Aggregator quote** (Source: connector): `GET /api/v1/dex/aggregator/quote` with `binanceChainId`, `amount` (smallest unit), `fromTokenAddress`, `toTokenAddress`, `vendor?` (`LiquidMesh | Pancake | Jupiter`), `userWalletAddress` (required for RFQ routes: Ondo, bStocks). RFQ vendor names seen in docs: `InchFusion`, `CowSwap`, `PcsXRfq`.
 
 **Market**: `/api/v1/dex/market/` `price` (batch up to 100), `candles`, `token/search`, `token/basic-info`, `token/advanced-info`, `price-info`, `token/top-liquidity`, `trades`, `token/holder`, plus portfolio endpoints.
 
@@ -88,8 +92,8 @@ Base `https://web3.binance.com/build`. WebSocket `wss://web3-stream.binance.com/
 
 | # | Question | Resolved in | Status |
 |---|---|---|---|
-| 1 | What `referencePrice` is: real quote or derived from on-chain price | T1 | open |
-| 2 | bStocks price per raw unit or UI unit; share ratio per venue | T1 | open |
+| 1 | What `referencePrice` is: real quote or derived from on-chain price | T1 | open. Source (21 Sep): closing-bell-agent README says Binance documents it as "a per-share value derived from the onchain token price". Needs our own fixture and the docs page. |
+| 2 | bStocks price per raw unit or UI unit; share ratio per venue | T1 | open. Lead (21 Sep): closing-bell-agent's demo fixture shows `tokenToShareRatio` on `rwa/tokens` items, plus `underlyingTicker`, `decimals`, `statusInfo.openState / marketStatus / nextOpenTime`. Its fixtures look hand-made; confirm with ours. |
 | 3 | All 5 candidate instruments listed on BSC by all three issuers | T1 | open |
 | 4 | `baw auth signin` works from Nigeria | T2 | open |
 | 5 | `baw market-order swap` handles bStocks and Ondo directly | T2 / T9 | open |

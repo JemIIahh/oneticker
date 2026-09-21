@@ -284,5 +284,14 @@ Record the Monday-open segment live on **Mon 5 Oct at 13:30 UTC** (14:30 Lagos).
 ## 12. Prior art and how we differ
 
 - **PlumS** (plumstock.xyz): a cross-chain premium/discount table for 9 markets, no execution. We route and gate across three issuers on one chain, and we serve agents, not just people.
-- **closing-bell-agent** (github.com/daveaire/closing-bell-agent): a tokenized-stock spread scanner with a BLOCK/REVIEW safety gate, built on the same Web3 API. It is the closest thing to our gate. We differ on cross-issuer resolution and routing, the off-hours market-state model, execution, the MCP and x402 agent surfaces, and the Tape dataset. Read its README in T1 and cite it in ours, rather than letting a judge find it first.
+- **closing-bell-agent** (github.com/daveaire/closing-bell-agent): a tokenized-stock spread scanner with a BLOCK/REVIEW safety gate, built on the same Web3 API. It is the closest thing to our gate. We differ on cross-issuer resolution and routing, the off-hours market-state model, execution, the MCP and x402 agent surfaces, and the Tape dataset. Cite it in our README, rather than letting a judge find it first.
+  README read 21 Sep 2026 (last push 19 Sep). Concrete differences:
+  - **Scope:** bStocks and Ondo only ("the hackathon's bStocks/Ondo scope"). We add xStocks as a third venue.
+  - **Question asked:** it looks for cross-issuer arbitrage (buy one representation, sell the other). We route a single order to the best issuer.
+  - **Off-hours:** a candidate reaches REVIEW only when "the underlying market is open", so off-hours it always blocks. We model off-hours explicitly (reference age, premium vs last reference, oracle staleness) and return GO / CAUTION / BLOCK with reasons, plus Wait-for-GO.
+  - **Execution:** "Broadcasting is disabled in code." We execute, capped at $25 on mainnet.
+  - **Agent surfaces:** the README describes a CLI, a 15-minute monitor and a web page; no MCP server, x402 pricing or Wallet Skill.
+  - **Data:** its monitor logs an event only when a signal clears $1; the Tape records every surface for every venue every 5 minutes.
+  - **Worth borrowing:** its gate requires a Transaction API simulation to return `SUCCESS` before a route is eligible. Consider the same check in `execute_route` (T9).
+  - **Same finding as ours:** it says Binance documents `referencePrice` as "derived from the onchain token price", and treats it only as a screening signal (our unverified item 1).
 - **RWA.xyz, altFINS, PancakeSwap's stocks terminal**: market data and trading interfaces, not agent infrastructure.

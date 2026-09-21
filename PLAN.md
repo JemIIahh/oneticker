@@ -24,7 +24,7 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 - [ ] `scripts/probe.ts` calls `rwa/platforms`, `rwa/tokens`, `rwa/search`, `rwa/price`, `rwa/underlying-market`, `market/price`, and an aggregator quote for every candidate venue, saving each response to `fixtures/`.
 - [ ] Unverified items 1, 2 and 3 in `docs/RESEARCH.md` answered with fixture evidence.
 - [ ] `instruments.json` written: 5 instruments, up to 3 venues each, addresses and execution paths confirmed.
-- [ ] closing-bell-agent README read; differences noted in `SPEC.md` section 12.
+- [x] closing-bell-agent README read; differences noted in `SPEC.md` section 12.
 
 ### T2 · Agentic Wallet smoke test · B · Tue 22
 - [ ] Install `baw`, sign in from Nigeria, run `wallet status`, `balance`, and a quote for one tokenized stock.

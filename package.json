@@ -7,11 +7,14 @@
     "node": ">=22"
   },
   "scripts": {
-    "build": "pnpm -r build",
-    "test": "pnpm -r test"
+    "build": "pnpm -r build && tsc -p scripts",
+    "test": "pnpm -r test",
+    "probe": "node --env-file-if-exists=.env --import tsx scripts/probe.ts"
   },
   "devDependencies": {
+    "@oneticker/clients": "workspace:*",
     "@types/node": "^22.20.4",
+    "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "^5.0.1"
   }

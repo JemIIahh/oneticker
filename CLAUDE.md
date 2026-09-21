@@ -63,6 +63,9 @@ Workspace packages export their TypeScript source directly (`exports` points at 
 pnpm i
 pnpm -r build                  # typecheck every package
 pnpm -r test
+pnpm build                     # all packages plus scripts/
+pnpm probe discover            # T1: platforms, token lists, search; saves fixtures/web3/
+pnpm probe prices              # T1: prices and quotes for scripts/probe-targets.json
 pnpm --filter tape once        # one logger run
 pnpm --filter tape start       # logger every 5 minutes
 pnpm --filter mcp dev
@@ -81,7 +84,9 @@ pnpm oneticker quote NVDA buy 500
 - **Equity tokens trade via RFQ** (EIP-712 signature plus settlement polling), not the normal swap path.
 - Trading error codes to map: 40365, 40366, 40367, 40369, 40374, 40375 (see SPEC 3.6).
 - Log every call (endpoint, status, latency, error code) to the Tape's `api_calls` table via a hook in the client.
-- The official SDK only covers the `wallet` module. We hand-roll the client.
+- The official connector `@binance-web3/wallet` (github.com/binance/binance-web3-connector-js) covers every module despite its name, and is the best reference for endpoint paths and params while the docs are unreachable. We still hand-roll the client: the connector drops the envelope `code`, hides raw responses (we need them for fixtures and `raw_json`), and cannot send a body to `POST /market/price`.
+- Signing, confirmed from the connector source: the signed path is `/build` + path + `?query` exactly as sent (URL-encoded); timestamp is `new Date().toISOString()`. Chain param is `binanceChainId` (`"56"` for BSC). RFQ quotes (Ondo, bStocks) need `userWalletAddress`.
+- **`web3.binance.com` and `www.binance.com` time out from the Lagos dev network** (dx/LOG.md, 21 Sep 13:50). `api.binance.com` and BSC RPC work. Run live calls from the hosted machine or a network that reaches it.
 - The docs are client-side rendered. If a fetch returns an empty page, open it in a browser.
 
 ## Tokenized stock facts
