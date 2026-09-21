@@ -1,0 +1,129 @@
+# Research notes
+
+Desk research from 20 Sep 2026. **Source** means a primary or reputable source was found; it still has not been checked against our own API calls. **Unverified** means no source was found or sources disagree. Update statuses as fixtures come in.
+
+## 1. Hackathon
+
+| Fact | Status |
+|---|---|
+| Single track. No category selection on the submission form. | Source |
+| $20,000 main pool, placements not published | Source |
+| $2,000 Best Use of Agentic Wallet / Wallet Skills: "deepest, most credible use of the AI execution layer" | Source |
+| $2,000 Best Use of BNB Agent Studio: "agent identity, autonomous runtime, self-funding via x402" | Source |
+| A project can win a main placement and a special prize | Source |
+| Judging: technical 30%, creativity 25%, DX report 25%, product and UX 20% | Source |
+| Submission: public repo, demo video 4:00 max (recommended), deployed link or run instructions, mandatory DX report | Source |
+| Deadline Sun 11 Oct 2026 12:00 UTC; judging 12 to 23 Oct; winners week of 26 Oct | Source |
+| Excluded: US, Canada, Netherlands, UK, Japan, Iran, Cuba, North Korea, Crimea, DPR, LPR | Source |
+
+## 2. Issuers on BNB Chain
+
+**bStocks (Binance).** Launched 11 Jun 2026. Issuer BTech Holdings Ltd. 1:1 backed by US shares at an unnamed custodian; daily Proof of Collateral page. BEP-20 plus BEP-677 (scaled UI amount). Suffix `B` (NVDAB, TSLAB, METAB, MSFTB, PLTRB, AMDB, MSTRB, QQQB, CRCLB, SPCXB...). Ticker count differs by source (15 in July, 67+ in August, 77 per RWA.xyz on 20 Sep). Freely transferable; issuer can blacklist addresses. Mint and redeem only for eligible KYC'd Binance users, zero conversion fee, pauses during corporate actions. About $750M outstanding.
+
+**Ondo Stocks.** On BNB Chain since 29 Oct 2025. 450+ stocks and ETFs across Ethereum, BNB Chain, Solana. Suffix `on` (NVDAon, TSLAon, SPYon, QQQon, CRCLon). Independent verification agent and security agent. True 24/7 mint and redeem since 25 Jun 2026 for eligible non-US persons. About $850M outstanding, the largest issuer.
+
+**xStocks (Backed / Kraken).** On BNB Chain since 30 Apr 2026. 50+ tickers at launch. Freely transferable. Liquidity on PancakeSwap and CowSwap. Suffix believed to be `x` (unverified).
+
+**Liquidity.** Binance spot is deepest for bStocks. PancakeSwap v3 is the largest DEX venue for tokenized stocks globally and has a stocks terminal at pancakeswap.finance/stocks. Aster offers bStocks perps (the only way to short).
+
+## 3. Market structure
+
+- US market open about 32.5 of 168 hours per week.
+- **Binance bStocks collateral index**: while the US market is open, it blends third-party equity prices with Binance futures; while closed, it references the last valid close and **stays fixed** until the next session. (Source: Binance FAQ.)
+- **APRO**: bStocks price feeds free to builders since 17 Sep 2026. Tokenized-equity feeds on BSC use a 1-hour heartbeat and 1% deviation threshold.
+- **Chainlink Tokenized Equity Feeds**: 24/5 pricing across pre, regular, post and overnight sessions; issuers listed include Ondo. Coverage of bStocks and deployment on BSC unverified.
+- **Corporate actions**: all three issuers reinvest dividends net of withholding (total return), no cash payouts. bStocks apply dividends and splits by changing the BEP-677 multiplier.
+- **BEP-677 hazards** (from the spec itself): protocols that cache `balanceOf` break; round-tripping UI amounts loses value; on overflow the reference implementation returns a UI amount of 0; `effectiveAt` is advisory, so there is no guaranteed notice window.
+- No published data on the size of weekend premiums or discounts. **This is the gap the Tape fills.**
+
+## 4. DeFi state
+
+- **Venus**: TSLAB, NVDAB, SPCXB as collateral (collateral factors 60 / 60 / 50%) with **borrow caps at 0** at launch. Current parameters unverified.
+- **Lista DAO**: bStocks collateral live since 16 Jun 2026. LTVs, caps and oracle unverified.
+- **Aster**: bStocks perps; bStocks usable as collateral.
+- No proven liquidation behavior while the US market is closed. No options or structured products. No cross-issuer fungibility.
+
+## 5. Binance Web3 API
+
+Base `https://web3.binance.com/build`. WebSocket `wss://web3-stream.binance.com/w3w`. Auth and rate limits in `CLAUDE.md`.
+
+**RWA / tokenized stocks** (all under `/api/v1/dex/market/rwa/`): `platforms`, `price` (on-chain and reference price), `search`, `underlying-profile`, `tokens`, `underlying-market`.
+
+**Market**: `/api/v1/dex/market/` `price` (batch up to 100), `candles`, `token/search`, `token/basic-info`, `token/advanced-info`, `price-info`, `token/top-liquidity`, `trades`, `token/holder`, plus portfolio endpoints.
+
+**Trading**: `/api/v1/dex/aggregator/` `quote`, `swap`, `quote-and-swap`, `approve-transaction`, `history`, `order/submit` (RFQ, equity tokens only), `order/{orderId}`. Routing by issuer: Ondo via multi-vendor RFQ; bStocks via LiquidMesh or PcsXRfq; xStocks via AMM pools. Integrator fee 0 to 5% on EVM.
+
+**Transaction**: `pre-transaction/simulate`, `broadcast-transaction`, `post-transaction/orders`, `gas-price`, `gas-limit`, `block-height`.
+
+**Wallet**: balances and history. **DeFi**: BSC only, 15 protocols readable, 10 transactable, 5 QPS.
+
+**Trading error codes**: 40365, 40366, 40367, 40369, 40374, 40375 (meanings in SPEC 3.6).
+
+## 6. Agentic Wallet (`baw`)
+
+- MPC keyless wallet driven by an agent; spending limits and token scope set only in the Binance app.
+- Integration is a `SKILL.md` that instructs the agent to run `baw ... --json`. Install: `npx skills add binance/binance-skills-hub/skills/binance-web3/binance-agentic-wallet`. npm package `@binance/agentic-wallet`.
+- Commands: `auth`, `wallet`, `market-order swap`, `limit-order`, `contract-call` (developer mode), `sign-message` (EIP-712), `prediction`, `x402-payment`, `defi`.
+- Skill routes tokenized-stock types via an internal endpoint: `type=1` Ondo, `type=2` xStocks-style, `type=3` bStocks.
+- Skill notes limit orders can fail with `Ondo-related tokens cannot be traded`.
+- Open issues #266 and #274: sign-in fails on a missing `location` field.
+
+## 7. BNB Agent Studio (`bag`)
+
+- TypeScript scaffolder and runtime. `npm i -g @bnbagent/studio-cli`, `bag skills install`, `bag doctor`, `bag dev`. Needs Node 22+, pnpm 10, Bun 1.3+ for deploy.
+- Generated project: editable `sellerCore.ts`; fixed `signing.ts` (signing never exposed to the LLM); read-only `tools.ts`.
+- Faces: A2A (:9000), MCP (:8000/mcp), x402. Commerce: ERC-8183, B402, or both. Identity: ERC-8004 (gas-free on testnet via MegaFuel).
+- Deploy targets: `bnb` (managed 48h testnet trial; signing material leaves your control), `aws` (AgentCore), `azure`.
+- Self-refill: the agent tops up its LLM budget via x402 from $U; example cost about $0.31 overnight.
+- Troubleshooting page lists known sharp edges (network drift in `studio.toml`, pnpm workspace errors, AgentCore naming rules, `--accept-risk` on first deploy).
+
+## 8. Other tooling
+
+- Binance MCP (`https://agent.binance.com/mcp/agentic`): CEX only.
+- `bnbchain-mcp` (`npx @bnb-chain/mcp@latest`): chain reads, ERC-8004 registration. Not for public deployment.
+- `bnbagent-sdk` (`@bnbagent/sdk`, `bnbagent`): ERC-8004 and ERC-8183.
+- `binance-skills-hub`: about 1,000 stars, the main skills repo.
+
+## 9. Unverified (numbers match CLAUDE.md)
+
+| # | Question | Resolved in | Status |
+|---|---|---|---|
+| 1 | What `referencePrice` is: real quote or derived from on-chain price | T1 | open |
+| 2 | bStocks price per raw unit or UI unit; share ratio per venue | T1 | open |
+| 3 | All 5 candidate instruments listed on BSC by all three issuers | T1 | open |
+| 4 | `baw auth signin` works from Nigeria | T2 | open |
+| 5 | `baw market-order swap` handles bStocks and Ondo directly | T2 / T9 | open |
+| 6 | APRO feed addresses and interface on BSC | T4 | open |
+| 7 | Public endpoint for the bStocks collateral index | T4 | open |
+| 8 | xStocks symbol suffix on BSC | T1 | open |
+| 9 | Hackathon "elevated rate limits" in numbers | T0 | open |
+| 10 | Current Venus and Lista parameters for bStocks | could-have | open |
+| 11 | Agent Studio runtime can be self-hosted outside AWS / Azure | T10 | open |
+
+## Sources
+
+- Hackathon: https://www.bnbchain.org/en/hackathons/tokenized-stocks
+- BNB Chain on remaining gaps: https://www.bnbchain.org/en/blog/the-next-step-for-tokenized-equities-funding-paths-matter-after-assets-move-onchain
+- bStocks on BNB Chain: https://www.bnbchain.org/en/blog/introducing-bstocks-on-bnb-chain-trade-24-7-with-zero-fees-deploy-across-defi-protocols-with-full-self-custody
+- bStocks guide: https://www.binance.com/en/academy/articles/what-are-bstocks-a-guide-to-tokenized-stocks-on-binance
+- Collateral index FAQ: https://www.binance.com/en/support/faq/detail/131946c44eb5428fa249c639cc60e43b
+- BEP-677: https://github.com/bnb-chain/BEPs/blob/master/BEPs/BEP-677.md
+- Ondo on BNB Chain: https://ondo.finance/blog/global-markets-live-on-bnb-chain
+- Ondo 24/7: https://ondo.finance/blog/real-24-7-trading-for-tokenized-stocks
+- xStocks on BNB Chain: https://xstocks.fi/us/news/xstocks-launches-on-bnb-chain
+- Free bStocks feeds via APRO: https://cryptobriefing.com/bnb-chain-free-bstocks-price-feeds/
+- APRO feed docs: https://docs.apro.com/en/data-push/price-feed-contract
+- Chainlink tokenized equity feeds: https://docs.chain.link/data-feeds/tokenized-equity-feeds
+- Venus collateral: https://cryptoslate.com/tokenized-stocks-defi-collateral-venus/
+- PancakeSwap volumes: https://cryptobriefing.com/pancakeswap-v3-tokenized-stocks-dex-volume/
+- RWA.xyz stocks: https://app.rwa.xyz/stocks
+- Web3 API docs: https://web3.binance.com/en/dev-docs/introduction
+- Trading error codes: https://web3.binance.com/en/dev-docs/products/trading-api/error-codes
+- Agentic Wallet: https://developers.binance.com/docs/agentic-wallet/welcome
+- Skills hub: https://github.com/binance/binance-skills-hub
+- Agent Studio docs: https://docs.bnbchain.org/developer-kit/bnbchain-studio/
+- Agent Studio deployment: https://docs.bnbchain.org/developer-kit/bnbchain-studio/deployment/
+- Binance MCP (CEX): https://developers.binance.com/en/docs/agent-native/mcp-server/agentic
+- bnbchain-mcp: https://github.com/bnb-chain/bnbchain-mcp
+- PlumS: https://plumstock.xyz/
+- closing-bell-agent: https://github.com/daveaire/closing-bell-agent
