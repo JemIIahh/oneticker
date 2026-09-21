@@ -37,10 +37,11 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 - [ ] `apps/tape` runs every 5 minutes on the hosted machine: for each venue, reference, on-chain and executable quotes at $100 / $1,000 / $10,000, plus market state. Writes `snapshots` and `api_calls`.
 - [ ] Oracle and index surfaces may land on Friday if they slow this down. Everything else may not.
 - [ ] **Live by Thu 24 Sep, 20:00 UTC**, so there is a full market day of data before the Friday close.
-- [ ] A failed run leaves a log line, and a daily row count check flags gaps.
+- [x] A failed run leaves a log line, and a daily row count check flags gaps. (`RUN_FAILED` and `CHECK_GAPS` log lines; `pnpm --filter tape check [day]`.)
+- Progress 21 Sep 22:39 UTC: skeleton live on Railway (`pnpm --filter tape start`, DB at `/data/tape.sqlite`). It stores raw responses per venue now; price columns get parsed once T1 fixtures confirm the fields. Blocked on API keys and the T1 registry.
 
 ### T4 · Core: market state, SEP, oracle · A and B · Wed 23 to Fri 25
-- [ ] Market calendar and state engine with unit tests at 10 or more boundary timestamps (Friday close, Sunday 20:00 ET, pre-market open, DST offset).
+- [x] Market calendar and state engine with unit tests at 10 or more boundary timestamps (Friday close, Sunday 20:00 ET, pre-market open, DST offset). `packages/core/src/market`, 17 boundary cases plus holiday and early close; wired into the Tape's `market_state`.
 - [ ] SEP normalization per venue. During market hours, NVDA SEP across all venues lands within a sane band of the reference.
 - [ ] APRO reader (B): feed addresses found, `answer` and `updatedAt` read; unverified item 6 answered.
 - [ ] Collateral index surface (B), if a public endpoint exists; unverified item 7 answered either way.

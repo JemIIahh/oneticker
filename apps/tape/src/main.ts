@@ -6,7 +6,7 @@
 //   pnpm --filter tape check [day]   row-count check for one UTC day (default: yesterday); exit 1 on gaps
 
 import { createWeb3Client } from '@oneticker/clients';
-import { instruments } from '@oneticker/core';
+import { instruments, marketClock } from '@oneticker/core';
 import { checkDay } from './check';
 import { createCollector, type Collect } from './collect';
 import { loadConfig } from './config';
@@ -32,7 +32,7 @@ const collect: Collect =
         throw new Error('BINANCE_WEB3_API_KEY and BINANCE_WEB3_API_SECRET are not set');
       };
 
-const tick = () => runOnce({ db, instruments, collect });
+const tick = () => runOnce({ db, instruments, collect, marketState: (at) => marketClock(at).state });
 
 function logCheck(day: string): boolean {
   const result = checkDay(db, day, config.intervalSec);
