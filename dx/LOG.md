@@ -28,7 +28,7 @@ These came from desk research, not from our own use. **None of them go in the re
 - [ ] No canonical resolver for the same ticker across issuers; the skill tells the agent to ask the user.
 - [ ] `baw auth signin` fails with `SERVICE_ERROR: {body.location=must not be blank}` (issues #266, #274).
 - [ ] The skill still routes bStock trades through `references/campaign.md` for a competition that ended 1 Sep 2026.
-- [ ] Node version: 18+ in the Agentic Wallet quickstart vs 22+ in the skills hub README.
+- [ ] Node version: 18+ in the Agentic Wallet quickstart vs 22+ in the skills hub README. (21 Sep: npm `engines` for `@binance/agentic-wallet` 1.10.0 is `>=18.0.0`; the two docs pages still to compare in a browser.)
 - [ ] Agentic Wallet supported chains differ between the dev-docs page and the skills listing.
 - [ ] Agent Studio trial length: 48h (docs) vs "72-24 hours" (hackathon page) vs "up to 48 hours" (launch blog).
 - [ ] Agent Studio language: TypeScript (docs) vs Python (launch blog).
@@ -82,4 +82,12 @@ These came from desk research, not from our own use. **None of them go in the re
 - Actual: API: HTTP 401 `40101 API Key is required` in 2,922 ms, CloudFront POP `LHR95-P3` (Railway `sfo`: 362 ms). Docs: `HTTP/2 202`, `content-length: 0`, `x-amzn-waf-action: challenge`. The docs page returns an empty body to a non-browser client because of an AWS WAF challenge.
 - Time lost: 0
 - Severity: slowed us
+- Suggestion:
+
+### 2026-09-21 22:53 UTC · claude (dev laptop, VPN on) · Agentic Wallet
+- Did: `npm i -g @binance/agentic-wallet`, `baw --version`, `baw auth signin --help`, `gh issue view 266` and `274 -R binance/binance-skills-hub`
+- Expected: install and help work; sign-in issues resolved or with a workaround
+- Actual: `added 74 packages in 12s`, `baw` `1.10.0` (npm modified `2026-09-09T09:05:59.068Z`). Package `engines`: `{ node: '>=18.0.0' }`. Sign-in is a QR flow: `baw auth signin [--image] [--json]`, then `baw auth verify --qrCodeId <id>`. Issues #266 "baw auth signin --json fails with SERVICE_ERROR: body.location must not be blank" and #274 "baw auth signin fails with SERVICE_ERROR: {body.location=must not be blank}" are both `OPEN`, last updated `2026-05-25` and `2026-06-09`.
+- Time lost: 0
+- Severity: annoyance
 - Suggestion:
