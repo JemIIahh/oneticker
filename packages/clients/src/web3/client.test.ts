@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
 import { createWeb3Client, type ApiCall } from './client';
 import { Web3ApiError } from './errors';
@@ -84,6 +85,20 @@ describe('createWeb3Client', () => {
     expect(error).toBeInstanceOf(Web3ApiError);
     expect(error).toMatchObject({ code: '40369', httpStatus: 200, raw: envelope });
     expect(apiCalls[0]!.errorCode).toBe('40369');
+  });
+
+  it('maps the real unsigned-request 401 to code 40101', async () => {
+    const fixture = JSON.parse(
+      readFileSync(new URL('../../../../fixtures/web3/rwa-platforms-unsigned-20260921T153507Z.json', import.meta.url), 'utf8'),
+    ) as { httpStatus: number; response: unknown };
+    const { client, apiCalls } = setup({ status: fixture.httpStatus, body: fixture.response });
+
+    await expect(client.get('/api/v1/dex/market/rwa/platforms')).rejects.toMatchObject({
+      code: '40101',
+      httpStatus: 401,
+      message: '/api/v1/dex/market/rwa/platforms: 40101 API Key is required',
+    });
+    expect(apiCalls[0]).toMatchObject({ httpStatus: 401, errorCode: '40101' });
   });
 
   it('throws NON_JSON on an HTML error page', async () => {

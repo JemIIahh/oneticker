@@ -79,14 +79,14 @@ pnpm oneticker quote NVDA buy 500
 - Auth headers: `X-OC-APIKEY`, `X-OC-TIMESTAMP` (ISO 8601 with milliseconds), `X-OC-SIGN` = base64(HMAC-SHA256(secret, timestamp + METHOD + path + body)). Optional `X-OC-RECV-WINDOW` (default 5s).
 - **The signed path must include the `/build` prefix**, e.g. `/build/api/v1/dex/market/rwa/price`. The docs call omitting it the leading cause of signature failures.
 - Rate limits: **5 req/s per endpoint**, 1,200 per minute per key and per IP. Use one limiter per endpoint inside the client. On 429, respect `Retry-After`.
-- Responses use an `OCResult<T>` envelope: `{ code, message, data, timestamp, success }`. Check `success`, not just the HTTP status.
+- Responses use an `OCResult<T>` envelope. **Error shape confirmed 21 Sep** (`fixtures/web3/rwa-platforms-unsigned-20260921T153507Z.json`): `{ "msg", "data": "", "code": 40101, "timestamp" }` with HTTP 401, i.e. `msg` not `message`, numeric `code`, **no `success` field**. Success shape not yet seen. The client treats `success` if present, else `code == 0`. Error responses carry an `x-oc-blocked-by` header (e.g. `AuthenticationFilter/40101`) and `x-oc-trace-id`.
 - Auth errors: 40101 invalid key, 40102 signature mismatch, 40103 expired or replayed timestamp, 40104 insufficient permissions.
 - **Equity tokens trade via RFQ** (EIP-712 signature plus settlement polling), not the normal swap path.
 - Trading error codes to map: 40365, 40366, 40367, 40369, 40374, 40375 (see SPEC 3.6).
 - Log every call (endpoint, status, latency, error code) to the Tape's `api_calls` table via a hook in the client.
 - The official connector `@binance-web3/wallet` (github.com/binance/binance-web3-connector-js) covers every module despite its name, and is the best reference for endpoint paths and params while the docs are unreachable. We still hand-roll the client: the connector drops the envelope `code`, hides raw responses (we need them for fixtures and `raw_json`), and cannot send a body to `POST /market/price`.
 - Signing, confirmed from the connector source: the signed path is `/build` + path + `?query` exactly as sent (URL-encoded); timestamp is `new Date().toISOString()`. Chain param is `binanceChainId` (`"56"` for BSC). RFQ quotes (Ondo, bStocks) need `userWalletAddress`.
-- **`web3.binance.com` and `www.binance.com` time out from the Lagos dev network** (dx/LOG.md, 21 Sep 13:50). `api.binance.com` and BSC RPC work. Run live calls from the hosted machine or a network that reaches it.
+- **`web3.binance.com` and `www.binance.com` time out from the Lagos dev network** (dx/LOG.md, 21 Sep 13:50). `api.binance.com` and BSC RPC work. Run live calls from the hosted machine: Railway `sfo` reaches the API in about 360 ms (`pnpm reach`, 21 Sep 15:35).
 - The docs are client-side rendered. If a fetch returns an empty page, open it in a browser.
 
 ## Tokenized stock facts

@@ -1,0 +1,29 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://web3.binance.com/build/api/v1/dex/market/rwa/platforms",
+    "auth": "none (unsigned, no X-OC-* headers)",
+    "from": "Railway sfo, deployment 88ccefec, via scripts/reach.ts"
+  },
+  "httpStatus": 401,
+  "latencyMs": 362,
+  "headers": {
+    "connection": "keep-alive",
+    "content-length": "78",
+    "content-type": "application/json",
+    "date": "Mon, 21 Sep 2026 15:35:07 GMT",
+    "vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "via": "1.1 33b871000011afaf6969997fc8fcc060.cloudfront.net (CloudFront)",
+    "x-amz-cf-id": "pnlJxa_uPGl07ca1uYRdOJwAcIrDYDG6hWQ85pJ3ZMvKZvaXumoRCw==",
+    "x-amz-cf-pop": "SFO5-P3",
+    "x-cache": "Error from cloudfront",
+    "x-oc-blocked-by": "AuthenticationFilter/40101",
+    "x-oc-trace-id": "unknown-gateway-50916a73c0ba4561aa22dea74d037771"
+  },
+  "response": {
+    "msg": "API Key is required",
+    "data": "",
+    "code": 40101,
+    "timestamp": 1790004907808
+  }
+}

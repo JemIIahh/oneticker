@@ -36,7 +36,7 @@ These came from desk research, not from our own use. **None of them go in the re
 - [ ] CEX tokenized-stock API and Web3 RWA API are documented separately with no cross-links.
 - [ ] Error 40369: bStocks RFQ unavailable outside exchange hours, while the token keeps trading on PancakeSwap.
 - [ ] APRO tokenized-equity feeds: 1h heartbeat, 1% deviation.
-- [ ] Response envelope field names: our notes say `{ code, message, data, timestamp, success }`; the official JS connector parses `{ code, msg, data, timestamp }` and returns `data` without checking `code` (`common/src/utils.ts`, `httpRequestFunction`).
+- [ ] Response envelope field names: our notes say `{ code, message, data, timestamp, success }`; the official JS connector parses `{ code, msg, data, timestamp }` and returns `data` without checking `code` (`common/src/utils.ts`, `httpRequestFunction`). **Error shape reproduced 21 Sep 15:35** (entry below): `msg`, numeric `code`, no `success`. Success shape still to check.
 - [ ] recvWindow header name: our notes say `X-OC-RECV-WINDOW`; the official JS connector sends headers literally named `recvWindow` and `nonce`.
 - [ ] RWA endpoints cover only `platformId` `ondo` and `bstock` (connector enum); xStocks absent.
 
@@ -64,6 +64,14 @@ These came from desk research, not from our own use. **None of them go in the re
 - Did: `npm view @binance-web3/wallet name version time.modified`; listed `clients/web3-wallet/src/rest-api/modules/` in `binance/binance-web3-connector-js`
 - Expected: package named for the Wallet module only (per our research notes)
 - Actual: `@binance-web3/wallet` `12.3.0`, modified `2026-09-18T06:38:11.567Z`, contains modules `rwadata-api`, `trading-api`, `transaction-api`, `general-data-api`, `defi-data-api`, `defi-transaction-api`, `address-portfolio-api`, `b402-payments-api`, `wallet-api`, `web-socket-api`. Repo description: "A simple connector to Binance Web3 Public API".
+- Time lost: 0
+- Severity: annoyance
+- Suggestion:
+
+### 2026-09-21 15:35 UTC · claude (Railway sfo) · Web3 API
+- Did: unsigned `GET https://web3.binance.com/build/api/v1/dex/market/rwa/platforms` from Railway region `sfo` (`pnpm reach`). Fixture: `fixtures/web3/rwa-platforms-unsigned-20260921T153507Z.json`
+- Expected: envelope `{ code, message, data, timestamp, success }` (our research notes)
+- Actual: HTTP 401 in 362 ms, body `{"msg":"API Key is required","data":"","code":40101,"timestamp":1790004907808}`. Field is `msg`, not `message`; no `success` field; `data` is an empty string, not null. Headers include `x-oc-blocked-by: AuthenticationFilter/40101`, `x-oc-trace-id: unknown-gateway-50916a73c0ba4561aa22dea74d037771`, `x-cache: Error from cloudfront`.
 - Time lost: 0
 - Severity: annoyance
 - Suggestion:
