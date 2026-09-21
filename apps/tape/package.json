@@ -5,6 +5,18 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "once": "node --env-file-if-exists=../../.env --import tsx src/main.ts once",
+    "start": "node --env-file-if-exists=../../.env --import tsx src/main.ts start",
+    "check": "node --env-file-if-exists=../../.env --import tsx src/main.ts check"
+  },
+  "dependencies": {
+    "@oneticker/clients": "workspace:*",
+    "@oneticker/core": "workspace:*",
+    "better-sqlite3": "^13.0.3",
+    "tsx": "^4.23.15"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0"
   }
 }

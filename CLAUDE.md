@@ -67,7 +67,9 @@ pnpm build                     # all packages plus scripts/
 pnpm probe discover            # T1: platforms, token lists, search; saves fixtures/web3/
 pnpm probe prices              # T1: prices and quotes for scripts/probe-targets.json
 pnpm --filter tape once        # one logger run
-pnpm --filter tape start       # logger every 5 minutes
+pnpm --filter tape start       # logger every 5 minutes (Railway start command)
+pnpm --filter tape check [day] # gap check for one UTC day; exit 1 on gaps
+pnpm reach                     # can this host reach the Web3 API? (unsigned, no keys)
 pnpm --filter mcp dev
 pnpm --filter web dev
 pnpm oneticker quote NVDA buy 500
