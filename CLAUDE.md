@@ -86,7 +86,7 @@ pnpm oneticker quote NVDA buy 500
 - Log every call (endpoint, status, latency, error code) to the Tape's `api_calls` table via a hook in the client.
 - The official connector `@binance-web3/wallet` (github.com/binance/binance-web3-connector-js) covers every module despite its name, and is the best reference for endpoint paths and params while the docs are unreachable. We still hand-roll the client: the connector drops the envelope `code`, hides raw responses (we need them for fixtures and `raw_json`), and cannot send a body to `POST /market/price`.
 - Signing, confirmed from the connector source: the signed path is `/build` + path + `?query` exactly as sent (URL-encoded); timestamp is `new Date().toISOString()`. Chain param is `binanceChainId` (`"56"` for BSC). RFQ quotes (Ondo, bStocks) need `userWalletAddress`.
-- **`web3.binance.com` and `www.binance.com` time out from the Lagos dev network** (dx/LOG.md, 21 Sep 13:50). `api.binance.com` and BSC RPC work. Run live calls from the hosted machine: Railway `sfo` reaches the API in about 360 ms (`pnpm reach`, 21 Sep 15:35).
+- **`web3.binance.com` and `www.binance.com` time out from the Lagos dev network** (dx/LOG.md, 21 Sep 13:50). `api.binance.com` and BSC RPC work. Railway `sfo` reaches the API in about 360 ms (`pnpm reach`, 21 Sep 15:35). Over the team VPN the laptop reaches it too, at about 2.9 s (21 Sep 22:16): fine for probing and development, but latency numbers for the DX report come from the Railway Tape only. The docs return an empty page to scripts (AWS WAF challenge); read them in a browser.
 - The docs are client-side rendered. If a fetch returns an empty page, open it in a browser.
 
 ## Tokenized stock facts

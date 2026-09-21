@@ -21,7 +21,7 @@ These came from desk research, not from our own use. **None of them go in the re
 - [ ] `/build` prefix required in the signed path; omitting it gives 40102.
 - [ ] `referencePrice` in `/rwa/price` is derived from the on-chain price, not a real market quote.
 - [x] No official SDK for Market, Trading, Transaction or DeFi modules; `@binance-web3/wallet` has no code examples. **Disproved 21 Sep** (see 13:56 entry): the package covers all modules; the Java connector docs have examples.
-- [ ] Web3 API docs render client-side and return an empty page to non-browser fetchers.
+- [x] Web3 API docs render client-side and return an empty page to non-browser fetchers. **Reproduced 21 Sep 22:16** (entry above): the cause is an AWS WAF challenge (`HTTP 202`, empty body, `x-amzn-waf-action: challenge`), not only client-side rendering.
 - [ ] The only official Binance MCP server is CEX-only; nothing covers Web3 / RWA.
 - [ ] `binance-tokenized-securities-info` skill covers Ondo only (no bStocks, no xStocks), and its `volume24h` is US stock volume, not on-chain volume.
 - [ ] The Agentic Wallet skill resolves bStocks through an undocumented `www.binance.com/bapi/...` endpoint.
@@ -74,4 +74,12 @@ These came from desk research, not from our own use. **None of them go in the re
 - Actual: HTTP 401 in 362 ms, body `{"msg":"API Key is required","data":"","code":40101,"timestamp":1790004907808}`. Field is `msg`, not `message`; no `success` field; `data` is an empty string, not null. Headers include `x-oc-blocked-by: AuthenticationFilter/40101`, `x-oc-trace-id: unknown-gateway-50916a73c0ba4561aa22dea74d037771`, `x-cache: Error from cloudfront`.
 - Time lost: 0
 - Severity: annoyance
+- Suggestion:
+
+### 2026-09-21 22:16 UTC · claude (dev laptop, Lagos, over VPN) · Web3 API / docs
+- Did: `pnpm reach` (unsigned `GET /build/api/v1/dex/market/rwa/platforms`) and `curl -D - https://web3.binance.com/en/dev-docs/authentication`, with the user's VPN on
+- Expected: API and docs reachable, as they are from Railway
+- Actual: API: HTTP 401 `40101 API Key is required` in 2,922 ms, CloudFront POP `LHR95-P3` (Railway `sfo`: 362 ms). Docs: `HTTP/2 202`, `content-length: 0`, `x-amzn-waf-action: challenge`. The docs page returns an empty body to a non-browser client because of an AWS WAF challenge.
+- Time lost: 0
+- Severity: slowed us
 - Suggestion:
