@@ -15,9 +15,10 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 ### T0 · Setup · All · Mon 21
 - [ ] Submit the hacker application form and join the builder Telegram (links on the hackathon page).
 - [ ] Start a stopwatch, open the Binance Web3 developer portal, and stop it at the first successful signed API response. Record every step and the total in `dx/LOG.md`. **This measurement only happens once.**
-- [ ] Public GitHub repo created with this package committed.
+- [x] Public GitHub repo created with this package committed. https://github.com/JemIIahh/oneticker
 - [x] pnpm workspace scaffolded to match the layout in `CLAUDE.md`; `pnpm -r test` passes on empty packages.
 - [ ] Hosting chosen for always-on services (Railway, Fly, or a small VPS) and a Vercel project for the web terminal.
+  - Decided 21 Sep: **Railway** for always-on services, **Vercel** for the web terminal. Railway project `oneticker` created with a `tape` service (deploys `main` from GitHub, `/data` volume for SQLite, idles until T3). Vercel project still to create once `apps/web` exists (T6).
 
 ### T1 · Web3 API client and probe · A · Mon 21 to Tue 22
 - [ ] `packages/clients/web3`: HMAC signing with the `/build` prefix, one rate limiter per endpoint, `OCResult` unwrapping, typed errors, and a hook that records every call for `api_calls`.
