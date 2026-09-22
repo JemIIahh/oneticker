@@ -91,3 +91,11 @@ These came from desk research, not from our own use. **None of them go in the re
 - Time lost: 0
 - Severity: annoyance
 - Suggestion:
+
+### 2026-09-22 08:50 UTC · user (dev laptop, Lagos) · Agentic Wallet
+- Did: `baw auth signin`
+- Expected: a QR code link
+- Actual: stderr `[50001002] Connect Timeout Error (attempted address: www.binance.com:443, timeout: 10000ms)`; stdout empty. Sign-in goes through `www.binance.com`, which times out from this network without a VPN (21 Sep 13:50 entry). At 08:54 local DNS was also failing (`curl: (6) Could not resolve host: www.binance.com`; `dig`: `no servers could be reached`; google.com reachable), so this run does not isolate a Binance-side cause. Retry pending with a working VPN.
+- Time lost: 5
+- Severity: blocker
+- Suggestion:
