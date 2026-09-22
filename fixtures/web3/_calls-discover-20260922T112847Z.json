@@ -1,0 +1,110 @@
+[
+  {
+    "ts": "2026-09-22T11:28:34.763Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/platforms",
+    "httpStatus": 200,
+    "latencyMs": 2366,
+    "errorCode": null,
+    "bytes": 599
+  },
+  {
+    "ts": "2026-09-22T11:28:37.134Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/tokens",
+    "httpStatus": 200,
+    "latencyMs": 813,
+    "errorCode": null,
+    "bytes": 385961
+  },
+  {
+    "ts": "2026-09-22T11:28:37.954Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/search",
+    "httpStatus": 200,
+    "latencyMs": 1018,
+    "errorCode": null,
+    "bytes": 734
+  },
+  {
+    "ts": "2026-09-22T11:28:38.975Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/token/search",
+    "httpStatus": 200,
+    "latencyMs": 1145,
+    "errorCode": null,
+    "bytes": 27361
+  },
+  {
+    "ts": "2026-09-22T11:28:40.122Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/search",
+    "httpStatus": 200,
+    "latencyMs": 833,
+    "errorCode": null,
+    "bytes": 734
+  },
+  {
+    "ts": "2026-09-22T11:28:40.957Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/token/search",
+    "httpStatus": 200,
+    "latencyMs": 1003,
+    "errorCode": null,
+    "bytes": 25922
+  },
+  {
+    "ts": "2026-09-22T11:28:41.964Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/search",
+    "httpStatus": 200,
+    "latencyMs": 821,
+    "errorCode": null,
+    "bytes": 2592
+  },
+  {
+    "ts": "2026-09-22T11:28:42.786Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/token/search",
+    "httpStatus": 200,
+    "latencyMs": 1036,
+    "errorCode": null,
+    "bytes": 25668
+  },
+  {
+    "ts": "2026-09-22T11:28:43.826Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/search",
+    "httpStatus": 200,
+    "latencyMs": 1017,
+    "errorCode": null,
+    "bytes": 750
+  },
+  {
+    "ts": "2026-09-22T11:28:44.846Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/token/search",
+    "httpStatus": 200,
+    "latencyMs": 897,
+    "errorCode": null,
+    "bytes": 26797
+  },
+  {
+    "ts": "2026-09-22T11:28:45.745Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/search",
+    "httpStatus": 200,
+    "latencyMs": 1014,
+    "errorCode": null,
+    "bytes": 735
+  },
+  {
+    "ts": "2026-09-22T11:28:46.760Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/token/search",
+    "httpStatus": 200,
+    "latencyMs": 925,
+    "errorCode": null,
+    "bytes": 26478
+  }
+]

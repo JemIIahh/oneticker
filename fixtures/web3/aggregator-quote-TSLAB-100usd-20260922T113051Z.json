@@ -1,0 +1,67 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": [
+    {
+      "quoteId": "34aca7531d414eb5a756dd9b2013340b",
+      "vendorName": "LiquidMesh",
+      "executionMode": "SWAP",
+      "binanceChainId": "56",
+      "fromTokenAmount": "100000000000000000000",
+      "toTokenAmount": "264594898835982676",
+      "tradeFee": "0.02150695",
+      "estimateGasFee": "450000",
+      "priceImpactPercent": "-0.0003315557",
+      "router": "0x55d398326f99059ff775485246999027b3197955--0x5b1910eaad6450e50f816082aa078c41f10c292f",
+      "fromToken": {
+        "tokenContractAddress": "0x55d398326f99059fF775485246999027B3197955",
+        "tokenSymbol": "USDT",
+        "tokenUnitPrice": "0.9997232958878788",
+        "decimal": "18",
+        "isHoneyPot": false,
+        "taxRate": "0"
+      },
+      "toToken": {
+        "tokenContractAddress": "0x5b1910eaad6450e50f816082aa078c41f10c292f",
+        "tokenSymbol": "TSLAB",
+        "tokenUnitPrice": "377.85000000000000000000000000",
+        "decimal": "18",
+        "isHoneyPot": false,
+        "taxRate": "0"
+      },
+      "dexRouterList": [
+        {
+          "dexProtocol": {
+            "dexName": "Metric",
+            "percent": "100.00"
+          },
+          "fromToken": {
+            "tokenContractAddress": "0x55d398326f99059ff775485246999027b3197955",
+            "tokenSymbol": "USDT",
+            "tokenUnitPrice": "0.9997232958878788",
+            "decimal": "18",
+            "isHoneyPot": false,
+            "taxRate": "0"
+          },
+          "fromTokenIndex": "0",
+          "toToken": {
+            "tokenContractAddress": "0x5b1910eaad6450e50f816082aa078c41f10c292f",
+            "tokenSymbol": "TSLAB",
+            "tokenUnitPrice": "377.85000000000000000000000000",
+            "decimal": "18",
+            "isHoneyPot": false,
+            "taxRate": "0"
+          },
+          "toTokenIndex": "1"
+        }
+      ],
+      "approveTarget": "0xB44446b0c8E56988c34f7Ff73Ae904982b5FdDA5",
+      "isBest": true,
+      "feeAmount": null,
+      "feeToken": null,
+      "actualSwapAmount": null
+    }
+  ],
+  "timestamp": 1790076650366,
+  "success": true
+}

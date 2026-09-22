@@ -1,0 +1,137 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": [
+    {
+      "ticker": "QQQ",
+      "companyName": "Invesco QQQ Trust",
+      "assets": [
+        {
+          "platformId": "ondo",
+          "binanceChainId": "56",
+          "tokenContractAddress": "0x0cde6936d305d5b34667fc46425e852efd73559a",
+          "tokenSymbol": "QQQon",
+          "assetType": 3
+        },
+        {
+          "platformId": "ondo",
+          "binanceChainId": "CT_501",
+          "tokenContractAddress": "HrYNm6jTQ71LoFphjVKBTdAE4uja7WsmLG8VxB8ondo",
+          "tokenSymbol": "QQQon",
+          "assetType": 3
+        },
+        {
+          "platformId": "ondo",
+          "binanceChainId": "1",
+          "tokenContractAddress": "0x0e397938c1aa0680954093495b70a9f5e2249aba",
+          "tokenSymbol": "QQQon",
+          "assetType": 3
+        },
+        {
+          "platformId": "bstock",
+          "binanceChainId": "56",
+          "tokenContractAddress": "0x205812cdbed920aff76c6580abd681a46d11efc7",
+          "tokenSymbol": "QQQB",
+          "assetType": 3
+        }
+      ]
+    },
+    {
+      "ticker": "TQQQ",
+      "companyName": "ProShares UltraPro QQQ",
+      "assets": [
+        {
+          "platformId": "ondo",
+          "binanceChainId": "56",
+          "tokenContractAddress": "0xe42cfb20e00912409b77a602b5bdcff3c7acc5f4",
+          "tokenSymbol": "TQQQon",
+          "assetType": 3
+        },
+        {
+          "platformId": "ondo",
+          "binanceChainId": "CT_501",
+          "tokenContractAddress": "14W1itEkV7k1W819mLSknFTaMmkCtPokbF2tRkPUondo",
+          "tokenSymbol": "TQQQon",
+          "assetType": 3
+        },
+        {
+          "platformId": "ondo",
+          "binanceChainId": "1",
+          "tokenContractAddress": "0xa45cd7ac9865b9539166ebaf2abc362df4736580",
+          "tokenSymbol": "TQQQon",
+          "assetType": 3
+        },
+        {
+          "platformId": "bstock",
+          "binanceChainId": "56",
+          "tokenContractAddress": "0x462b5f13b7c7748279358962925c5de83bb9e598",
+          "tokenSymbol": "TQQQB",
+          "assetType": 3
+        }
+      ]
+    },
+    {
+      "ticker": "SQQQ",
+      "companyName": "ProShares UltraPro Short QQQ",
+      "assets": [
+        {
+          "platformId": "ondo",
+          "binanceChainId": "56",
+          "tokenContractAddress": "0x17515b68378d86c38f394c666e79907da05dcba9",
+          "tokenSymbol": "SQQQon",
+          "assetType": 3
+        },
+        {
+          "platformId": "ondo",
+          "binanceChainId": "CT_501",
+          "tokenContractAddress": "D1tu7Fnm3cCpKyyPXrqm5GXShPqMj7a2SEjjq9fondo",
+          "tokenSymbol": "SQQQon",
+          "assetType": 3
+        },
+        {
+          "platformId": "ondo",
+          "binanceChainId": "1",
+          "tokenContractAddress": "0x0a00c19246fc41b2524d56c87ec44ce8b30ba0f8",
+          "tokenSymbol": "SQQQon",
+          "assetType": 3
+        },
+        {
+          "platformId": "bstock",
+          "binanceChainId": "56",
+          "tokenContractAddress": "0x25e572b466d152604d9e6c3e53b432b978825342",
+          "tokenSymbol": "SQQQB",
+          "assetType": 1
+        }
+      ]
+    },
+    {
+      "ticker": "PSQ",
+      "companyName": "ProShares Short QQQ",
+      "assets": [
+        {
+          "platformId": "ondo",
+          "binanceChainId": "56",
+          "tokenContractAddress": "0x3802dc739ef9e226f36421a9c15efa519153bbbe",
+          "tokenSymbol": "PSQon",
+          "assetType": 3
+        },
+        {
+          "platformId": "ondo",
+          "binanceChainId": "CT_501",
+          "tokenContractAddress": "qKtU9A7ij34XmtxaSzYfxCpkgAZzzFsqnUb2kW2ondo",
+          "tokenSymbol": "PSQon",
+          "assetType": 3
+        },
+        {
+          "platformId": "ondo",
+          "binanceChainId": "1",
+          "tokenContractAddress": "0x9ebd34d99cc3a45b39cafc14ad7994263fa2be56",
+          "tokenSymbol": "PSQon",
+          "assetType": 3
+        }
+      ]
+    }
+  ],
+  "timestamp": 1790076522709,
+  "success": true
+}

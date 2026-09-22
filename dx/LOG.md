@@ -19,7 +19,7 @@ Append-only. Newest entries at the bottom. Facts, not opinions. This is the raw 
 These came from desk research, not from our own use. **None of them go in the report until we reproduce them ourselves** and log an entry above with our own evidence. Tick each when reproduced or disproved.
 
 - [ ] `/build` prefix required in the signed path; omitting it gives 40102.
-- [ ] `referencePrice` in `/rwa/price` is derived from the on-chain price, not a real market quote.
+- [x] `referencePrice` in `/rwa/price` is derived from the on-chain price, not a real market quote. **Reproduced 22 Sep 11:30** (entry below): equals `tokenPrice / tokenToShareRatio` for all 15 tokens.
 - [x] No official SDK for Market, Trading, Transaction or DeFi modules; `@binance-web3/wallet` has no code examples. **Disproved 21 Sep** (see 13:56 entry): the package covers all modules; the Java connector docs have examples.
 - [x] Web3 API docs render client-side and return an empty page to non-browser fetchers. **Reproduced 21 Sep 22:16** (entry above): the cause is an AWS WAF challenge (`HTTP 202`, empty body, `x-amzn-waf-action: challenge`), not only client-side rendering.
 - [ ] The only official Binance MCP server is CEX-only; nothing covers Web3 / RWA.
@@ -36,9 +36,9 @@ These came from desk research, not from our own use. **None of them go in the re
 - [ ] CEX tokenized-stock API and Web3 RWA API are documented separately with no cross-links.
 - [ ] Error 40369: bStocks RFQ unavailable outside exchange hours, while the token keeps trading on PancakeSwap.
 - [ ] APRO tokenized-equity feeds: 1h heartbeat, 1% deviation. (22 Sep: docs say so for 12 bStocks feeds; the Tape now records `updatedAt` every 5 min, so the real cadence will be measurable after weekend 1.)
-- [ ] Response envelope field names: our notes say `{ code, message, data, timestamp, success }`; the official JS connector parses `{ code, msg, data, timestamp }` and returns `data` without checking `code` (`common/src/utils.ts`, `httpRequestFunction`). **Error shape reproduced 21 Sep 15:35** (entry below): `msg`, numeric `code`, no `success`. Success shape still to check.
+- [ ] Response envelope field names: our notes say `{ code, message, data, timestamp, success }`; the official JS connector parses `{ code, msg, data, timestamp }` and returns `data` without checking `code` (`common/src/utils.ts`, `httpRequestFunction`). **Error shape reproduced 21 Sep 15:35** (entry below): `msg`, numeric `code`, no `success`. **Success shape 22 Sep 11:28**: `{ code: 0, msg: "success", data, timestamp, success: true }`; API-level errors are HTTP 200 with `success: false`.
 - [ ] recvWindow header name: our notes say `X-OC-RECV-WINDOW`; the official JS connector sends headers literally named `recvWindow` and `nonce`.
-- [ ] RWA endpoints cover only `platformId` `ondo` and `bstock` (connector enum); xStocks absent.
+- [x] RWA endpoints cover only `platformId` `ondo` and `bstock` (connector enum); xStocks absent. **Reproduced 22 Sep 11:28**: `rwa/platforms` lists `ondo` (459 tickers) and `bstock` (77) only; `rwa/search NVDA` returns no xStocks asset (`fixtures/web3/rwa-platforms-20260922T112837Z.json`).
 
 ---
 
@@ -141,4 +141,44 @@ These came from desk research, not from our own use. **None of them go in the re
 - Severity: annoyance
 - Suggestion:
 - Severity: blocker
+- Suggestion:
+
+### 2026-09-22 11:28 UTC · user + claude (dev laptop, VPN via FR) · Web3 API / developer portal
+- Did: user created a project and API key at `https://web3.binance.com/en/dev-portal/project`; keys into `.env`; `pnpm probe discover` (12 signed calls) then `pnpm probe prices` (47 calls). First successful signed response: `GET /build/api/v1/dex/market/rwa/platforms` HTTP 200 at 11:28:37 UTC, 2,366 ms (later calls 437 to 2,009 ms over the VPN).
+- Expected: per PLAN T0, a stopwatch from opening the portal to the first signed 200.
+- Actual: first signed call succeeded at the first attempt; no 40102 seen. **Portal steps and total time: to be filled in by the user.** Fixtures: `fixtures/web3/*-20260922T112837Z.json` onward.
+- Time lost: (user to fill in)
+- Severity: annoyance
+- Suggestion:
+
+### 2026-09-22 11:29 UTC · claude (dev laptop, VPN) · Web3 API
+- Did: `GET /api/v1/dex/aggregator/quote` for NVDAon and NVDAx without `userWalletAddress`; `GET /api/v1/dex/market/rwa/tokens?binanceChainId=56`; `POST /api/v1/dex/market/price` with a guessed array body
+- Expected: quotes for AMM tokens without a wallet (the connector says the wallet is "Required when quoting RFQ routes (equity / RWA tokens such as Ondo and BStock)"); a token list matching `platforms` (77 bStocks); a documented body for `market/price`
+- Actual: 40001 `userWalletAddress is required for RFQ (Ondo) quote` and 40001 `userWalletAddress is required for RFQ (xStock) quote`, both HTTP 200; the bStocks quote worked without a wallet and reported `executionMode: SWAP`, so the RFQ/AMM split in the connector docs does not match behaviour. `rwa/tokens` on chain 56 returned 488 items: 442 `ondo` and **46 `bstock`**, while `rwa/platforms` reports 77 bStocks on chain 56 (fixtures `rwa-tokens-bsc-20260922T112837Z.json`, `rwa-platforms-20260922T112837Z.json`). `POST /market/price` with body `[{"binanceChainId":"56","tokenContractAddress":"0x..."}]` returned 200 with `[{ binanceChainId, tokenContractAddress, price, time }]` (undocumented; neither official connector can send this body).
+- Time lost: 10
+- Severity: slowed us
+- Suggestion:
+
+### 2026-09-22 11:30 UTC · claude (dev laptop, VPN) · Web3 API / referencePrice
+- Did: compared `referencePrice` with `tokenPrice / tokenToShareRatio` for the 15 registry tokens (`fixtures/web3/rwa-price-20260922T113040Z.json`, ratios from `fixtures/bapi/`)
+- Expected: one reference price per underlying stock, from the equity market
+- Actual: `referencePrice` = `tokenPrice / tokenToShareRatio` to 0.00 bps for every token, and it differs by issuer for the same stock at the same second: NVDA 226.693582 (bStocks), 226.784615 (Ondo), 226.565390 (xStocks); QQQ 740.95 / 741.28 / 721.04. `/rwa/underlying-market` `marketData.referencePrice` was `null` for NVDAB and `226.639036` for NVDAon at 07:30 ET. The `/rwa/tokens` docs call the field "underlying reference price".
+- Time lost: 0
+- Severity: slowed us
+- Suggestion:
+
+### 2026-09-22 11:30 UTC · claude (dev laptop, VPN) · Web3 API / xStocks
+- Did: `$100` USDT quotes for the 5 xStocks tokens with `userWalletAddress`; `/market/price` for the same
+- Expected: AMM quotes (xStocks trade in PancakeSwap pools)
+- Actual: all 5 return 40374 `Insufficient liquidity for a quote. Please decrease the transaction amount or try again later.` `/market/price` `time` for them: NVDAx 391 min old, CRCLx 396 min, TSLAx 1,255 min, QQQx 19,266 min (13.4 days), MSTRx 20,447 min (14.2 days), while bStocks and Ondo were 1 min old. MSTRx `price` 138.86 vs MSTRB 166.49.
+- Time lost: 0
+- Severity: annoyance
+- Suggestion:
+
+### 2026-09-22 11:29 UTC · claude (dev laptop, VPN) · Web3 API / market status
+- Did: `GET /api/v1/dex/market/rwa/underlying-market` for NVDAB and NVDAon at 07:29 ET (pre-market)
+- Expected: a closed or pre-market status before 09:30 ET
+- Actual: NVDAB `statusInfo`: `openState: true`, `marketStatus: null`, `reasonCode: "TRADING"`, `nextOpenTime: null`. NVDAon: `openState: true`, `marketStatus: "premarket"`, `reasonCode: "TRADING"`, `nextOpenTime: 1790083860000` (13:31 UTC), `nextCloseTime: 1790083740000` (13:29 UTC, i.e. before the next open). Same field, different meaning per issuer.
+- Time lost: 0
+- Severity: annoyance
 - Suggestion:

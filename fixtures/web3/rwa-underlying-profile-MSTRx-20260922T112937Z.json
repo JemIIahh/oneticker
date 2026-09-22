@@ -1,0 +1,25 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "binanceChainId": "56",
+    "tokenContractAddress": "0xae2f842ef90c0d5213259ab82639d5bbf649b08e",
+    "platformId": null,
+    "underlyingTicker": "MSTR",
+    "underlyingFullName": "MicroStrategy xStock",
+    "assetType": 1,
+    "tokenToShareRatio": "1",
+    "protections": {},
+    "companyInfo": {
+      "ceo": "Phong Q. Le",
+      "website": "https://www.strategy.com",
+      "industry": "Technology",
+      "conceptsEn": [],
+      "conceptsCn": [],
+      "description": "Strategy Inc is a bitcoin treasury company and a provider of business intelligence services. It is designed to provide investors varying degrees of economic exposure to Bitcoin by offering a range of securities, including equity and fixed-income instruments. The company also provides industry AI-powered enterprise analytics software. It has one reportable operating segment: the Software Business, which is engaged in the design, development, marketing, and sales of the company's enterprise analytics software platform through cloud subscriptions and licensing arrangements and related services (i.e., product support, consulting, and education). Geographically, the company operates in EMEA, U.S. and Other Countries.",
+      "descriptionZh": "StrategyInc是一家比特币国库公司和商业智能服务提供商。虽然其传统业务是提供企业分析软件，但公司的核心战略是通过发行证券和利用现金流大规模持有比特币。它为投资者提供了一种在美股市场获得比特币经济敞口的独特证券化工具。"
+    }
+  },
+  "timestamp": 1790076577124,
+  "success": true
+}

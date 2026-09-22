@@ -1,0 +1,42 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": [
+    {
+      "ticker": "TSLA",
+      "companyName": "Tesla, Inc.",
+      "assets": [
+        {
+          "platformId": "ondo",
+          "binanceChainId": "56",
+          "tokenContractAddress": "0x2494b603319d4d9f9715c9f4496d9e0364b59d93",
+          "tokenSymbol": "TSLAon",
+          "assetType": 1
+        },
+        {
+          "platformId": "ondo",
+          "binanceChainId": "CT_501",
+          "tokenContractAddress": "KeGv7bsfR4MheC1CkmnAVceoApjrkvBhHYjWb67ondo",
+          "tokenSymbol": "TSLAon",
+          "assetType": 1
+        },
+        {
+          "platformId": "ondo",
+          "binanceChainId": "1",
+          "tokenContractAddress": "0xf6b1117ec07684d3958cad8beb1b302bfd21103f",
+          "tokenSymbol": "TSLAon",
+          "assetType": 1
+        },
+        {
+          "platformId": "bstock",
+          "binanceChainId": "56",
+          "tokenContractAddress": "0x5b1910eaad6450e50f816082aa078c41f10c292f",
+          "tokenSymbol": "TSLAB",
+          "assetType": 1
+        }
+      ]
+    }
+  ],
+  "timestamp": 1790076520781,
+  "success": true
+}

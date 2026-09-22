@@ -1,0 +1,425 @@
+[
+  {
+    "ts": "2026-09-22T11:29:10.451Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/price",
+    "httpStatus": 200,
+    "latencyMs": 1078,
+    "errorCode": null,
+    "bytes": 3389
+  },
+  {
+    "ts": "2026-09-22T11:29:11.535Z",
+    "method": "POST",
+    "endpoint": "/api/v1/dex/market/price",
+    "httpStatus": 200,
+    "latencyMs": 471,
+    "errorCode": null,
+    "bytes": 2208
+  },
+  {
+    "ts": "2026-09-22T11:29:12.007Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-market",
+    "httpStatus": 200,
+    "latencyMs": 664,
+    "errorCode": null,
+    "bytes": 651
+  },
+  {
+    "ts": "2026-09-22T11:29:12.673Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-profile",
+    "httpStatus": 200,
+    "latencyMs": 437,
+    "errorCode": null,
+    "bytes": 1570
+  },
+  {
+    "ts": "2026-09-22T11:29:13.114Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/aggregator/quote",
+    "httpStatus": 200,
+    "latencyMs": 556,
+    "errorCode": null,
+    "bytes": 1479
+  },
+  {
+    "ts": "2026-09-22T11:29:13.672Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-market",
+    "httpStatus": 200,
+    "latencyMs": 476,
+    "errorCode": null,
+    "bytes": 701
+  },
+  {
+    "ts": "2026-09-22T11:29:14.151Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-profile",
+    "httpStatus": 200,
+    "latencyMs": 475,
+    "errorCode": null,
+    "bytes": 1822
+  },
+  {
+    "ts": "2026-09-22T11:29:14.629Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/aggregator/quote",
+    "httpStatus": 200,
+    "latencyMs": 803,
+    "errorCode": "40001",
+    "bytes": 127
+  },
+  {
+    "ts": "2026-09-22T11:29:15.433Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-market",
+    "httpStatus": 200,
+    "latencyMs": 469,
+    "errorCode": null,
+    "bytes": 663
+  },
+  {
+    "ts": "2026-09-22T11:29:15.907Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-profile",
+    "httpStatus": 200,
+    "latencyMs": 602,
+    "errorCode": null,
+    "bytes": 1477
+  },
+  {
+    "ts": "2026-09-22T11:29:16.511Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/aggregator/quote",
+    "httpStatus": 200,
+    "latencyMs": 537,
+    "errorCode": "40001",
+    "bytes": 129
+  },
+  {
+    "ts": "2026-09-22T11:29:17.049Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-market",
+    "httpStatus": 200,
+    "latencyMs": 465,
+    "errorCode": null,
+    "bytes": 652
+  },
+  {
+    "ts": "2026-09-22T11:29:17.515Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-profile",
+    "httpStatus": 200,
+    "latencyMs": 617,
+    "errorCode": null,
+    "bytes": 1870
+  },
+  {
+    "ts": "2026-09-22T11:29:18.135Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/aggregator/quote",
+    "httpStatus": 200,
+    "latencyMs": 552,
+    "errorCode": null,
+    "bytes": 1482
+  },
+  {
+    "ts": "2026-09-22T11:29:18.689Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-market",
+    "httpStatus": 200,
+    "latencyMs": 478,
+    "errorCode": null,
+    "bytes": 696
+  },
+  {
+    "ts": "2026-09-22T11:29:19.171Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-profile",
+    "httpStatus": 200,
+    "latencyMs": 562,
+    "errorCode": null,
+    "bytes": 2105
+  },
+  {
+    "ts": "2026-09-22T11:29:19.734Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/aggregator/quote",
+    "httpStatus": 200,
+    "latencyMs": 845,
+    "errorCode": "40001",
+    "bytes": 127
+  },
+  {
+    "ts": "2026-09-22T11:29:20.580Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-market",
+    "httpStatus": 200,
+    "latencyMs": 478,
+    "errorCode": null,
+    "bytes": 664
+  },
+  {
+    "ts": "2026-09-22T11:29:21.059Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-profile",
+    "httpStatus": 200,
+    "latencyMs": 568,
+    "errorCode": null,
+    "bytes": 1777
+  },
+  {
+    "ts": "2026-09-22T11:29:21.629Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/aggregator/quote",
+    "httpStatus": 200,
+    "latencyMs": 484,
+    "errorCode": "40001",
+    "bytes": 129
+  },
+  {
+    "ts": "2026-09-22T11:29:22.115Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-market",
+    "httpStatus": 200,
+    "latencyMs": 608,
+    "errorCode": null,
+    "bytes": 596
+  },
+  {
+    "ts": "2026-09-22T11:29:22.724Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-profile",
+    "httpStatus": 200,
+    "latencyMs": 474,
+    "errorCode": null,
+    "bytes": 1070
+  },
+  {
+    "ts": "2026-09-22T11:29:23.199Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/aggregator/quote",
+    "httpStatus": 200,
+    "latencyMs": 530,
+    "errorCode": null,
+    "bytes": 1478
+  },
+  {
+    "ts": "2026-09-22T11:29:23.731Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-market",
+    "httpStatus": 200,
+    "latencyMs": 667,
+    "errorCode": null,
+    "bytes": 654
+  },
+  {
+    "ts": "2026-09-22T11:29:24.400Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-profile",
+    "httpStatus": 200,
+    "latencyMs": 1058,
+    "errorCode": null,
+    "bytes": 1318
+  },
+  {
+    "ts": "2026-09-22T11:29:25.460Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/aggregator/quote",
+    "httpStatus": 200,
+    "latencyMs": 631,
+    "errorCode": "40001",
+    "bytes": 127
+  },
+  {
+    "ts": "2026-09-22T11:29:26.094Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-market",
+    "httpStatus": 200,
+    "latencyMs": 525,
+    "errorCode": null,
+    "bytes": 607
+  },
+  {
+    "ts": "2026-09-22T11:29:26.621Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-profile",
+    "httpStatus": 200,
+    "latencyMs": 601,
+    "errorCode": null,
+    "bytes": 966
+  },
+  {
+    "ts": "2026-09-22T11:29:27.225Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/aggregator/quote",
+    "httpStatus": 200,
+    "latencyMs": 613,
+    "errorCode": "40001",
+    "bytes": 129
+  },
+  {
+    "ts": "2026-09-22T11:29:27.840Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-market",
+    "httpStatus": 200,
+    "latencyMs": 498,
+    "errorCode": null,
+    "bytes": 647
+  },
+  {
+    "ts": "2026-09-22T11:29:28.340Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-profile",
+    "httpStatus": 200,
+    "latencyMs": 625,
+    "errorCode": null,
+    "bytes": 979
+  },
+  {
+    "ts": "2026-09-22T11:29:28.966Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/aggregator/quote",
+    "httpStatus": 200,
+    "latencyMs": 520,
+    "errorCode": null,
+    "bytes": 1481
+  },
+  {
+    "ts": "2026-09-22T11:29:29.489Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-market",
+    "httpStatus": 200,
+    "latencyMs": 608,
+    "errorCode": null,
+    "bytes": 689
+  },
+  {
+    "ts": "2026-09-22T11:29:30.098Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-profile",
+    "httpStatus": 200,
+    "latencyMs": 633,
+    "errorCode": null,
+    "bytes": 1214
+  },
+  {
+    "ts": "2026-09-22T11:29:30.733Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/aggregator/quote",
+    "httpStatus": 200,
+    "latencyMs": 674,
+    "errorCode": "40001",
+    "bytes": 127
+  },
+  {
+    "ts": "2026-09-22T11:29:31.409Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-market",
+    "httpStatus": 200,
+    "latencyMs": 684,
+    "errorCode": null,
+    "bytes": 657
+  },
+  {
+    "ts": "2026-09-22T11:29:32.094Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-profile",
+    "httpStatus": 200,
+    "latencyMs": 510,
+    "errorCode": null,
+    "bytes": 871
+  },
+  {
+    "ts": "2026-09-22T11:29:32.604Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/aggregator/quote",
+    "httpStatus": 200,
+    "latencyMs": 498,
+    "errorCode": "40001",
+    "bytes": 129
+  },
+  {
+    "ts": "2026-09-22T11:29:33.106Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-market",
+    "httpStatus": 200,
+    "latencyMs": 549,
+    "errorCode": null,
+    "bytes": 642
+  },
+  {
+    "ts": "2026-09-22T11:29:33.657Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-profile",
+    "httpStatus": 200,
+    "latencyMs": 461,
+    "errorCode": null,
+    "bytes": 1597
+  },
+  {
+    "ts": "2026-09-22T11:29:34.123Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/aggregator/quote",
+    "httpStatus": 200,
+    "latencyMs": 493,
+    "errorCode": null,
+    "bytes": 1481
+  },
+  {
+    "ts": "2026-09-22T11:29:34.619Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-market",
+    "httpStatus": 200,
+    "latencyMs": 576,
+    "errorCode": null,
+    "bytes": 688
+  },
+  {
+    "ts": "2026-09-22T11:29:35.197Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-profile",
+    "httpStatus": 200,
+    "latencyMs": 549,
+    "errorCode": null,
+    "bytes": 1837
+  },
+  {
+    "ts": "2026-09-22T11:29:35.748Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/aggregator/quote",
+    "httpStatus": 200,
+    "latencyMs": 475,
+    "errorCode": "40001",
+    "bytes": 127
+  },
+  {
+    "ts": "2026-09-22T11:29:36.225Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-market",
+    "httpStatus": 200,
+    "latencyMs": 437,
+    "errorCode": null,
+    "bytes": 653
+  },
+  {
+    "ts": "2026-09-22T11:29:36.664Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/market/rwa/underlying-profile",
+    "httpStatus": 200,
+    "latencyMs": 596,
+    "errorCode": null,
+    "bytes": 1509
+  },
+  {
+    "ts": "2026-09-22T11:29:37.262Z",
+    "method": "GET",
+    "endpoint": "/api/v1/dex/aggregator/quote",
+    "httpStatus": 200,
+    "latencyMs": 517,
+    "errorCode": "40001",
+    "bytes": 129
+  }
+]

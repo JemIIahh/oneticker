@@ -22,8 +22,8 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 
 ### T1 · Web3 API client and probe · A · Mon 21 to Tue 22
 - [x] `packages/clients/web3`: HMAC signing with the `/build` prefix, one rate limiter per endpoint, `OCResult` unwrapping, typed errors, and a hook that records every call for `api_calls`.
-- [ ] `scripts/probe.ts` calls `rwa/platforms`, `rwa/tokens`, `rwa/search`, `rwa/price`, `rwa/underlying-market`, `market/price`, and an aggregator quote for every candidate venue, saving each response to `fixtures/`.
-- [ ] Unverified items 1, 2 and 3 in `docs/RESEARCH.md` answered with fixture evidence.
+- [x] `scripts/probe.ts` calls `rwa/platforms`, `rwa/tokens`, `rwa/search`, `rwa/price`, `rwa/underlying-market`, `market/price`, and an aggregator quote for every candidate venue, saving each response to `fixtures/`. (22 Sep 11:28 UTC: first signed call; 106 fixtures in `fixtures/web3/`.)
+- [x] Unverified items 1, 2 and 3 in `docs/RESEARCH.md` answered with fixture evidence. (1: `referencePrice` is derived. 2: prices are per raw token; ratio from `tokenToShareRatio`. 3: yes, all listed; xStocks illiquid.)
 - [ ] `instruments.json` written: 5 instruments, up to 3 venues each, addresses and execution paths confirmed.
   - 22 Sep: written by `pnpm registry` from the `bapi` fixtures. NVDA, TSLA, QQQ, CRCL, and **MSTR as the fifth** (team decision; it tracks Bitcoin, which trades all weekend). All 15 addresses confirmed on-chain (`symbol()`, `decimals()`). Execution paths not yet confirmed: `baw` quoted NVDAB and NVDAon; NVDAx had no liquidity pre-market. The probe's `prices` phase checks the rest once API keys arrive.
 - [x] closing-bell-agent README read; differences noted in `SPEC.md` section 12.

@@ -1,0 +1,67 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": [
+    {
+      "quoteId": "711a5d5cbe40403894002568f3727d89",
+      "vendorName": "LiquidMesh",
+      "executionMode": "SWAP",
+      "binanceChainId": "56",
+      "fromTokenAmount": "100000000000000000000",
+      "toTokenAmount": "1037188820017246080",
+      "tradeFee": "0.01840889",
+      "estimateGasFee": "450000",
+      "priceImpactPercent": "0.0000000000",
+      "router": "0x55d398326f99059ff775485246999027b3197955--0x992879cd8ce0c312d98648875b5a8d6d042cbf34",
+      "fromToken": {
+        "tokenContractAddress": "0x55d398326f99059fF775485246999027B3197955",
+        "tokenSymbol": "USDT",
+        "tokenUnitPrice": "0.9997572672974692",
+        "decimal": "18",
+        "isHoneyPot": false,
+        "taxRate": "0"
+      },
+      "toToken": {
+        "tokenContractAddress": "0x992879cd8ce0c312d98648875b5a8d6d042cbf34",
+        "tokenSymbol": "CRCLon",
+        "tokenUnitPrice": "96.26",
+        "decimal": "18",
+        "isHoneyPot": false,
+        "taxRate": "0"
+      },
+      "dexRouterList": [
+        {
+          "dexProtocol": {
+            "dexName": "Rfq Native",
+            "percent": "100.00"
+          },
+          "fromToken": {
+            "tokenContractAddress": "0x55d398326f99059ff775485246999027b3197955",
+            "tokenSymbol": "USDT",
+            "tokenUnitPrice": "0.9997572672974692",
+            "decimal": "18",
+            "isHoneyPot": false,
+            "taxRate": "0"
+          },
+          "fromTokenIndex": "0",
+          "toToken": {
+            "tokenContractAddress": "0x992879cd8ce0c312d98648875b5a8d6d042cbf34",
+            "tokenSymbol": "CRCLon",
+            "tokenUnitPrice": "96.26",
+            "decimal": "18",
+            "isHoneyPot": false,
+            "taxRate": "0"
+          },
+          "toTokenIndex": "1"
+        }
+      ],
+      "approveTarget": "0xB44446b0c8E56988c34f7Ff73Ae904982b5FdDA5",
+      "isBest": true,
+      "feeAmount": null,
+      "feeToken": null,
+      "actualSwapAmount": null
+    }
+  ],
+  "timestamp": 1790076666668,
+  "success": true
+}

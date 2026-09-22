@@ -1,0 +1,42 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": [
+    {
+      "ticker": "MSTR",
+      "companyName": "Strategy Inc",
+      "assets": [
+        {
+          "platformId": "ondo",
+          "binanceChainId": "56",
+          "tokenContractAddress": "0x7313ea16493b2f55054df0131a3a14b043ec8992",
+          "tokenSymbol": "MSTRon",
+          "assetType": 1
+        },
+        {
+          "platformId": "ondo",
+          "binanceChainId": "CT_501",
+          "tokenContractAddress": "FSz4ouiqXpHuGPcpacZfTzbMjScoj5FfzHkiyu2ondo",
+          "tokenSymbol": "MSTRon",
+          "assetType": 1
+        },
+        {
+          "platformId": "ondo",
+          "binanceChainId": "1",
+          "tokenContractAddress": "0xcabd955322dfbf94c084929ac5e9eca3feb5556f",
+          "tokenSymbol": "MSTRon",
+          "assetType": 1
+        },
+        {
+          "platformId": "bstock",
+          "binanceChainId": "56",
+          "tokenContractAddress": "0xe87afb3076aeb0f9b14e368de8145ae6a2826a14",
+          "tokenSymbol": "MSTRB",
+          "assetType": 1
+        }
+      ]
+    }
+  ],
+  "timestamp": 1790076526597,
+  "success": true
+}

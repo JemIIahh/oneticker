@@ -1,0 +1,12 @@
+{
+  "httpStatus": 200,
+  "code": "40001",
+  "message": "/api/v1/dex/aggregator/quote: 40001 userWalletAddress is required for RFQ (Ondo) quote",
+  "response": {
+    "code": 40001,
+    "msg": "userWalletAddress is required for RFQ (Ondo) quote",
+    "data": null,
+    "timestamp": 1790076565973,
+    "success": false
+  }
+}

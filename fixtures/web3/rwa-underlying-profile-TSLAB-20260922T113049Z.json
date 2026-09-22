@@ -1,0 +1,31 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "binanceChainId": "56",
+    "tokenContractAddress": "0x5b1910eaad6450e50f816082aa078c41f10c292f",
+    "platformId": "bstock",
+    "underlyingTicker": "TSLA",
+    "underlyingFullName": "Tesla (bStocks)",
+    "assetType": 1,
+    "tokenToShareRatio": "1.000000000000000000",
+    "protections": {
+      "collateralReport": {
+        "supported": true,
+        "description": null,
+        "url": null
+      }
+    },
+    "companyInfo": {
+      "ceo": "Elon R. Musk",
+      "website": "https://www.tesla.com",
+      "industry": "Consumer Cyclical",
+      "conceptsEn": [],
+      "conceptsCn": [],
+      "description": "Tesla is a vertically integrated battery electric vehicle automaker and developer of real world artificial intelligence software, which includes autonomous driving and humanoid robots. The company has multiple vehicles in its fleet, which include luxury and midsize sedans, crossover SUVs, a light truck, and a semi truck. Tesla also plans to begin selling a sports car and offer a robotaxi service. Global deliveries in 2024 were a little below 1.8 million vehicles. The company sells batteries for stationary storage for residential and commercial properties including utilities and solar panels and solar roofs for energy generation. Tesla also owns a fast-charging network and an auto insurance business.",
+      "descriptionZh": "特斯拉是一家垂直整合的电池电动汽车制造商和现实世界人工智能软件开发商，涵盖自动驾驶和类人机器人。该公司拥有多款车型，包括豪华和中型轿车、跨界SUV、一款轻型卡车和一款半挂卡车。特斯拉还计划开始销售一款跑车并提供机器人出租车服务。2024年全球交付量略低于180万辆。公司销售用于住宅和商业物业（包括公用事业）的固定储能电池，以及用于能源生成的太阳能电池板和太阳能屋顶。特斯拉还拥有一个快速充电网络和汽车保险业务。"
+    }
+  },
+  "timestamp": 1790076649654,
+  "success": true
+}

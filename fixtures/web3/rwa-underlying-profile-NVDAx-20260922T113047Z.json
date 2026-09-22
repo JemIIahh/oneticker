@@ -1,0 +1,25 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "binanceChainId": "56",
+    "tokenContractAddress": "0xc845b2894dbddd03858fd2d643b4ef725fe0849d",
+    "platformId": null,
+    "underlyingTicker": "NVDA",
+    "underlyingFullName": "NVIDIA xStock",
+    "assetType": 1,
+    "tokenToShareRatio": "1",
+    "protections": {},
+    "companyInfo": {
+      "ceo": "Jensen Huang",
+      "website": "https://www.nvidia.com",
+      "industry": "Technology",
+      "conceptsEn": [],
+      "conceptsCn": [],
+      "description": "Nvidia is a leading developer of graphics processing units. Traditionally, GPUs were used to enhance the experience on computing platforms, most notably in gaming applications on PCs. GPU use cases have since emerged as important semiconductors used in artificial intelligence to run large language models. Nvidia not only offers AI GPUs, but also a software platform, Cuda, used for AI model development and training. Nvidia is also expanding its data center networking solutions, helping to tie GPUs together to handle complex workloads.",
+      "descriptionZh": "英伟达是图形处理单元的领先开发商。传统上，GPU用于提升计算平台的体验，最显著的是在个人电脑的游戏应用中。GPU的使用案例随后发展成为人工智能中运行大型语言模型的重要半导体。英伟达不仅提供人工智能GPU，还提供用于人工智能模型开发和训练的软件平台Cuda。英伟达还在扩展其数据中心网络解决方案，帮助将GPU连接起来以处理复杂的工作负载。"
+    }
+  },
+  "timestamp": 1790076647859,
+  "success": true
+}

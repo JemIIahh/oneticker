@@ -1,0 +1,42 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": [
+    {
+      "ticker": "CRCL",
+      "companyName": "Circle Internet Group, Inc.",
+      "assets": [
+        {
+          "platformId": "ondo",
+          "binanceChainId": "56",
+          "tokenContractAddress": "0x992879cd8ce0c312d98648875b5a8d6d042cbf34",
+          "tokenSymbol": "CRCLon",
+          "assetType": 1
+        },
+        {
+          "platformId": "ondo",
+          "binanceChainId": "CT_501",
+          "tokenContractAddress": "6xHEyem9hmkGtVq6XGCiQUGpPsHBaoYuYdFNZa5ondo",
+          "tokenSymbol": "CRCLon",
+          "assetType": 1
+        },
+        {
+          "platformId": "ondo",
+          "binanceChainId": "1",
+          "tokenContractAddress": "0x3632dea96a953c11dac2f00b4a05a32cd1063fae",
+          "tokenSymbol": "CRCLon",
+          "assetType": 1
+        },
+        {
+          "platformId": "bstock",
+          "binanceChainId": "56",
+          "tokenContractAddress": "0x80f3d493ebce97e343c53d29a137942416b4ffc0",
+          "tokenSymbol": "CRCLB",
+          "assetType": 1
+        }
+      ]
+    }
+  ],
+  "timestamp": 1790076524721,
+  "success": true
+}

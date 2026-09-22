@@ -1,0 +1,67 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": [
+    {
+      "quoteId": "3758139c970a42e39d063dc8bdb58253",
+      "vendorName": "LiquidMesh",
+      "executionMode": "SWAP",
+      "binanceChainId": "56",
+      "fromTokenAmount": "100000000000000000000",
+      "toTokenAmount": "439894181578195264",
+      "tradeFee": "0.02069936",
+      "estimateGasFee": "450000",
+      "priceImpactPercent": "0.0001192056",
+      "router": "0x55d398326f99059ff775485246999027b3197955--0xa9ee28c80f960b889dfbd1902055218cba016f75",
+      "fromToken": {
+        "tokenContractAddress": "0x55d398326f99059fF775485246999027B3197955",
+        "tokenSymbol": "USDT",
+        "tokenUnitPrice": "0.9997399185105116",
+        "decimal": "18",
+        "isHoneyPot": false,
+        "taxRate": "0"
+      },
+      "toToken": {
+        "tokenContractAddress": "0xa9ee28c80f960b889dfbd1902055218cba016f75",
+        "tokenSymbol": "NVDAon",
+        "tokenUnitPrice": "227.173607037827760337",
+        "decimal": "18",
+        "isHoneyPot": false,
+        "taxRate": "0"
+      },
+      "dexRouterList": [
+        {
+          "dexProtocol": {
+            "dexName": "Rfq Halfmoon",
+            "percent": "100.00"
+          },
+          "fromToken": {
+            "tokenContractAddress": "0x55d398326f99059ff775485246999027b3197955",
+            "tokenSymbol": "USDT",
+            "tokenUnitPrice": "0.9997399185105116",
+            "decimal": "18",
+            "isHoneyPot": false,
+            "taxRate": "0"
+          },
+          "fromTokenIndex": "0",
+          "toToken": {
+            "tokenContractAddress": "0xa9ee28c80f960b889dfbd1902055218cba016f75",
+            "tokenSymbol": "NVDAon",
+            "tokenUnitPrice": "227.173607037827760337",
+            "decimal": "18",
+            "isHoneyPot": false,
+            "taxRate": "0"
+          },
+          "toTokenIndex": "1"
+        }
+      ],
+      "approveTarget": "0xB44446b0c8E56988c34f7Ff73Ae904982b5FdDA5",
+      "isBest": true,
+      "feeAmount": null,
+      "feeToken": null,
+      "actualSwapAmount": null
+    }
+  ],
+  "timestamp": 1790076646579,
+  "success": true
+}

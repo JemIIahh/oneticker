@@ -1,0 +1,35 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "binanceChainId": "56",
+    "tokenContractAddress": "0xfebded1b0986a8ee107f5ab1a1c5a813491deceb",
+    "platformId": null,
+    "assetType": 1,
+    "statusInfo": {
+      "openState": true,
+      "marketStatus": null,
+      "reasonCode": "TRADING",
+      "reasonMsg": null,
+      "nextOpenTime": null,
+      "nextCloseTime": null
+    },
+    "marketData": {
+      "referencePrice": "95.494815",
+      "high52W": "159.4700",
+      "low52W": "49.9000",
+      "volumeShares24H": "971326",
+      "avgDailyVolume1Y": "14483761",
+      "totalShares": "253875881",
+      "marketCap": "23988731996.00",
+      "turnoverRate": null,
+      "amplitude": null,
+      "dividendYield": "0.00000000",
+      "latestDividend": null,
+      "peRatioTTM": "53.1600",
+      "pbRatio": "6.8400"
+    }
+  },
+  "timestamp": 1790076571935,
+  "success": true
+}
