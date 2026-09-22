@@ -20,7 +20,7 @@ export default function Home() {
             whether now is a safe moment.
           </p>
           {clock && (
-            <p className="mt-6 text-ivory">
+            <p className="mt-6 text-ink">
               {clock.state === 'REGULAR' ? 'Wall Street is open right now.' : `Wall Street has been closed for ${duration(clock.referenceAgeSec)}.`}{' '}
               <span className="text-muted">Tokens trade through all 168 hours; the lit ones are the 32.5 with a real price.</span>
             </p>
@@ -29,7 +29,7 @@ export default function Home() {
         <div className="panel w-full px-4 py-4 md:w-[440px]">
           <span className="panel-tab">This week, hour by hour</span>
           <WeekRingPanel nowHour={weekHour(now) ?? 0} />
-          <p className="px-2 pb-1 text-xs text-muted">168 bars, one per hour. The tall amber ones are when Wall Street trades; the ivory one is now.</p>
+          <p className="px-2 pb-1 text-xs text-muted">168 bars, one per hour. The tall amber ones are when Wall Street trades; the dark one is now.</p>
         </div>
       </section>
 

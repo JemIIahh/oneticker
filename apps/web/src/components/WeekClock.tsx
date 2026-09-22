@@ -39,10 +39,10 @@ export function WeekClock({ clock, at }: { clock: MarketClock; at: Date }) {
             <circle r={R} fill="none" strokeWidth="12" className="stroke-rule" />
             {sessions}
             <g transform={`rotate(${angle})`}>
-              <line x1={R - 12} x2={R + 12} y1="0" y2="0" strokeWidth="3" className="stroke-ivory now-pulse" strokeLinecap="round" />
+              <line x1={R - 12} x2={R + 12} y1="0" y2="0" strokeWidth="3" className="stroke-ink now-pulse" strokeLinecap="round" />
             </g>
           </g>
-          <text textAnchor="middle" y="-1" className="fill-ivory text-[15px] font-semibold">
+          <text textAnchor="middle" y="-1" className="fill-ink text-[15px] font-semibold">
             {open ? 'Open' : 'Closed'}
           </text>
           <text textAnchor="middle" y="16" className="fill-muted text-[11px]">
@@ -50,7 +50,7 @@ export function WeekClock({ clock, at }: { clock: MarketClock; at: Date }) {
           </text>
         </svg>
         <p className="max-w-[12rem] text-sm text-muted">
-          <span className="block text-ivory">Amber is when Wall Street trades: 32.5 of 168 hours.</span>
+          <span className="block text-ink">Amber is when Wall Street trades: 32.5 of 168 hours.</span>
           The tick is now. Tokens keep trading through the dark.
         </p>
       </div>

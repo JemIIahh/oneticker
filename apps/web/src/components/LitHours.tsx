@@ -25,7 +25,7 @@ export function LitHours({ cell = 6, gap = 2, at, className = '' }: { cell?: num
     for (let hour = 0; hour < 24; hour++) {
       const isNow = now !== null && Math.floor(now) === day * 24 + hour;
       const fill = lit(day, hour) ? 'fill-lit' : dim(day, hour) ? 'fill-lit/35' : 'fill-rule';
-      cells.push(<rect key={`${day}-${hour}`} x={day * step} y={hour * step} width={cell} height={cell} className={isNow ? 'fill-ivory now-pulse' : fill} rx={cell > 8 ? 1 : 0} />);
+      cells.push(<rect key={`${day}-${hour}`} x={day * step} y={hour * step} width={cell} height={cell} className={isNow ? 'fill-ink now-pulse' : fill} rx={cell > 8 ? 1 : 0} />);
     }
   }
   return (
@@ -50,7 +50,7 @@ export function LitHoursBand({ at }: { at?: Date }) {
         y="0"
         width="4"
         height="4"
-        className={`band-cell ${isNow ? 'fill-ivory now-pulse' : lit(day, hour) ? 'fill-lit' : dim(day, hour) ? 'fill-lit/35' : 'fill-rule'}`}
+        className={`band-cell ${isNow ? 'fill-ink now-pulse' : lit(day, hour) ? 'fill-lit' : dim(day, hour) ? 'fill-lit/35' : 'fill-rule'}`}
         style={{ animationDelay: `${i * 6}ms` }}
       />,
     );

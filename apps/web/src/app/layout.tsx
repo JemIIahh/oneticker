@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Link href="/" className="text-lg font-semibold tracking-tight">
               OneTicker
             </Link>
-            <Link href="/tape" className="text-sm text-muted hover:text-ivory">
+            <Link href="/tape" className="text-sm text-muted hover:text-ink">
               The Tape
             </Link>
             <span className="ml-auto text-sm text-muted">Tokenized US stocks on BNB Chain</span>

@@ -17,11 +17,11 @@ const session = (i: number): 'regular' | 'edge' | 'closed' => {
 };
 
 const HEIGHT = { regular: 1.6, edge: 0.7, closed: 0.22 };
-const COLOR = { regular: 0xf5b84b, edge: 0x8a6a2e, closed: 0x24443c };
+const COLOR = { regular: 0xe09a2a, edge: 0xecc98a, closed: 0xd9d1c0 };
 
 /**
- * The week as a ring of 168 hour-bars: trading hours tall and lit, closed hours low and dark, the current hour
- * in ivory. Turns slowly so "now" faces the viewer. Falls back to the flat grid without WebGL or with reduced motion.
+ * The week as a ring of 168 hour-bars: trading hours tall and lit, closed hours low and pale, the current hour
+ * in ink. Turns slowly so "now" faces the viewer. Falls back to the flat grid without WebGL or with reduced motion.
  */
 export function WeekRing3D({ nowHour }: { nowHour: number }) {
   const mount = useRef<HTMLDivElement>(null);
@@ -47,7 +47,7 @@ export function WeekRing3D({ nowHour }: { nowHour: number }) {
     camera.position.set(0, 4.2, 8.4);
     camera.lookAt(0, 0.3, 0);
 
-    scene.add(new THREE.HemisphereLight(0xf1ebdd, 0x10231f, 0.9));
+    scene.add(new THREE.HemisphereLight(0xffffff, 0xf5f0e6, 1.0));
     const key = new THREE.DirectionalLight(0xffffff, 1.1);
     key.position.set(4, 8, 6);
     scene.add(key);
@@ -55,10 +55,10 @@ export function WeekRing3D({ nowHour }: { nowHour: number }) {
     const ring = new THREE.Group();
     const geometry = new THREE.BoxGeometry(0.08, 1, 0.16);
     const materials = {
-      regular: new THREE.MeshStandardMaterial({ color: COLOR.regular, emissive: COLOR.regular, emissiveIntensity: 0.35, roughness: 0.5 }),
-      edge: new THREE.MeshStandardMaterial({ color: COLOR.edge, emissive: COLOR.edge, emissiveIntensity: 0.15, roughness: 0.6 }),
-      closed: new THREE.MeshStandardMaterial({ color: COLOR.closed, roughness: 0.9 }),
-      now: new THREE.MeshStandardMaterial({ color: 0xf1ebdd, emissive: 0xf1ebdd, emissiveIntensity: 0.6, roughness: 0.4 }),
+      regular: new THREE.MeshStandardMaterial({ color: COLOR.regular, emissive: COLOR.regular, emissiveIntensity: 0.2, roughness: 0.55 }),
+      edge: new THREE.MeshStandardMaterial({ color: COLOR.edge, roughness: 0.7 }),
+      closed: new THREE.MeshStandardMaterial({ color: COLOR.closed, roughness: 0.95 }),
+      now: new THREE.MeshStandardMaterial({ color: 0x1b2028, emissive: 0x1b2028, emissiveIntensity: 0.3, roughness: 0.5 }),
     };
     const nowIndex = Math.floor(nowHour) % HOURS;
     let nowBar: THREE.Mesh | null = null;
@@ -73,7 +73,7 @@ export function WeekRing3D({ nowHour }: { nowHour: number }) {
       ring.add(bar);
       if (i === nowIndex) nowBar = bar;
     }
-    const base = new THREE.Mesh(new THREE.RingGeometry(RADIUS - 0.25, RADIUS + 0.25, 168), new THREE.MeshStandardMaterial({ color: 0x152a25, roughness: 1, side: THREE.DoubleSide }));
+    const base = new THREE.Mesh(new THREE.RingGeometry(RADIUS - 0.25, RADIUS + 0.25, 168), new THREE.MeshStandardMaterial({ color: 0xece5d6, roughness: 1, side: THREE.DoubleSide }));
     base.rotation.x = -Math.PI / 2;
     ring.add(base);
     scene.add(ring);
@@ -100,7 +100,7 @@ export function WeekRing3D({ nowHour }: { nowHour: number }) {
       const s = (t - start) / 1000;
       if (!reduced) {
         ring.rotation.y = facing + Math.sin(s * 0.25) * 0.35;
-        if (nowBar) (nowBar.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.45 + 0.35 * (0.5 + 0.5 * Math.sin(s * 2.2));
+        if (nowBar) nowBar.scale.y = Math.max(HEIGHT[session(nowIndex)], 1.0) * (1 + 0.08 * Math.sin(s * 2.2));
       }
       renderer.render(scene, camera);
       if (!reduced) frame = requestAnimationFrame(draw);
@@ -120,5 +120,5 @@ export function WeekRing3D({ nowHour }: { nowHour: number }) {
   }, [nowHour]);
 
   if (fallback) return <LitHours cell={14} gap={3} />;
-  return <div ref={mount} className="flex min-h-[280px] w-full items-center justify-center" aria-label="The week as a ring of hours; the tall amber bars are when Wall Street trades" role="img" />;
+  return <div ref={mount} className="flex min-h-[280px] w-full items-center justify-center" aria-label="The week as a ring of hours; the tall amber bars are when Wall Street trades, the dark one is now" role="img" />;
 }

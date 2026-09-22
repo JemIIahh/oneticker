@@ -26,7 +26,7 @@ export function RoutePanel({ ticker, venues }: { ticker: string; venues: VenueVi
               step={1}
               value={amount}
               onChange={(e) => setAmount(Math.max(1, Number(e.target.value) || 0))}
-              className="num w-32 bg-transparent py-2 pl-1 text-2xl text-ivory outline-none"
+              className="num w-32 bg-transparent py-2 pl-1 text-2xl text-ink outline-none"
               aria-label="Amount in US dollars"
             />
           </span>
@@ -43,7 +43,7 @@ export function RoutePanel({ ticker, venues }: { ticker: string; venues: VenueVi
               <span className="ml-2 text-sm text-muted">{v.label}</span>
             </span>
             <span className="num col-span-3 text-muted sm:col-span-1 sm:text-right">
-              <span className="text-ivory">{usd(v.execSep)}</span> per share, about {v.execSep ? (amount / v.execSep).toFixed(4) : '—'} shares
+              <span className="text-ink">{usd(v.execSep)}</span> per share, about {v.execSep ? (amount / v.execSep).toFixed(4) : '—'} shares
             </span>
             <Verdict value={v.gate!.verdict} className="justify-self-end" />
           </li>
@@ -55,7 +55,7 @@ export function RoutePanel({ ticker, venues }: { ticker: string; venues: VenueVi
         <ul className="mt-3 space-y-1 text-sm text-muted">
           {excluded.map((v) => (
             <li key={v.issuer}>
-              <span className="text-ivory">{v.symbol}</span> left out: {v.quote.ok ? '' : v.quote.reason.toLowerCase()}
+              <span className="text-ink">{v.symbol}</span> left out: {v.quote.ok ? '' : v.quote.reason.toLowerCase()}
             </li>
           ))}
         </ul>

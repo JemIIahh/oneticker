@@ -59,7 +59,7 @@ export function VenueTable({ venues, referenceSep }: { venues: VenueView[]; refe
             label={
               <>
                 Against reference
-                {referenceSep !== null && <span className="num block text-ivory">{usd(referenceSep)}</span>}
+                {referenceSep !== null && <span className="num block text-ink">{usd(referenceSep)}</span>}
               </>
             }
           >

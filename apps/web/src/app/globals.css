@@ -1,17 +1,17 @@
 @import 'tailwindcss';
 
 :root {
-  --canvas: #10231f;
-  --board: #152a25;
-  --board-2: #1a332d;
-  --rule: #24443c;
-  --rule-strong: #35594f;
-  --ivory: #f1ebdd;
-  --muted: #8fa69f;
-  --lit: #f5b84b;
-  --go: #7bdb9b;
-  --caution: #f5b84b;
-  --block: #f26d5b;
+  --canvas: #f5f0e6;
+  --board: #ffffff;
+  --board-2: #faf7f1;
+  --rule: #e4ddcf;
+  --rule-strong: #cfc6b4;
+  --ink: #1b2028;
+  --muted: #75716a;
+  --lit: #e09a2a;
+  --go: #238c50;
+  --caution: #b97612;
+  --block: #cf4034;
 }
 
 @theme inline {
@@ -20,7 +20,7 @@
   --color-board-2: var(--board-2);
   --color-rule: var(--rule);
   --color-rule-strong: var(--rule-strong);
-  --color-ivory: var(--ivory);
+  --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-lit: var(--lit);
   --color-go: var(--go);
@@ -30,23 +30,26 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
   background: var(--canvas);
-  color: var(--ivory);
+  color: var(--ink);
   font-family: var(--font-plex), system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
 }
 
-/* A framed panel: hairline rule plus an offset outer rule, like a printed board. */
+/* A framed panel: white board with a hairline rule and an offset outer rule, like a printed sheet. */
 .panel {
   position: relative;
   background: var(--board);
   border: 1px solid var(--rule-strong);
-  box-shadow: 0 0 0 4px var(--canvas), 0 0 0 5px var(--rule);
+  box-shadow:
+    0 0 0 4px var(--canvas),
+    0 0 0 5px var(--rule),
+    0 8px 24px -16px rgba(27, 32, 40, 0.25);
   border-radius: 3px;
 }
 

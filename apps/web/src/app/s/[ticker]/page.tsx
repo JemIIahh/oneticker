@@ -38,7 +38,7 @@ export default async function InstrumentPage({ params, searchParams }: { params:
         <div>
           <p className="text-sm text-muted">
             {others.map((i) => (
-              <Link key={i.ticker} href={`/s/${i.ticker}`} className="mr-4 hover:text-ivory">
+              <Link key={i.ticker} href={`/s/${i.ticker}`} className="mr-4 hover:text-ink">
                 {i.ticker}
               </Link>
             ))}
