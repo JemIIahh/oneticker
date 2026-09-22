@@ -29,7 +29,7 @@ describe('runOnce', () => {
           venue,
           oracle: venue.issuer === 'bstocks' ? ({ price: 226.9, updatedAt: new Date('2026-09-26T10:25:55.000Z') } as never) : null,
           multiplier: venue.issuer === 'bstocks' ? ({ multiplier: 1.0007 } as never) : null,
-          raw: { rwaPrice: null, underlyingMarket: null, quotes: { '100': { at: 'x', ok: true as const, envelope: { symbol: venue.symbol } } }, oracle: null, multiplier: null },
+          raw: { rwaPrice: null, marketPrice: null, underlyingMarket: null, quotes: { '100': { at: 'x', ok: true as const, envelope: { symbol: venue.symbol } } }, oracle: null, multiplier: null },
         })),
       );
     const lines: string[] = [];

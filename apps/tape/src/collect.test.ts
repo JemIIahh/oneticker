@@ -24,8 +24,9 @@ function fakeWeb3(fail: (endpoint: string, query: Query) => boolean = () => fals
       }
       return { data: null as T, envelope: { code: 0, data: null as T }, httpStatus: 200, latencyMs: 1 };
     },
-    post: async () => {
-      throw new Error('not used');
+    async post<T>(endpoint: string): Promise<Web3Response<T>> {
+      calls.push({ endpoint, query: {} });
+      return { data: null as T, envelope: { code: 0, data: null as T }, httpStatus: 200, latencyMs: 1 };
     },
   };
   return { web3, calls };
@@ -38,6 +39,7 @@ describe('createCollector', () => {
 
     expect(calls.map((c) => c.endpoint)).toEqual([
       '/api/v1/dex/market/rwa/price',
+      '/api/v1/dex/market/price',
       '/api/v1/dex/market/rwa/underlying-market',
       '/api/v1/dex/aggregator/quote',
       '/api/v1/dex/aggregator/quote',
@@ -47,8 +49,8 @@ describe('createCollector', () => {
       '/api/v1/dex/aggregator/quote',
     ]);
     expect(calls[0]!.query).toEqual({ binanceChainId: '56', tokenContractAddresses: '0x00000000000000000000000000000000000000b1' });
-    expect(calls[2]!.query).toMatchObject({ amount: '100000000000000000000', toTokenAddress: '0x00000000000000000000000000000000000000b1', userWalletAddress: '0xwallet' });
-    expect(calls[4]!.query.amount).toBe('10000000000000000000000');
+    expect(calls[3]!.query).toMatchObject({ amount: '100000000000000000000', toTokenAddress: '0x00000000000000000000000000000000000000b1', userWalletAddress: '0xwallet' });
+    expect(calls[5]!.query.amount).toBe('10000000000000000000000');
 
     const xstocks = results.find((r) => r.venue.issuer === 'xstocks')!;
     expect(xstocks.raw.rwaPrice).toBeNull();

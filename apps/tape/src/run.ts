@@ -1,6 +1,7 @@
 import type { Instrument } from '@oneticker/core';
 import type { Collect } from './collect';
 import type { TapeDb } from './db';
+import { parseVenue } from './parse';
 
 export interface RunDeps {
   db: TapeDb;
@@ -34,6 +35,7 @@ export async function runOnce({ db, instruments, collect, marketState, now = () 
     const state = marketState?.(started) ?? null;
     db.raw.transaction(() => {
       for (const { instrument, venue, oracle, multiplier, raw } of results) {
+        const parsed = parseVenue(venue, raw);
         db.insertSnapshot(runId, {
           ts,
           instrument: instrument.id,
@@ -41,17 +43,20 @@ export async function runOnce({ db, instruments, collect, marketState, now = () 
           marketState: state,
           referencePx: null,
           referenceTs: null,
-          onchainPx: null,
-          execPx100: null,
-          execPx1k: null,
-          execPx10k: null,
+          onchainPx: parsed.onchainPx,
+          execPx100: parsed.execPx['100'],
+          execPx1k: parsed.execPx['1000'],
+          execPx10k: parsed.execPx['10000'],
           oraclePx: oracle?.price ?? null,
           oracleUpdatedAt: oracle?.updatedAt.toISOString() ?? null,
           indexPx: null,
           indexFrozen: null,
-          shareRatio: multiplier?.multiplier ?? null,
+          shareRatio: multiplier?.multiplier ?? parsed.shareRatio ?? (venue.issuer === 'xstocks' ? 1 : null),
           raw,
         });
+        for (const [usd, code] of Object.entries(parsed.quoteErrors)) {
+          db.insertEvent({ ts, instrument: instrument.id, venue: venue.issuer, kind: 'QUOTE_EXCLUDED', detail: `${code} at $${usd}` });
+        }
       }
     })();
     snapshots = results.length;

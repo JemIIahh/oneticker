@@ -28,6 +28,7 @@ export interface VenueResult {
   multiplier: MultiplierReading | null;
   raw: {
     rwaPrice: Captured | null;
+    marketPrice: Captured | null;
     underlyingMarket: Captured | null;
     quotes: Record<string, Captured>;
     oracle: OracleReading | { error: string } | null;
@@ -65,11 +66,14 @@ export interface CollectorOptions {
  */
 export function createCollector({ web3, chain, quoteWallet, now = () => new Date() }: CollectorOptions): Collect {
   const get = (endpoint: string, query: Record<string, string | undefined>) => (web3 ? capture(() => web3.get(endpoint, query)) : Promise.resolve(noKeys()));
+  const post = (endpoint: string, body: unknown) => (web3 ? capture(() => web3.post(endpoint, body)) : Promise.resolve(noKeys()));
 
   return async (instruments) => {
     const venues = instruments.flatMap((instrument) => instrument.venues.map((venue) => ({ instrument, venue })));
     const rwaAddresses = venues.filter(({ venue }) => isRwaVenue(venue)).map(({ venue }) => venue.address);
     const rwaPrice = rwaAddresses.length > 0 ? await get('/api/v1/dex/market/rwa/price', { binanceChainId: BSC, tokenContractAddresses: rwaAddresses.join(',') }) : null;
+    // Batched last-trade price for every venue; the only on-chain price source for xStocks.
+    const marketPrice = await post('/api/v1/dex/market/price', venues.map(({ venue }) => ({ binanceChainId: BSC, tokenContractAddress: venue.address })));
 
     const results: VenueResult[] = [];
     for (const { instrument, venue } of venues) {
@@ -109,7 +113,7 @@ export function createCollector({ web3, chain, quoteWallet, now = () => new Date
         }
       }
 
-      results.push({ instrument, venue, oracle, multiplier, raw: { rwaPrice: rwa ? rwaPrice : null, underlyingMarket, quotes, oracle: rawOracle, multiplier: rawMultiplier } });
+      results.push({ instrument, venue, oracle, multiplier, raw: { rwaPrice: rwa ? rwaPrice : null, marketPrice, underlyingMarket, quotes, oracle: rawOracle, multiplier: rawMultiplier } });
     }
     return results;
   };
