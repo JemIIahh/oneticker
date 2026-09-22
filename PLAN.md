@@ -45,7 +45,7 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 ### T4 · Core: market state, SEP, oracle · A and B · Wed 23 to Fri 25
 - [x] Market calendar and state engine with unit tests at 10 or more boundary timestamps (Friday close, Sunday 20:00 ET, pre-market open, DST offset). `packages/core/src/market`, 17 boundary cases plus holiday and early close; wired into the Tape's `market_state`.
 - [ ] SEP normalization per venue. During market hours, NVDA SEP across all venues lands within a sane band of the reference.
-- [ ] APRO reader (B): feed addresses found, `answer` and `updatedAt` read; unverified item 6 answered.
+- [x] APRO reader (B): feed addresses found, `answer` and `updatedAt` read; unverified item 6 answered. (22 Sep: `packages/clients/src/chain/`, plus a BEP-677 multiplier reader; both recorded by the Tape every 5 minutes, keys or no keys. MSTRB has no APRO feed.)
 - [ ] Collateral index surface (B), if a public endpoint exists; unverified item 7 answered either way.
 
 ### T5 · Router and CLI · A · Fri 25 to Sun 27

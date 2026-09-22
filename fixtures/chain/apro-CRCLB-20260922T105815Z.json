@@ -1,0 +1,17 @@
+{
+  "at": "2026-09-22T10:58:15.673Z",
+  "feed": "0x48e6876A8CDa6cf8db2089128cF20a18e58089D2",
+  "description": "CRCLB/USD",
+  "decimals": 8,
+  "price": 93.53958975,
+  "roundId": "18446744073709554170",
+  "updatedAt": "2026-09-22T10:55:26.000Z",
+  "ageSec": 169,
+  "raw": {
+    "roundId": "18446744073709554170",
+    "answer": "9353958975",
+    "startedAt": "1790074526",
+    "updatedAt": "1790074526",
+    "answeredInRound": "18446744073709554170"
+  }
+}

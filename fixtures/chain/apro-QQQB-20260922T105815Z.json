@@ -1,0 +1,17 @@
+{
+  "at": "2026-09-22T10:58:15.673Z",
+  "feed": "0x2708567c468db65a72095716FCff023dcDfEA07A",
+  "description": "QQQB/USD",
+  "decimals": 8,
+  "price": 741.7460822,
+  "roundId": "18446744073709553429",
+  "updatedAt": "2026-09-22T10:50:33.000Z",
+  "ageSec": 462,
+  "raw": {
+    "roundId": "18446744073709553429",
+    "answer": "74174608220",
+    "startedAt": "1790074233",
+    "updatedAt": "1790074233",
+    "answeredInRound": "18446744073709553429"
+  }
+}

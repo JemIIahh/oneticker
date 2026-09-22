@@ -11,7 +11,8 @@
     "test": "pnpm -r test",
     "probe": "node --env-file-if-exists=.env --import tsx scripts/probe.ts",
     "reach": "node --import tsx scripts/reach.ts",
-    "registry": "node --env-file-if-exists=.env --import tsx scripts/registry.ts"
+    "registry": "node --env-file-if-exists=.env --import tsx scripts/registry.ts",
+    "chain-probe": "node --env-file-if-exists=.env --import tsx scripts/chain-probe.ts"
   },
   "devDependencies": {
     "@oneticker/clients": "workspace:*",

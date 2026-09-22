@@ -33,7 +33,7 @@ export async function runOnce({ db, instruments, collect, marketState, now = () 
     const results = await collect(instruments);
     const state = marketState?.(started) ?? null;
     db.raw.transaction(() => {
-      for (const { instrument, venue, raw } of results) {
+      for (const { instrument, venue, oracle, multiplier, raw } of results) {
         db.insertSnapshot(runId, {
           ts,
           instrument: instrument.id,
@@ -45,11 +45,11 @@ export async function runOnce({ db, instruments, collect, marketState, now = () 
           execPx100: null,
           execPx1k: null,
           execPx10k: null,
-          oraclePx: null,
-          oracleUpdatedAt: null,
+          oraclePx: oracle?.price ?? null,
+          oracleUpdatedAt: oracle?.updatedAt.toISOString() ?? null,
           indexPx: null,
           indexFrozen: null,
-          shareRatio: null,
+          shareRatio: multiplier?.multiplier ?? null,
           raw,
         });
       }

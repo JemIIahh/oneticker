@@ -1,0 +1,17 @@
+{
+  "at": "2026-09-22T10:58:15.673Z",
+  "feed": "0xe1bc21701Bc8FFa39DaecDb8f58263C1d5e1c0bc",
+  "description": "TSLAB/USD",
+  "decimals": 8,
+  "price": 377.6934303,
+  "roundId": "18446744073709553824",
+  "updatedAt": "2026-09-22T10:39:01.000Z",
+  "ageSec": 1154,
+  "raw": {
+    "roundId": "18446744073709553824",
+    "answer": "37769343030",
+    "startedAt": "1790073541",
+    "updatedAt": "1790073541",
+    "answeredInRound": "18446744073709553824"
+  }
+}

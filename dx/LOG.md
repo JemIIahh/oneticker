@@ -35,7 +35,7 @@ These came from desk research, not from our own use. **None of them go in the re
 - [ ] `contract-call --value` is in wei while `--amount` elsewhere is in token units.
 - [ ] CEX tokenized-stock API and Web3 RWA API are documented separately with no cross-links.
 - [ ] Error 40369: bStocks RFQ unavailable outside exchange hours, while the token keeps trading on PancakeSwap.
-- [ ] APRO tokenized-equity feeds: 1h heartbeat, 1% deviation.
+- [ ] APRO tokenized-equity feeds: 1h heartbeat, 1% deviation. (22 Sep: docs say so for 12 bStocks feeds; the Tape now records `updatedAt` every 5 min, so the real cadence will be measurable after weekend 1.)
 - [ ] Response envelope field names: our notes say `{ code, message, data, timestamp, success }`; the official JS connector parses `{ code, msg, data, timestamp }` and returns `data` without checking `code` (`common/src/utils.ts`, `httpRequestFunction`). **Error shape reproduced 21 Sep 15:35** (entry below): `msg`, numeric `code`, no `success`. Success shape still to check.
 - [ ] recvWindow header name: our notes say `X-OC-RECV-WINDOW`; the official JS connector sends headers literally named `recvWindow` and `nonce`.
 - [ ] RWA endpoints cover only `platformId` `ondo` and `bstock` (connector enum); xStocks absent.
@@ -129,6 +129,14 @@ These came from desk research, not from our own use. **None of them go in the re
 - Did: `baw market-order quote --binanceChainId 56 --fromTokenQty 10 --fromToken 0x55d3...7955 --toToken <NVDAB | NVDAon | NVDAx> --json` at 06:35 ET (pre-market). Fixtures: `fixtures/baw/market-order-quote-10usdt-*.json`
 - Expected: a quote for each issuer's NVDA token
 - Actual: NVDAB `"toCoinAmount": "0.044067618603820916"`, `"slippage": 0.01`, exit 0, 2 s. NVDAon `"toCoinAmount": "0.044011900158434707"`, `"slippage": 0.005`, exit 0, 3 s. NVDAx `{"success":false,"error":{"code":100,"name":"SERVICE_ERROR","message":"No liquidity available, please try again later."}}`, exit 1. The quote response has no route, vendor or price-impact fields.
+- Time lost: 0
+- Severity: annoyance
+- Suggestion:
+
+### 2026-09-22 10:58 UTC · claude (dev laptop) · oracle / BEP-677
+- Did: `pnpm chain-probe` against `https://bsc-dataseed.bnbchain.org`: `latestRoundData()`, `decimals()`, `description()` on the APRO feeds from https://docs.apro.com/en/data-push/price-feed-contract, and `uiMultiplier()`, `newUIMultiplier()`, `effectiveAt()` on each bStock token. Fixtures: `fixtures/chain/*-20260922T105815Z.json`
+- Expected: Chainlink-style feeds for all 5 bStocks; BEP-677 pending fields empty when nothing is scheduled
+- Actual: feeds answer the Chainlink AggregatorV3 interface (8 decimals, e.g. `NVDAB/USD` = `22692509000`). The APRO docs page lists 12 bStocks feeds and **no MSTRB feed**, and states no interface, decimals or code example. `roundId` is `18446744073709553719` (above 2^64), so it does not fit a 64-bit integer. With no change scheduled, tokens return `newUIMultiplier` equal to the current `uiMultiplier` and `effectiveAt` = `0`, rather than a zero or reverting call; readers must compare values instead of checking presence. `uiMultiplier` matches the `bapi` list's `multiplier` to 18 decimals.
 - Time lost: 0
 - Severity: annoyance
 - Suggestion:

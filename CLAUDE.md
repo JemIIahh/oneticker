@@ -67,6 +67,7 @@ pnpm build                     # all packages plus scripts/
 pnpm probe discover            # T1: platforms, token lists, search; saves fixtures/web3/
 pnpm probe prices              # T1: prices and quotes for every registry venue
 pnpm registry                  # rebuild instruments.json from fixtures/bapi, verified on-chain
+pnpm chain-probe               # read APRO feeds and BEP-677 multipliers from BSC; saves fixtures/chain/
 pnpm --filter tape once        # one logger run
 pnpm --filter tape start       # logger every 5 minutes (Railway start command)
 pnpm --filter tape check [day] # gap check for one UTC day; exit 1 on gaps
@@ -107,7 +108,8 @@ pnpm oneticker quote NVDA buy 500
 - All three issuers reinvest dividends (total return). Token price is not the price of one share. **Always compare in SEP** (SPEC 3.2).
 - US regular session 09:30 to 16:00 ET. Until 1 Nov 2026, ET is UTC-4: 13:30 to 20:00 UTC, 14:30 to 21:00 Lagos. No NYSE holidays before 23 Oct.
 - Binance's bStocks collateral index freezes at the last close while the US market is closed.
-- APRO tokenized-equity feeds on BSC: 1-hour heartbeat, 1% deviation threshold. bStocks feeds have been free to builders since 17 Sep 2026.
+- APRO tokenized-equity feeds on BSC: 1-hour heartbeat, 1% deviation threshold. bStocks feeds have been free to builders since 17 Sep 2026. Chainlink AggregatorV3 interface, 8 decimals, priced **per token** (not per share). Addresses in `packages/clients/src/chain/apro.ts`; no feed for MSTRB, none for Ondo or xStocks.
+- On-chain reads (`pnpm chain-probe`) work from the laptop without a VPN; only Binance hosts are blocked.
 
 ## Safety rules (non-negotiable)
 

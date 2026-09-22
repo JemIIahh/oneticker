@@ -1,0 +1,17 @@
+{
+  "at": "2026-09-22T10:58:15.673Z",
+  "feed": "0x310EFC9Fefe89B8085F89E91Ac782Bef6416499E",
+  "description": "NVDAB/USD",
+  "decimals": 8,
+  "price": 226.92509,
+  "roundId": "18446744073709553719",
+  "updatedAt": "2026-09-22T10:25:55.000Z",
+  "ageSec": 1940,
+  "raw": {
+    "roundId": "18446744073709553719",
+    "answer": "22692509000",
+    "startedAt": "1790072755",
+    "updatedAt": "1790072755",
+    "answeredInRound": "18446744073709553719"
+  }
+}

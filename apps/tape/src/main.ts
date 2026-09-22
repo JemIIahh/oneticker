@@ -5,7 +5,7 @@
 //                                    checks the previous UTC day for gaps once per day
 //   pnpm --filter tape check [day]   row-count check for one UTC day (default: yesterday); exit 1 on gaps
 
-import { createWeb3Client } from '@oneticker/clients';
+import { createBscClient, createWeb3Client } from '@oneticker/clients';
 import { instruments, marketClock } from '@oneticker/core';
 import { checkDay } from './check';
 import { createCollector, type Collect } from './collect';
@@ -17,20 +17,22 @@ import { msUntilNextSlot, previousUtcDay } from './schedule';
 const config = loadConfig();
 const db = openTape(config.dbPath);
 
-const collect: Collect =
+const web3 =
   config.apiKey && config.apiSecret
-    ? createCollector({
-        web3: createWeb3Client({
-          apiKey: config.apiKey,
-          apiSecret: config.apiSecret,
-          ...(config.baseUrl ? { baseUrl: config.baseUrl } : {}),
-          onCall: (call) => db.insertApiCall(call),
-        }),
-        ...(config.quoteWallet ? { quoteWallet: config.quoteWallet } : {}),
+    ? createWeb3Client({
+        apiKey: config.apiKey,
+        apiSecret: config.apiSecret,
+        ...(config.baseUrl ? { baseUrl: config.baseUrl } : {}),
+        onCall: (call) => db.insertApiCall(call),
       })
-    : async () => {
-        throw new Error('BINANCE_WEB3_API_KEY and BINANCE_WEB3_API_SECRET are not set');
-      };
+    : null;
+if (!web3) console.log('TAPE_WARN BINANCE_WEB3_API_KEY and BINANCE_WEB3_API_SECRET are not set; Web3 surfaces will be recorded as NO_API_KEYS');
+
+const collect: Collect = createCollector({
+  web3,
+  chain: createBscClient(config.bscRpcUrl),
+  ...(config.quoteWallet ? { quoteWallet: config.quoteWallet } : {}),
+});
 
 const tick = () => runOnce({ db, instruments, collect, marketState: (at) => marketClock(at).state });
 

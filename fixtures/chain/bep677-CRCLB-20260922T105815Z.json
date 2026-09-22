@@ -1,0 +1,11 @@
+{
+  "at": "2026-09-22T10:58:15.673Z",
+  "token": "0x80f3d493ebce97e343c53d29a137942416b4ffc0",
+  "multiplier": 1,
+  "raw": {
+    "uiMultiplier": "1000000000000000000",
+    "newUIMultiplier": "1000000000000000000",
+    "effectiveAt": "0"
+  },
+  "pending": null
+}
