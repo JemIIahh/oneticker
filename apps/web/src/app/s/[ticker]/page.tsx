@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { RoutePanel } from '@/components/RoutePanel';
 import { VenueTable } from '@/components/VenueTable';
 import { WeekClock } from '@/components/WeekClock';
-import { listInstruments, loadInstrument } from '@/lib/fixtures';
+import { getInstrument, listInstruments } from '@/lib/data';
 import { duration, etTime } from '@/lib/format';
 import { chip, label } from '@/lib/ui';
 
@@ -25,7 +25,7 @@ export default async function InstrumentPage({ params, searchParams }: { params:
   const { ticker } = await params;
   const { at } = await searchParams;
   const atDate = at && !Number.isNaN(Date.parse(at)) ? new Date(at) : undefined;
-  const view = loadInstrument(ticker, atDate);
+  const view = await getInstrument(ticker, atDate);
   if (!view) notFound();
 
   const now = atDate ?? new Date(view.asOf);
@@ -57,7 +57,7 @@ export default async function InstrumentPage({ params, searchParams }: { params:
               <>Closes {etTime(clock.nextClose)} ET.</>
             )}
           </p>
-          <p className={`mt-4 ${label}`}>Prices recorded {new Date(view.asOf).toUTCString().replace(' GMT', ' UTC')}</p>
+          <p className={`mt-4 ${label}`}>{view.source === 'live' ? 'Live from the Tape' : 'Saved fixtures'}, recorded {new Date(view.asOf).toUTCString().replace(' GMT', ' UTC')}</p>
         </div>
         <WeekClock clock={clock} at={now} />
       </div>

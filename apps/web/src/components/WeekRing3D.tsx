@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { LitHours } from './LitHours';
 
 const HOURS = 168;
-const RADIUS = 3.2;
+const RADIUS = 3.4;
 
 const session = (i: number): 'regular' | 'edge' | 'closed' => {
   const day = Math.floor(i / 24);
@@ -16,7 +16,7 @@ const session = (i: number): 'regular' | 'edge' | 'closed' => {
   return 'closed';
 };
 
-const HEIGHT = { regular: 1.6, edge: 0.7, closed: 0.22 };
+const HEIGHT = { regular: 1.5, edge: 0.6, closed: 0.18 };
 const COLOR = { regular: 0x0d0d0d, edge: 0x8a8a86, closed: 0xd2d2ce };
 
 /**
@@ -43,9 +43,9 @@ export function WeekRing3D({ nowHour }: { nowHour: number }) {
     el.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 50);
-    camera.position.set(0, 4.2, 8.4);
-    camera.lookAt(0, 0.3, 0);
+    const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
+    camera.position.set(0, 5.6, 8.2);
+    camera.lookAt(0, 0.45, 0);
 
     scene.add(new THREE.HemisphereLight(0xffffff, 0xe7e7e4, 1.1));
     const key = new THREE.DirectionalLight(0xffffff, 1.1);
@@ -53,7 +53,7 @@ export function WeekRing3D({ nowHour }: { nowHour: number }) {
     scene.add(key);
 
     const ring = new THREE.Group();
-    const geometry = new THREE.BoxGeometry(0.08, 1, 0.16);
+    const geometry = new THREE.BoxGeometry(0.11, 1, 0.24);
     const materials = {
       regular: new THREE.MeshStandardMaterial({ color: COLOR.regular, roughness: 0.6 }),
       edge: new THREE.MeshStandardMaterial({ color: COLOR.edge, roughness: 0.7 }),
@@ -83,11 +83,11 @@ export function WeekRing3D({ nowHour }: { nowHour: number }) {
     ring.rotation.y = facing;
 
     const resize = () => {
-      const size = Math.min(el.clientWidth, 420);
-      renderer.setSize(size, size * 0.8, false);
+      const size = Math.min(el.clientWidth, 460);
+      renderer.setSize(size, size * 0.72, false);
       renderer.domElement.style.width = `${size}px`;
-      renderer.domElement.style.height = `${size * 0.8}px`;
-      camera.aspect = 1.25;
+      renderer.domElement.style.height = `${size * 0.72}px`;
+      camera.aspect = 1 / 0.72;
       camera.updateProjectionMatrix();
     };
     resize();
@@ -99,7 +99,7 @@ export function WeekRing3D({ nowHour }: { nowHour: number }) {
     const draw = (t: number) => {
       const s = (t - start) / 1000;
       if (!reduced) {
-        ring.rotation.y = facing + Math.sin(s * 0.25) * 0.35;
+        ring.rotation.y = facing + Math.sin(s * 0.18) * 0.25;
         if (nowBar) nowBar.scale.y = Math.max(HEIGHT[session(nowIndex)], 1.0) * (1 + 0.08 * Math.sin(s * 2.2));
       }
       renderer.render(scene, camera);
@@ -120,5 +120,5 @@ export function WeekRing3D({ nowHour }: { nowHour: number }) {
   }, [nowHour]);
 
   if (fallback) return <LitHours cell={14} gap={3} />;
-  return <div ref={mount} className="flex min-h-[280px] w-full items-center justify-center" aria-label="The week as a ring of hours; the tall bars are when Wall Street trades, the red one is now" role="img" />;
+  return <div ref={mount} className="flex min-h-[300px] w-full items-center justify-center" aria-label="The week as a ring of hours; the tall bars are when Wall Street trades, the red one is now" role="img" />;
 }

@@ -7,6 +7,7 @@
 
 import { createBscClient, createWeb3Client } from '@oneticker/clients';
 import { instruments, marketClock } from '@oneticker/core';
+import { startApi } from './api';
 import { checkDay } from './check';
 import { createCollector, type Collect } from './collect';
 import { loadConfig } from './config';
@@ -44,6 +45,7 @@ function logCheck(day: string): boolean {
 
 async function start(): Promise<void> {
   console.log(`TAPE_START ${JSON.stringify({ dbPath: config.dbPath, intervalSec: config.intervalSec, instruments: instruments.length })}`);
+  startApi(db, config.port);
   let checkedDay = previousUtcDay(new Date());
   await tick();
   for (;;) {

@@ -98,6 +98,7 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 
 ### T13 · Terminal on live data · C · Mon 28 to Sat 3
 - [ ] Instrument page and route panel wired to the live core through an API route.
+  - 22 Sep: the Tape serves a read-only HTTP API (`/api/latest`, `/api/history`, `/health`) at `https://tape-production-c409.up.railway.app`; the web app reads it when `TAPE_API_URL` is set, refreshes every minute, and falls back to fixtures. Still to do: the route panel's live quotes at the requested size (needs the router, T5), and the reference price (Finnhub).
 - [ ] Week clock and 72-hour surfaces chart with closed-market shading.
 - [ ] Deployed on Vercel; works at phone width.
 

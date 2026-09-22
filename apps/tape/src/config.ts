@@ -11,6 +11,8 @@ export interface TapeConfig {
   baseUrl: string | undefined;
   quoteWallet: string | undefined;
   bscRpcUrl: string | undefined;
+  /** HTTP API port; Railway sets PORT. */
+  port: number;
 }
 
 /** Reads the environment. Relative TAPE_DB_PATH resolves against the repo root. */
@@ -26,5 +28,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): TapeConfig {
     baseUrl: env.BINANCE_WEB3_BASE_URL || undefined,
     quoteWallet: env.TAPE_QUOTE_WALLET || undefined,
     bscRpcUrl: env.BSC_RPC_URL || undefined,
+    port: Number(env.PORT ?? 8787) || 8787,
   };
 }

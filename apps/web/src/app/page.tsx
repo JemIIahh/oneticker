@@ -2,13 +2,13 @@ import Link from 'next/link';
 import { weekHour } from '@/components/LitHours';
 import { Verdict } from '@/components/Verdict';
 import { WeekRingPanel } from '@/components/WeekRingPanel';
-import { listInstruments, loadInstrument } from '@/lib/fixtures';
+import { getAllInstruments, listInstruments } from '@/lib/data';
 import { duration, usd } from '@/lib/format';
 import { card, label, row } from '@/lib/ui';
 
-export default function Home() {
+export default async function Home() {
   const now = new Date();
-  const rows = listInstruments().map((i) => loadInstrument(i.ticker, now)!);
+  const rows = await getAllInstruments();
   const clock = rows[0]?.clock;
 
   return (
@@ -63,7 +63,7 @@ export default function Home() {
             );
           })}
         </ol>
-        <p className="mt-4 font-mono text-[11px] text-graphite">Prices recorded {new Date(rows[0]?.asOf ?? now).toUTCString().replace(' GMT', ' UTC')}. Live prices arrive with the Tape.</p>
+        <p className="mt-4 font-mono text-[11px] text-graphite">{rows[0]?.source === 'live' ? 'Live from the Tape, refreshed every minute' : 'Saved fixtures'}; recorded {new Date(rows[0]?.asOf ?? now).toUTCString().replace(' GMT', ' UTC')}.</p>
       </section>
     </div>
   );

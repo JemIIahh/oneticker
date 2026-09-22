@@ -1,4 +1,4 @@
-import type { VenueView } from '@/lib/fixtures';
+import type { VenueView } from '@/lib/view';
 import { bps, duration, usd } from '@/lib/format';
 import { card, label } from '@/lib/ui';
 import { Verdict } from './Verdict';

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { VenueView } from '@/lib/fixtures';
+import type { VenueView } from '@/lib/view';
 import { usd } from '@/lib/format';
 import { button, buttonQuiet, card, label, row } from '@/lib/ui';
 import { Verdict } from './Verdict';

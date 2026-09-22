@@ -87,6 +87,29 @@ export interface EventRow {
   detail: string;
 }
 
+/** A snapshots row as stored, without raw_json. */
+export interface StoredSnapshot {
+  id: number;
+  run_id: number;
+  ts: string;
+  instrument: string;
+  venue: string;
+  market_state: string | null;
+  reference_px: number | null;
+  reference_ts: string | null;
+  onchain_px: number | null;
+  exec_px_100: number | null;
+  exec_px_1k: number | null;
+  exec_px_10k: number | null;
+  oracle_px: number | null;
+  oracle_updated_at: string | null;
+  index_px: number | null;
+  index_frozen: number | null;
+  share_ratio: number | null;
+}
+
+export type HistoryRow = Pick<StoredSnapshot, 'ts' | 'venue' | 'market_state' | 'onchain_px' | 'exec_px_100' | 'exec_px_1k' | 'exec_px_10k' | 'oracle_px' | 'oracle_updated_at' | 'share_ratio'>;
+
 export interface RunRow {
   id: number;
   started_at: string;
@@ -119,6 +142,14 @@ export function openTape(path: string) {
   const insertEvent = db.prepare('INSERT INTO events (ts, instrument, venue, kind, detail) VALUES (?, ?, ?, ?, ?)');
   const runsBetween = db.prepare('SELECT * FROM runs WHERE started_at >= ? AND started_at < ? ORDER BY started_at');
   const snapshotCountBetween = db.prepare('SELECT COUNT(*) AS n FROM snapshots WHERE ts >= ? AND ts < ?');
+  const latestSnapshots = db.prepare(`
+    SELECT s.* FROM snapshots s
+    WHERE s.run_id = (SELECT MAX(run_id) FROM snapshots)
+    ORDER BY s.instrument, s.venue`);
+  const historySince = db.prepare(`
+    SELECT ts, venue, market_state, onchain_px, exec_px_100, exec_px_1k, exec_px_10k, oracle_px, oracle_updated_at, share_ratio
+    FROM snapshots WHERE instrument = ? AND ts >= ? ORDER BY ts`);
+  const latestEvents = db.prepare(`SELECT instrument, venue, kind, detail FROM events WHERE ts = (SELECT MAX(ts) FROM snapshots)`);
 
   return {
     raw: db,
@@ -156,6 +187,19 @@ export function openTape(path: string) {
 
     snapshotCountBetween(from: string, to: string): number {
       return (snapshotCountBetween.get(from, to) as { n: number }).n;
+    },
+
+    /** Every venue's row from the newest run, without raw_json. */
+    latestSnapshots(): StoredSnapshot[] {
+      return (latestSnapshots.all() as (StoredSnapshot & { raw_json: string })[]).map(({ raw_json: _raw, ...row }) => row);
+    },
+
+    historySince(instrument: string, fromTs: string): HistoryRow[] {
+      return historySince.all(instrument, fromTs) as HistoryRow[];
+    },
+
+    latestEvents(): EventRow[] {
+      return latestEvents.all() as EventRow[];
     },
   };
 }
