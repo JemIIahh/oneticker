@@ -74,7 +74,9 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 ### T8 · MCP server · A · Tue 29 to Wed 30
 - [x] `apps/mcp` exposes `resolve_instrument`, `get_market_state`, `get_price_surfaces`, `quote_route`, `check_gate` over stdio and HTTP.
   - 22 Sep: all five tools, read-only. `quote_route` fetches live (shared with the CLI via `gatherRouteInputs` in `packages/clients`); `get_price_surfaces` reads the Tape's `/api/latest`. The `routeId` is a hash of the exact gate input, and `check_gate` replays the gate on that input (`inputHashMatches`), so verdicts can be checked, not just trusted. HTTP is stateless Streamable HTTP at `/mcp`. Smoke-tested over stdio (SDK client, launched from `/`) and HTTP (curl); one live NVDAon quote came back via LiquidMesh.
-- [ ] Works from Claude Code (`claude mcp add ...`) and Claude desktop. Install line in the README. (Install line added; not yet run from Claude Code or Claude desktop.)
+- [ ] Works from Claude Code (`claude mcp add ...`) and Claude desktop. Install line in the README.
+  - [x] Claude Code, 22 Sep 22:35 UTC: asked "what's the best way to buy $500 of nvidia right now?"; it called oneticker twice, resolved without asking which token, and returned NVDAB $228.33/share CAUTION, NVDAon $229.17 CAUTION, NVDAx excluded (40374), routeId `rt_08c63ecf7f69a848d11c5a5532e58cc2`.
+  - [ ] Claude desktop.
 
 ### T9 · Execution adapters · B · Mon 28 to Wed 30
 - [ ] Adapter interface, plus AgenticWalletAdapter or DirectSignerAdapter per the T2 decision.
@@ -90,8 +92,9 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 - [ ] A paid quote succeeds after an x402 payment on testnet. The endpoint stays up 72 hours without intervention.
 
 ### T11 · Wallet Skill · B · Thu 1
-- [ ] `skills/oneticker/SKILL.md` per SPEC section 7.
+- [x] `skills/oneticker/SKILL.md` per SPEC section 7. (22 Sep: buy and sell flows, verdict table, reason glossary, and a `baw` quote cross-check against OneTicker's per-share price before any swap. `quote_route` routes now carry `address` and `sharesPerToken` for this.)
 - [ ] Tested in Claude Code alongside `binance-agentic-wallet`: bare-ticker resolution, gate respected, BLOCK leads to an intent offer. Transcript saved to `docs/skill-demo.md`.
+  - 22 Sep, two headless runs in an isolated folder (`docs/skill-demo.md`): bare-ticker resolution and CAUTION handling pass. BLOCK not yet seen live ($50,000 of TSLA showed no price impact), and intents (T12) don't exist yet, so the BLOCK path is still open.
 
 ### T12 · Wait-for-GO intents · B · Fri 2 to Sat 3 · *Should; first to cut*
 - [ ] `create_intent` tool and an evaluator in the agent runtime that re-checks every 5 minutes and executes on GO, or expires.

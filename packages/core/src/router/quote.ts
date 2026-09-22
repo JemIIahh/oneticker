@@ -29,8 +29,12 @@ export interface RouteOk {
   status: 'ok';
   issuer: Issuer;
   symbol: string;
+  /** BSC contract address, from the registry: the `--toToken` / `--fromToken` for a swap. */
+  address: string;
   /** Share-equivalent price at the requested amount. */
   sep: number;
+  /** Shares per raw token used for `sep`, so a caller can convert its own token quote (e.g. from `baw`) to per share. */
+  sharesPerToken: number;
   onchainSep: number | null;
   onchainAgeSec: number | null;
   /** vs the instrument's referenceSep; same raw formula on both sides, not side-adjusted (the gate's PREMIUM_HIGH rule is). */
@@ -109,7 +113,7 @@ export function quoteRoute(input: QuoteRouteInput): QuoteRouteResult {
       halted: v.halted,
     });
 
-    routes.push({ status: 'ok', issuer: v.issuer, symbol: v.symbol, sep, onchainSep, onchainAgeSec: age(now, v.onchainAt), premiumBps, vendor: v.quoteVendor, gate });
+    routes.push({ status: 'ok', issuer: v.issuer, symbol: v.symbol, address: v.address, sep, sharesPerToken: v.shareRatio, onchainSep, onchainAgeSec: age(now, v.onchainAt), premiumBps, vendor: v.quoteVendor, gate });
   }
 
   routes.sort((a, b) => (input.side === 'buy' ? a.sep - b.sep : b.sep - a.sep));

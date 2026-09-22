@@ -38,7 +38,7 @@ From 24 Sep 2026, OneTicker logs every price surface for five tokenized stocks a
 claude mcp add oneticker -- node /absolute/path/to/oneticker/apps/mcp/bin/oneticker-mcp.mjs
 
 # Wallet Skill
-npx skills add <our-github>/oneticker/skills/oneticker
+npx skills add JemIIahh/oneticker/skills/oneticker        # needs the MCP server above and binance-agentic-wallet
 
 # Run locally
 pnpm i && pnpm -r build
