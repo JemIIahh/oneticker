@@ -72,8 +72,9 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 - [ ] One short note in `docs/` on what weekend 1 looked like in the Tape, used to sanity-check thresholds.
 
 ### T8 · MCP server · A · Tue 29 to Wed 30
-- [ ] `apps/mcp` exposes `resolve_instrument`, `get_market_state`, `get_price_surfaces`, `quote_route`, `check_gate` over stdio and HTTP.
-- [ ] Works from Claude Code (`claude mcp add ...`) and Claude desktop. Install line in the README.
+- [x] `apps/mcp` exposes `resolve_instrument`, `get_market_state`, `get_price_surfaces`, `quote_route`, `check_gate` over stdio and HTTP.
+  - 22 Sep: all five tools, read-only. `quote_route` fetches live (shared with the CLI via `gatherRouteInputs` in `packages/clients`); `get_price_surfaces` reads the Tape's `/api/latest`. The `routeId` is a hash of the exact gate input, and `check_gate` replays the gate on that input (`inputHashMatches`), so verdicts can be checked, not just trusted. HTTP is stateless Streamable HTTP at `/mcp`. Smoke-tested over stdio (SDK client, launched from `/`) and HTTP (curl); one live NVDAon quote came back via LiquidMesh.
+- [ ] Works from Claude Code (`claude mcp add ...`) and Claude desktop. Install line in the README. (Install line added; not yet run from Claude Code or Claude desktop.)
 
 ### T9 · Execution adapters · B · Mon 28 to Wed 30
 - [ ] Adapter interface, plus AgenticWalletAdapter or DirectSignerAdapter per the T2 decision.

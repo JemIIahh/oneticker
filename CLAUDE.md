@@ -73,7 +73,7 @@ pnpm --filter tape start       # logger every 5 minutes (Railway start command)
 pnpm --filter tape check [day] # gap check for one UTC day; exit 1 on gaps
 pnpm --filter web dev          # web terminal; reads TAPE_API_URL (https://tape-production-c409.up.railway.app) or falls back to fixtures
 pnpm reach                     # can this host reach the Web3 API? (unsigned, no keys)
-pnpm --filter mcp dev
+pnpm --filter mcp dev          # MCP over Streamable HTTP on :3333/mcp (PORT to change); stdio: pnpm --filter mcp stdio
 pnpm --filter web dev
 pnpm oneticker quote NVDA buy 500
 ```

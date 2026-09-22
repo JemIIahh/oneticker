@@ -11,6 +11,7 @@ export const EXCLUSION_REASONS: Record<string, string> = {
   NO_API_KEYS: 'Quote service is not configured',
   NO_PRICE: 'No price to size a sell quote from yet',
   NO_QUOTE: 'Quote service returned nothing',
+  NO_SHARE_RATIO: 'Shares-per-token ratio unavailable, so this price cannot be compared per share',
   NETWORK_ERROR: 'Quote service could not be reached',
   TIMEOUT: 'Quote service timed out',
 };
