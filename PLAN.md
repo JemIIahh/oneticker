@@ -36,9 +36,9 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 - [ ] Dedicated hot wallet created and funded (about $100 USDT/USDC plus BNB for gas). (Agent wallet created 22 Sep, `baw wallet address`; not funded yet.)
 
 ### T3 · Tape v0 · A · Tue 22 to Thu 24
-- [ ] `apps/tape` runs every 5 minutes on the hosted machine: for each venue, reference, on-chain and executable quotes at $100 / $1,000 / $10,000, plus market state. Writes `snapshots` and `api_calls`.
-- [ ] Oracle and index surfaces may land on Friday if they slow this down. Everything else may not.
-- [ ] **Live by Thu 24 Sep, 20:00 UTC**, so there is a full market day of data before the Friday close.
+- [x] `apps/tape` runs every 5 minutes on the hosted machine: for each venue, reference, on-chain and executable quotes at $100 / $1,000 / $10,000, plus market state. Writes `snapshots` and `api_calls`. (Raw JSON per venue since 22 Sep 12:11 UTC; column parsing is the remaining step. Reference = Finnhub, pending a key.)
+- [x] Oracle and index surfaces may land on Friday if they slow this down. Everything else may not. (Oracle landed 22 Sep; index waits on item 7.)
+- [x] **Live by Thu 24 Sep, 20:00 UTC**, so there is a full market day of data before the Friday close. (Live with keys from 22 Sep 12:11 UTC, run 168.)
 - [x] A failed run leaves a log line, and a daily row count check flags gaps. (`RUN_FAILED` and `CHECK_GAPS` log lines; `pnpm --filter tape check [day]`.)
 - Progress 21 Sep 22:39 UTC: skeleton live on Railway (`pnpm --filter tape start`, DB at `/data/tape.sqlite`). It stores raw responses per venue now; price columns get parsed once T1 fixtures confirm the fields. Blocked on API keys and the T1 registry.
 
