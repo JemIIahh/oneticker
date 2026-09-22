@@ -28,10 +28,11 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 - [x] closing-bell-agent README read; differences noted in `SPEC.md` section 12.
 
 ### T2 · Agentic Wallet smoke test · B · Tue 22
-- [ ] Install `baw`, sign in from Nigeria, run `wallet status`, `balance`, and a quote for one tokenized stock.
-- [ ] Unverified items 4 and 5 answered. Every command and its exact output in `dx/LOG.md`.
-- [ ] Decision recorded in this file: AgenticWalletAdapter viable, yes or no. If no, B switches to DirectSignerAdapter in T9.
-- [ ] Dedicated hot wallet created and funded (about $100 USDT/USDC plus BNB for gas).
+- [x] Install `baw`, sign in from Nigeria, run `wallet status`, `balance`, and a quote for one tokenized stock. (22 Sep: signed in over VPN on the 5th QR; quotes for NVDAB and NVDAon, NVDAx no liquidity.)
+- [ ] Unverified items 4 and 5 answered. Every command and its exact output in `dx/LOG.md`. (4: yes, VPN required. 5: quotes yes; swap execution waits for funding.)
+- [x] Decision recorded in this file: AgenticWalletAdapter viable, yes or no. If no, B switches to DirectSignerAdapter in T9.
+  - **Provisional YES (22 Sep).** Sign-in works over VPN, and `baw market-order quote` handles bStocks and Ondo directly. Confirm with the first funded swap in T9. Constraints: the session ends after 48 h idle and 7 days at most, so someone must re-scan before the 5 Oct demo; `tradeAllTokens` is `false`; `dailyLimit` is 50,000 and should be lowered in the app.
+- [ ] Dedicated hot wallet created and funded (about $100 USDT/USDC plus BNB for gas). (Agent wallet created 22 Sep, `baw wallet address`; not funded yet.)
 
 ### T3 · Tape v0 · A · Tue 22 to Thu 24
 - [ ] `apps/tape` runs every 5 minutes on the hosted machine: for each venue, reference, on-chain and executable quotes at $100 / $1,000 / $10,000, plus market state. Writes `snapshots` and `api_calls`.

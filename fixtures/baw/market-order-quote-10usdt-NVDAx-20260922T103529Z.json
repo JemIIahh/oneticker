@@ -1,0 +1,8 @@
+{
+  "success": false,
+  "error": {
+    "code": 100,
+    "name": "SERVICE_ERROR",
+    "message": "No liquidity available, please try again later."
+  }
+}

@@ -93,13 +93,13 @@ Base `https://web3.binance.com/build`. WebSocket `wss://web3-stream.binance.com/
 | # | Question | Resolved in | Status |
 |---|---|---|---|
 | 1 | What `referencePrice` is: real quote or derived from on-chain price | T1 | open. Source (21 Sep): closing-bell-agent README says Binance documents it as "a per-share value derived from the onchain token price". Needs our own fixture and the docs page. |
-| 2 | bStocks price per raw unit or UI unit; share ratio per venue | T1 | open. Lead (21 Sep): closing-bell-agent's demo fixture shows `tokenToShareRatio` on `rwa/tokens` items, plus `underlyingTicker`, `decimals`, `statusInfo.openState / marketStatus / nextOpenTime`. Its fixtures look hand-made; confirm with ours. |
-| 3 | All 5 candidate instruments listed on BSC by all three issuers | T1 | open |
-| 4 | `baw auth signin` works from Nigeria | T2 | open |
-| 5 | `baw market-order swap` handles bStocks and Ondo directly | T2 / T9 | open |
+| 2 | bStocks price per raw unit or UI unit; share ratio per venue | T1 | open. Lead (22 Sep): the `bapi` list carries a `multiplier` per token (NVDAB `1.000778223752807865`, NVDAon `1.0017152487959898`, every xStocks token on BSC `1`). Dividing the 22 Sep 06:35 ET `baw` quotes by it gives NVDAB about $226.74 and NVDAon about $226.82 per share, within 0.04%, which suggests quotes are per token and the multiplier is shares per token. Confirm against BEP-677 `uiMultiplier` on-chain. Earlier lead (21 Sep): closing-bell-agent's demo fixture shows `tokenToShareRatio` on `rwa/tokens` items, plus `underlyingTicker`, `decimals`, `statusInfo.openState / marketStatus / nextOpenTime`. Its fixtures look hand-made; confirm with ours. |
+| 3 | All 5 candidate instruments listed on BSC by all three issuers | T1 | **Answered 22 Sep: yes.** NVDA, TSLA, QQQ, CRCL, META, MSFT and MSTR all exist on chain 56 as `B`, `on` and `x` tokens (`fixtures/bapi/rwa-stock-list-type{1,2,3}-20260922T103414Z.json`); NVDA addresses confirmed on-chain via `symbol()`. Still to check: each venue actually quotes (NVDAx: no liquidity at 06:35 ET). |
+| 4 | `baw auth signin` works from Nigeria | T2 | **Answered 22 Sep: yes, with a VPN.** On MTN Nigeria `www.binance.com` does not resolve, so sign-in cannot start; over a VPN it succeeded on the 5th QR (codes last 5 min). #266/#274 error not seen. dx/LOG.md 22 Sep entries. |
+| 5 | `baw market-order swap` handles bStocks and Ondo directly | T2 / T9 | **Partly answered 22 Sep:** `baw market-order quote` returns quotes for NVDAB and NVDAon directly (`fixtures/baw/`), so no hand-built RFQ was needed for a quote. Swap execution untested until the wallet is funded (T9). |
 | 6 | APRO feed addresses and interface on BSC | T4 | open |
 | 7 | Public endpoint for the bStocks collateral index | T4 | open |
-| 8 | xStocks symbol suffix on BSC | T1 | open |
+| 8 | xStocks symbol suffix on BSC | T1 | **Answered 22 Sep: `x`** (NVDAx, on-chain `symbol()` = `NVDAx`, address `0xc845...849d`). |
 | 9 | Hackathon "elevated rate limits" in numbers | T0 | open |
 | 10 | Current Venus and Lista parameters for bStocks | could-have | open |
 | 11 | Agent Studio runtime can be self-hosted outside AWS / Azure | T10 | open |

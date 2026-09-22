@@ -24,9 +24,9 @@ These came from desk research, not from our own use. **None of them go in the re
 - [x] Web3 API docs render client-side and return an empty page to non-browser fetchers. **Reproduced 21 Sep 22:16** (entry above): the cause is an AWS WAF challenge (`HTTP 202`, empty body, `x-amzn-waf-action: challenge`), not only client-side rendering.
 - [ ] The only official Binance MCP server is CEX-only; nothing covers Web3 / RWA.
 - [ ] `binance-tokenized-securities-info` skill covers Ondo only (no bStocks, no xStocks), and its `volume24h` is US stock volume, not on-chain volume.
-- [ ] The Agentic Wallet skill resolves bStocks through an undocumented `www.binance.com/bapi/...` endpoint.
+- [x] The Agentic Wallet skill resolves bStocks through an undocumented `www.binance.com/bapi/...` endpoint. **Reproduced 22 Sep 10:34** (entry below, fixtures in `fixtures/bapi/`).
 - [ ] No canonical resolver for the same ticker across issuers; the skill tells the agent to ask the user.
-- [ ] `baw auth signin` fails with `SERVICE_ERROR: {body.location=must not be blank}` (issues #266, #274).
+- [x] `baw auth signin` fails with `SERVICE_ERROR: {body.location=must not be blank}` (issues #266, #274). **Not reproduced 22 Sep**: sign-in succeeded from Nigeria over a VPN; without a VPN it cannot reach `www.binance.com` (entries below).
 - [ ] The skill still routes bStock trades through `references/campaign.md` for a competition that ended 1 Sep 2026.
 - [ ] Node version: 18+ in the Agentic Wallet quickstart vs 22+ in the skills hub README. (21 Sep: npm `engines` for `@binance/agentic-wallet` 1.10.0 is `>=18.0.0`; the two docs pages still to compare in a browser.)
 - [ ] Agentic Wallet supported chains differ between the dev-docs page and the skills listing.
@@ -104,8 +104,33 @@ These came from desk research, not from our own use. **None of them go in the re
 - Expected: QR code, scan in the Binance Wallet app, signed in
 - Actual: both runs printed `Pairing code`, `Opening login page in browser...`, `QR Code ID`, `Expires at` and `ℹ Please scan and confirm in the app...`. The QR lifetime is 5 minutes: run 1 `Expires at: 2026-09-22 10:18:11` (created 10:13:09 WAT), run 2 `Expires at: 2026-09-22 10:30:19` (created 10:25:17 WAT). `Expires at` is local time (WAT, UTC+1) with no timezone shown. Same situation, two different outcomes: run 1 `⚠ [10001003] QR code expired` with **exit code 0**; run 2 `[10002004] QR code does not exist or expired, please try a new code or restart the log in process. [351701]` with exit code 1. What happened in the phone app: to be added.
 - Run 3 (claude, 10:13:36 UTC), the flow from the official skill's `references/authentication.md`: `baw auth signin --json` returned at once with `{"success":true,"data":{"qrCodeId":"bfd9fdaf-...","expireAt":"1790072318760","urlForWeb":"https://app.binance.com/uni-qr/Xp7YFQpG","pairingCode":"648172"}}`, then `baw auth verify --qrCodeId ... --json` blocked until 10:18:39 UTC and returned `{"success":false,"error":{"code":10002004,"name":"AUTH_REJECTED","message":"QR code does not exist or expired, please try a new code or restart the log in process. [351701]"}}`. The doc's example `urlForWeb` is `https://web3.binance.com/en/agent-login?expireAt=...&url=xxx`; the real one is on `app.binance.com/uni-qr/`.
-- Time lost: 20
+- Run 4 (10:23:34 UTC): expired the same way. Run 5 (10:30:46 UTC): user scanned with the scan icon at the top right of the Binance app's Wallet tab; `auth verify` returned `{"success":true,"data":{"status":"SUCCESS"}}` at 10:32:47 UTC; `baw wallet status --json` then `CONNECTED`. From the first attempt (08:50) to connected: about 1 h 40 min, including the MTN block. The `body.location must not be blank` error (#266, #274) did not occur.
+- Time lost: 60
 - Severity: slowed us
+- Suggestion:
+
+### 2026-09-22 10:33 UTC · claude (dev laptop, VPN on) · Agentic Wallet
+- Did: `baw wallet status --json`, `baw wallet address --json`, `baw wallet balance --json`, `baw wallet settings --json`. (A first attempt through a zsh loop failed with `error: unknown command 'wallet status'`: my quoting, not baw.)
+- Expected: connected, empty balance, limits we can set for a $25-per-trade bot
+- Actual: `CONNECTED`; one EVM address shared across chains `1`, `137`, `42161`, `4663` ("Robinhood"), `56`, `8453`, plus a Solana address; `balance` `data: []`. Settings include `"dailyLimit": 50000`, `"tradeAllTokens": false`, `"maxSigninDuration": "48h"`, `"inactiveSignoutDuration": "48h"`, `"sessionExpireTime": "2026-09-24T11:33:20+01:00"`, `"signInMaxTime": "2026-09-29T11:32:43+01:00"`. The session ends after 48 h of inactivity and 7 days at most: an unattended agent needs a human QR scan at least weekly. Timestamps here carry an offset (`+01:00`); `auth signin` printed `Expires at` without one.
+- Time lost: 0
+- Severity: annoyance
+- Suggestion:
+
+### 2026-09-22 10:34 UTC · claude (dev laptop, VPN on) · Agentic Wallet skill / undocumented API
+- Did: read `references/campaign.md` in `binance/binance-skills-hub/skills/binance-web3/binance-agentic-wallet`; `curl https://www.binance.com/bapi/defi/v1/public/wallet-direct/buw/wallet/market/token/rwa/stock/detail/list/ai?type={1,2,3}`. Fixtures: `fixtures/bapi/rwa-stock-list-type{1,2,3}-20260922T103414Z.json`
+- Expected: tokenized-stock addresses from a documented endpoint
+- Actual: the skill says "Address source = `type=3` API (authoritative, contains all bStock contract addresses)" and points to this `bapi` URL, which is not in the Web3 API docs. No auth needed. HTTP 200 in 2.0 to 2.8 s. Envelope `{"code":"000000","message":null,"messageDetail":null,"data":[...]}`, which differs from the Web3 API envelope (`code` 40101 numeric, `msg`). Items: `chainId`, `contractAddress`, `symbol`, `ticker`, `type`, `assetType`, `multiplier`, `lastUpdateTime`, `d`. Counts: `type=3` bStocks 77 on chain 56; `type=1` Ondo 458 on 56, 457 on 1, 451 on `CT_501`; `type=2` xStocks 128 on 56, 139 on `CT_501`. xStocks appear here but not in the documented RWA endpoints (`platformId` `ondo | bstock` only).
+- Time lost: 0
+- Severity: slowed us
+- Suggestion:
+
+### 2026-09-22 10:35 UTC · claude (dev laptop, VPN on) · Agentic Wallet
+- Did: `baw market-order quote --binanceChainId 56 --fromTokenQty 10 --fromToken 0x55d3...7955 --toToken <NVDAB | NVDAon | NVDAx> --json` at 06:35 ET (pre-market). Fixtures: `fixtures/baw/market-order-quote-10usdt-*.json`
+- Expected: a quote for each issuer's NVDA token
+- Actual: NVDAB `"toCoinAmount": "0.044067618603820916"`, `"slippage": 0.01`, exit 0, 2 s. NVDAon `"toCoinAmount": "0.044011900158434707"`, `"slippage": 0.005`, exit 0, 3 s. NVDAx `{"success":false,"error":{"code":100,"name":"SERVICE_ERROR","message":"No liquidity available, please try again later."}}`, exit 1. The quote response has no route, vendor or price-impact fields.
+- Time lost: 0
+- Severity: annoyance
 - Suggestion:
 - Severity: blocker
 - Suggestion:

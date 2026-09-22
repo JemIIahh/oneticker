@@ -91,9 +91,17 @@ pnpm oneticker quote NVDA buy 500
 - **`web3.binance.com` and `www.binance.com` time out from the Lagos dev network** (dx/LOG.md, 21 Sep 13:50). `api.binance.com` and BSC RPC work. Railway `sfo` reaches the API in about 360 ms (`pnpm reach`, 21 Sep 15:35). Over the team VPN the laptop reaches it too, at about 2.9 s (21 Sep 22:16): fine for probing and development, but latency numbers for the DX report come from the Railway Tape only. The docs return an empty page to scripts (AWS WAF challenge); read them in a browser.
 - The docs are client-side rendered. If a fetch returns an empty page, open it in a browser.
 
+## Agentic Wallet (`baw`) gotchas
+
+- Needs `www.binance.com`, so a VPN from Nigeria. Sign-in: `baw auth signin --json` returns `urlForWeb` and `pairingCode` at once; then run `baw auth verify --qrCodeId <id> --json` in the background (blocks up to 5 min) while the user scans with the scan icon, top right of the Binance app's Wallet tab. QR codes last 5 minutes. Check with `baw wallet status --json`, not the app.
+- The session ends after 48 h idle and 7 days at most (`baw wallet settings --json`). Re-scan before anything unattended (T12) or the 5 Oct recording.
+- `baw` output uses its own envelope: `{"success": true, "data": ...}` or `{"success": false, "error": {"code", "name", "message"}}`. Exit codes are not reliable (an expired QR once exited 0).
+- Quotes: `baw market-order quote --binanceChainId 56 --fromTokenQty <n> --fromToken <addr> --toToken <addr> --json`. Read-only. Works for bStocks and Ondo directly.
+
 ## Tokenized stock facts
 
-- Symbol suffixes: bStocks `B` (NVDAB), Ondo `on` (NVDAon), xStocks `x` (verify in T1).
+- Symbol suffixes: bStocks `B` (NVDAB), Ondo `on` (NVDAon), xStocks `x` (NVDAx, confirmed on-chain 22 Sep).
+- **Address source:** the undocumented, unauthenticated `https://www.binance.com/bapi/defi/v1/public/wallet-direct/buw/wallet/market/token/rwa/stock/detail/list/ai?type=N` (`1` Ondo, `2` xStocks, `3` bStocks) lists every token with `contractAddress`, `multiplier` and `d` (decimals). It is what the official Agentic Wallet skill uses. Its envelope is `{"code":"000000","message",...}`, not the Web3 API's. Fixtures in `fixtures/bapi/`. All 7 candidate tickers exist on BSC for all three issuers.
 - bStocks are BEP-20 plus **BEP-677**: `balanceOf` never changes on a dividend or split; `uiMultiplier` does. Never cache balances across a multiplier change. Treat a `uiAmount` of 0 on a non-zero raw balance as the overflow case, not as an empty balance.
 - All three issuers reinvest dividends (total return). Token price is not the price of one share. **Always compare in SEP** (SPEC 3.2).
 - US regular session 09:30 to 16:00 ET. Until 1 Nov 2026, ET is UTC-4: 13:30 to 20:00 UTC, 14:30 to 21:00 Lagos. No NYSE holidays before 23 Oct.

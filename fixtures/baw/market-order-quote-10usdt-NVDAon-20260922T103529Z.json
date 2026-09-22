@@ -1,0 +1,10 @@
+{
+  "success": true,
+  "data": {
+    "fromCoinSymbol": "USDT",
+    "fromCoinAmount": "10",
+    "toCoinSymbol": "NVDAon",
+    "toCoinAmount": "0.044011900158434707",
+    "slippage": 0.005
+  }
+}
