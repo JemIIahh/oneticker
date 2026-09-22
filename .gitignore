@@ -19,3 +19,4 @@ keystore*/
 data/
 *.sqlite
 *.sqlite-journal
+.vercel/
