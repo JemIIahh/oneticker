@@ -1,111 +1,102 @@
 @import 'tailwindcss';
 
+/* Design tokens: light, monochrome, Swiss-editorial. Same system as Stow. */
+@theme {
+  --font-sans: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+
+  --color-paper: #e7e7e4;
+  --color-ink: #0d0d0d;
+  --color-graphite: #6a6a67;
+  --color-mist: #b9b9b4;
+  --color-block: #b8362a;
+}
+
 :root {
-  --canvas: #f5f0e6;
-  --board: #ffffff;
-  --board-2: #faf7f1;
-  --rule: #e4ddcf;
-  --rule-strong: #cfc6b4;
-  --ink: #1b2028;
-  --muted: #75716a;
-  --lit: #e09a2a;
-  --go: #238c50;
-  --caution: #b97612;
-  --block: #cf4034;
-}
-
-@theme inline {
-  --color-canvas: var(--canvas);
-  --color-board: var(--board);
-  --color-board-2: var(--board-2);
-  --color-rule: var(--rule);
-  --color-rule-strong: var(--rule-strong);
-  --color-ink: var(--ink);
-  --color-muted: var(--muted);
-  --color-lit: var(--lit);
-  --color-go: var(--go);
-  --color-caution: var(--caution);
-  --color-block: var(--block);
-  --font-sans: var(--font-plex), system-ui, sans-serif;
-}
-
-html {
   color-scheme: light;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--canvas);
-  color: var(--ink);
-  font-family: var(--font-plex), system-ui, sans-serif;
+  margin: 0;
+  min-height: 100dvh;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
   font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* A framed panel: white board with a hairline rule and an offset outer rule, like a printed sheet. */
-.panel {
-  position: relative;
-  background: var(--board);
-  border: 1px solid var(--rule-strong);
-  box-shadow:
-    0 0 0 4px var(--canvas),
-    0 0 0 5px var(--rule),
-    0 8px 24px -16px rgba(27, 32, 40, 0.25);
-  border-radius: 3px;
+/* Atmosphere: soft silver gradient plus fine grain. */
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  background: radial-gradient(135% 125% at 50% -12%, #f5f5f3 0%, #e6e6e3 46%, #cfcfcb 100%);
 }
-
-.panel-tab {
+.atmosphere::after {
+  content: '';
   position: absolute;
-  top: -11px;
-  left: 20px;
-  padding: 1px 8px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--muted);
-  background: var(--canvas);
-  border: 1px solid var(--rule);
-  border-radius: 2px;
+  inset: 0;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-.num {
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
-}
-
-/* The one page-load moment: the header band lights up Monday to Sunday. */
-@keyframes band-in {
+/* Motion: one rise on load, one blink for live things. */
+@keyframes rise {
   from {
     opacity: 0;
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
+    transform: none;
   }
 }
-.band-cell {
-  animation: band-in 320ms ease-out both;
-}
-
-/* The current hour breathes so it can always be found. */
-@keyframes now-pulse {
+@keyframes blink {
   0%,
   100% {
     opacity: 1;
   }
   50% {
-    opacity: 0.45;
+    opacity: 0.25;
   }
 }
-.now-pulse {
-  animation: now-pulse 2.4s ease-in-out infinite;
+.rise {
+  opacity: 0;
+  animation: rise 0.75s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+.live-dot {
+  animation: blink 1.9s steps(1, end) infinite;
+}
+
+.rule {
+  height: 1px;
+  background: rgba(13, 13, 13, 0.14);
+}
+
+::selection {
+  background: var(--color-ink);
+  color: var(--color-paper);
 }
 
 :focus-visible {
-  outline: 2px solid var(--lit);
+  outline: 2px solid var(--color-ink);
   outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * {
-    transition: none !important;
-    animation: none !important;
+  .rise {
+    opacity: 1;
+    animation: none;
+  }
+  .live-dot {
+    animation: none;
   }
 }

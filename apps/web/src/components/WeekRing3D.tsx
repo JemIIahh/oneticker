@@ -17,7 +17,7 @@ const session = (i: number): 'regular' | 'edge' | 'closed' => {
 };
 
 const HEIGHT = { regular: 1.6, edge: 0.7, closed: 0.22 };
-const COLOR = { regular: 0xe09a2a, edge: 0xecc98a, closed: 0xd9d1c0 };
+const COLOR = { regular: 0x0d0d0d, edge: 0x8a8a86, closed: 0xd2d2ce };
 
 /**
  * The week as a ring of 168 hour-bars: trading hours tall and lit, closed hours low and pale, the current hour
@@ -47,7 +47,7 @@ export function WeekRing3D({ nowHour }: { nowHour: number }) {
     camera.position.set(0, 4.2, 8.4);
     camera.lookAt(0, 0.3, 0);
 
-    scene.add(new THREE.HemisphereLight(0xffffff, 0xf5f0e6, 1.0));
+    scene.add(new THREE.HemisphereLight(0xffffff, 0xe7e7e4, 1.1));
     const key = new THREE.DirectionalLight(0xffffff, 1.1);
     key.position.set(4, 8, 6);
     scene.add(key);
@@ -55,10 +55,10 @@ export function WeekRing3D({ nowHour }: { nowHour: number }) {
     const ring = new THREE.Group();
     const geometry = new THREE.BoxGeometry(0.08, 1, 0.16);
     const materials = {
-      regular: new THREE.MeshStandardMaterial({ color: COLOR.regular, emissive: COLOR.regular, emissiveIntensity: 0.2, roughness: 0.55 }),
+      regular: new THREE.MeshStandardMaterial({ color: COLOR.regular, roughness: 0.6 }),
       edge: new THREE.MeshStandardMaterial({ color: COLOR.edge, roughness: 0.7 }),
       closed: new THREE.MeshStandardMaterial({ color: COLOR.closed, roughness: 0.95 }),
-      now: new THREE.MeshStandardMaterial({ color: 0x1b2028, emissive: 0x1b2028, emissiveIntensity: 0.3, roughness: 0.5 }),
+      now: new THREE.MeshStandardMaterial({ color: 0xb8362a, emissive: 0xb8362a, emissiveIntensity: 0.25, roughness: 0.5 }),
     };
     const nowIndex = Math.floor(nowHour) % HOURS;
     let nowBar: THREE.Mesh | null = null;
@@ -73,7 +73,7 @@ export function WeekRing3D({ nowHour }: { nowHour: number }) {
       ring.add(bar);
       if (i === nowIndex) nowBar = bar;
     }
-    const base = new THREE.Mesh(new THREE.RingGeometry(RADIUS - 0.25, RADIUS + 0.25, 168), new THREE.MeshStandardMaterial({ color: 0xece5d6, roughness: 1, side: THREE.DoubleSide }));
+    const base = new THREE.Mesh(new THREE.RingGeometry(RADIUS - 0.25, RADIUS + 0.25, 168), new THREE.MeshStandardMaterial({ color: 0xdcdcd8, roughness: 1, side: THREE.DoubleSide }));
     base.rotation.x = -Math.PI / 2;
     ring.add(base);
     scene.add(ring);
@@ -120,5 +120,5 @@ export function WeekRing3D({ nowHour }: { nowHour: number }) {
   }, [nowHour]);
 
   if (fallback) return <LitHours cell={14} gap={3} />;
-  return <div ref={mount} className="flex min-h-[280px] w-full items-center justify-center" aria-label="The week as a ring of hours; the tall amber bars are when Wall Street trades, the dark one is now" role="img" />;
+  return <div ref={mount} className="flex min-h-[280px] w-full items-center justify-center" aria-label="The week as a ring of hours; the tall bars are when Wall Street trades, the red one is now" role="img" />;
 }

@@ -11,9 +11,11 @@ export function weekHour(at?: Date): number | null {
 const lit = (day: number, hour: number) => day < 5 && hour >= 9.5 && hour < 16;
 const dim = (day: number, hour: number) => day < 5 && ((hour >= 4 && hour < 9.5) || (hour >= 16 && hour < 20));
 
+const fillFor = (day: number, hour: number, isNow: boolean) => (isNow ? 'fill-ink live-dot' : lit(day, hour) ? 'fill-ink' : dim(day, hour) ? 'fill-ink/35' : 'fill-ink/10');
+
 /**
- * The week as a 7 x 24 matrix of hours with the trading hours lit. The site's signature mark: the same
- * fact as the clock ring, drawn as a grid. `cell` sets the size; `at` adds the "now" cell.
+ * The week as a 7 x 24 matrix of hours with the trading hours in ink. The site's mark: the same fact as the
+ * clock ring, drawn as a grid. `cell` sets the size; `at` adds the "now" cell, which blinks.
  */
 export function LitHours({ cell = 6, gap = 2, at, className = '' }: { cell?: number; gap?: number; at?: Date; className?: string }) {
   const now = weekHour(at);
@@ -24,8 +26,7 @@ export function LitHours({ cell = 6, gap = 2, at, className = '' }: { cell?: num
   for (let day = 0; day < 7; day++) {
     for (let hour = 0; hour < 24; hour++) {
       const isNow = now !== null && Math.floor(now) === day * 24 + hour;
-      const fill = lit(day, hour) ? 'fill-lit' : dim(day, hour) ? 'fill-lit/35' : 'fill-rule';
-      cells.push(<rect key={`${day}-${hour}`} x={day * step} y={hour * step} width={cell} height={cell} className={isNow ? 'fill-ink now-pulse' : fill} rx={cell > 8 ? 1 : 0} />);
+      cells.push(<rect key={`${day}-${hour}`} x={day * step} y={hour * step} width={cell} height={cell} className={fillFor(day, hour, isNow)} rx={cell > 8 ? 2 : 0} />);
     }
   }
   return (
@@ -35,28 +36,16 @@ export function LitHours({ cell = 6, gap = 2, at, className = '' }: { cell?: num
   );
 }
 
-/** One row of the week, 168 cells wide, for a thin band. */
+/** One row of the week, 168 cells wide, for the thin band under the header. */
 export function LitHoursBand({ at }: { at?: Date }) {
   const now = weekHour(at);
   const cells = [];
   for (let i = 0; i < 168; i++) {
-    const day = Math.floor(i / 24);
-    const hour = i % 24;
     const isNow = now !== null && Math.floor(now) === i;
-    cells.push(
-      <rect
-        key={i}
-        x={i * 6}
-        y="0"
-        width="4"
-        height="4"
-        className={`band-cell ${isNow ? 'fill-ink now-pulse' : lit(day, hour) ? 'fill-lit' : dim(day, hour) ? 'fill-lit/35' : 'fill-rule'}`}
-        style={{ animationDelay: `${i * 6}ms` }}
-      />,
-    );
+    cells.push(<rect key={i} x={i * 6} y="0" width="4" height="3" rx="0.5" className={fillFor(Math.floor(i / 24), i % 24, isNow)} />);
   }
   return (
-    <svg viewBox="0 0 1006 4" preserveAspectRatio="none" className="h-1 w-full" aria-hidden="true">
+    <svg viewBox="0 0 1006 3" preserveAspectRatio="none" className="h-[3px] w-full" aria-hidden="true">
       {cells}
     </svg>
   );
