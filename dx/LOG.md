@@ -96,6 +96,7 @@ These came from desk research, not from our own use. **None of them go in the re
 - Did: `baw auth signin`
 - Expected: a QR code link
 - Actual: stderr `[50001002] Connect Timeout Error (attempted address: www.binance.com:443, timeout: 10000ms)`; stdout empty. Sign-in goes through `www.binance.com`, which times out from this network without a VPN (21 Sep 13:50 entry). At 08:54 local DNS was also failing (`curl: (6) Could not resolve host: www.binance.com`; `dig`: `no servers could be reached`; google.com reachable), so this run does not isolate a Binance-side cause. Retry pending with a working VPN.
-- Time lost: 5
+- 09:10 UTC, same result on a second `baw auth signin`. Exit network (ipinfo.io) was `AS29465 MTN NIGERIA Communication limited`, no VPN active. On that network `www.binance.com` and `api.binance.com` fail with `curl: (6) Could not resolve host` and `web3.binance.com` with `Resolving timed out after 12003 milliseconds`, while `www.google.com` returns 200. On MTN Nigeria, Binance hostnames do not resolve.
+- Time lost: 20
 - Severity: blocker
 - Suggestion:
