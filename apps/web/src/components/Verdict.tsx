@@ -1,9 +1,9 @@
 import type { Verdict as VerdictValue } from '@oneticker/core';
 
 const STYLE: Record<VerdictValue, string> = {
-  GO: 'text-go border-go/50',
-  CAUTION: 'text-caution border-caution/50',
-  BLOCK: 'text-block border-block/50',
+  GO: 'text-go bg-go/10 border-go/40',
+  CAUTION: 'text-caution bg-caution/10 border-caution/40',
+  BLOCK: 'text-block bg-block/10 border-block/40',
 };
 
 export function Verdict({ value, className = '' }: { value: VerdictValue; className?: string }) {

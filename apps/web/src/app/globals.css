@@ -1,24 +1,28 @@
 @import 'tailwindcss';
 
 :root {
-  --ink: #0f1520;
-  --panel: #161d2a;
-  --line: #26303f;
-  --paper: #e8e4d8;
-  --muted: #8c93a3;
-  --open: #f2b441;
-  --go: #5bd28c;
-  --caution: #f2b441;
-  --block: #f0605a;
+  --canvas: #10231f;
+  --board: #152a25;
+  --board-2: #1a332d;
+  --rule: #24443c;
+  --rule-strong: #35594f;
+  --ivory: #f1ebdd;
+  --muted: #8fa69f;
+  --lit: #f5b84b;
+  --go: #7bdb9b;
+  --caution: #f5b84b;
+  --block: #f26d5b;
 }
 
 @theme inline {
-  --color-ink: var(--ink);
-  --color-panel: var(--panel);
-  --color-line: var(--line);
-  --color-paper: var(--paper);
+  --color-canvas: var(--canvas);
+  --color-board: var(--board);
+  --color-board-2: var(--board-2);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-ivory: var(--ivory);
   --color-muted: var(--muted);
-  --color-open: var(--open);
+  --color-lit: var(--lit);
   --color-go: var(--go);
   --color-caution: var(--caution);
   --color-block: var(--block);
@@ -30,15 +34,42 @@ html {
 }
 
 body {
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--canvas);
+  color: var(--ivory);
   font-family: var(--font-plex), system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
 }
 
+/* A framed panel: hairline rule plus an offset outer rule, like a printed board. */
+.panel {
+  position: relative;
+  background: var(--board);
+  border: 1px solid var(--rule-strong);
+  box-shadow: 0 0 0 4px var(--canvas), 0 0 0 5px var(--rule);
+  border-radius: 3px;
+}
+
+.panel-tab {
+  position: absolute;
+  top: -11px;
+  left: 20px;
+  padding: 1px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  background: var(--canvas);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
 :focus-visible {
-  outline: 2px solid var(--open);
+  outline: 2px solid var(--lit);
   outline-offset: 2px;
 }
 

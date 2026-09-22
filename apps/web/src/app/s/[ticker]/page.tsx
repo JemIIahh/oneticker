@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { RoutePanel } from '@/components/RoutePanel';
 import { VenueTable } from '@/components/VenueTable';
@@ -29,35 +30,44 @@ export default async function InstrumentPage({ params, searchParams }: { params:
   const now = atDate ?? new Date(view.asOf);
   const { clock } = view;
   const closed = clock.state !== 'REGULAR';
+  const others = listInstruments().filter((i) => i.ticker !== view.ticker);
 
   return (
-    <div className="py-8">
-      <div className="flex flex-wrap items-start justify-between gap-6">
+    <div className="py-10">
+      <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-start">
         <div>
-          <h1 className="text-4xl font-semibold">
-            {view.ticker} <span className="ml-2 text-xl font-normal text-muted">{view.name}</span>
+          <p className="text-sm text-muted">
+            {others.map((i) => (
+              <Link key={i.ticker} href={`/s/${i.ticker}`} className="mr-4 hover:text-ivory">
+                {i.ticker}
+              </Link>
+            ))}
+          </p>
+          <h1 className="mt-3 text-6xl font-semibold tracking-tight">
+            {view.ticker}
+            <span className="ml-4 text-2xl font-normal text-muted">{view.name}</span>
           </h1>
-          <p className="mt-3 max-w-md text-lg">
+          <p className="mt-5 max-w-lg text-xl leading-snug">
             {STATE_SENTENCE[clock.state]}{' '}
             {closed ? (
               <>
-                Last real price is <span className="font-semibold">{duration(clock.referenceAgeSec)}</span> old. Reopens {etTime(clock.nextOpen)} ET.
+                The last real price is <span className="font-semibold">{duration(clock.referenceAgeSec)}</span> old. Wall Street reopens {etTime(clock.nextOpen)} ET.
               </>
             ) : (
               <>Closes {etTime(clock.nextClose)} ET.</>
             )}
           </p>
-          <p className="mt-2 text-sm text-muted">Prices recorded {new Date(view.asOf).toUTCString().replace(' GMT', ' UTC')}.</p>
+          <p className="mt-3 text-sm text-muted">Prices recorded {new Date(view.asOf).toUTCString().replace(' GMT', ' UTC')}.</p>
         </div>
         <WeekClock clock={clock} at={now} />
       </div>
 
-      <div className="mt-8">
+      <div className="mt-12">
         <VenueTable venues={view.venues} referenceSep={view.referenceSep} />
-        <p className="mt-2 px-3 text-xs text-muted">Reference: {view.referenceNote}.</p>
+        <p className="mt-3 px-1 text-xs text-muted">Reference: {view.referenceNote}.</p>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-12">
         <RoutePanel ticker={view.ticker} venues={view.venues} />
       </div>
     </div>

@@ -2,43 +2,51 @@ import type { VenueView } from '@/lib/fixtures';
 import { bps, duration, usd } from '@/lib/format';
 import { Verdict } from './Verdict';
 
-function Cell({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return <td className={`border-t border-line px-3 py-2.5 align-top ${className}`}>{children}</td>;
+function Row({ label, children }: { label: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <tr className="border-t border-rule">
+      <th scope="row" className="w-44 px-6 py-3.5 text-left align-top text-sm font-normal text-muted">
+        {label}
+      </th>
+      {children}
+    </tr>
+  );
 }
+
+const Cell = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => <td className={`num px-4 py-3.5 align-top ${className}`}>{children}</td>;
 
 /** The three issuers side by side. Every price is per share, so the columns compare fairly. */
 export function VenueTable({ venues, referenceSep }: { venues: VenueView[]; referenceSep: number | null }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[560px] text-left">
+    <div className="panel overflow-x-auto">
+      <span className="panel-tab">Three tokens, one share</span>
+      <table className="w-full min-w-[600px]">
         <thead>
           <tr>
-            <th className="w-40 px-3 pb-2 text-sm font-medium text-muted">Per share</th>
+            <th className="px-6 pb-3 pt-6 text-left text-sm font-normal text-muted">Per share</th>
             {venues.map((v) => (
-              <th key={v.issuer} className="px-3 pb-2 font-medium">
-                <span className="block text-muted text-sm">{v.label}</span>
-                <span className="text-lg font-semibold">{v.symbol}</span>
+              <th key={v.issuer} className="px-4 pb-3 pt-6 text-left">
+                <span className="block text-sm font-normal text-muted">{v.label}</span>
+                <span className="text-xl font-semibold">{v.symbol}</span>
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <Cell className="text-muted">Last on-chain price</Cell>
+          <Row label="Last on-chain price">
             {venues.map((v) => (
               <Cell key={v.issuer}>
-                <span className="text-lg">{usd(v.onchainSep)}</span>
+                <span className="text-xl">{usd(v.onchainSep)}</span>
                 {v.onchainAgeSec !== null && v.onchainAgeSec > 900 && <span className="ml-2 text-sm text-caution">{duration(v.onchainAgeSec)} old</span>}
               </Cell>
             ))}
-          </tr>
-          <tr>
-            <Cell className="text-muted">You would pay, $100</Cell>
+          </Row>
+          <Row label="You would pay, $100">
             {venues.map((v) => (
               <Cell key={v.issuer}>
                 {v.quote.ok ? (
                   <>
-                    <span className="text-lg">{usd(v.execSep)}</span>
+                    <span className="text-xl">{usd(v.execSep)}</span>
                     <span className="block text-sm text-muted">via {v.quote.vendor}</span>
                   </>
                 ) : (
@@ -46,17 +54,22 @@ export function VenueTable({ venues, referenceSep }: { venues: VenueView[]; refe
                 )}
               </Cell>
             ))}
-          </tr>
-          <tr>
-            <Cell className="text-muted">Against reference {referenceSep !== null && <span className="block">{usd(referenceSep)}</span>}</Cell>
+          </Row>
+          <Row
+            label={
+              <>
+                Against reference
+                {referenceSep !== null && <span className="num block text-ivory">{usd(referenceSep)}</span>}
+              </>
+            }
+          >
             {venues.map((v) => (
               <Cell key={v.issuer} className={v.premiumBps !== null && v.premiumBps > 75 ? 'text-caution' : ''}>
                 {bps(v.premiumBps)}
               </Cell>
             ))}
-          </tr>
-          <tr>
-            <Cell className="text-muted">Oracle</Cell>
+          </Row>
+          <Row label="Oracle">
             {venues.map((v) => (
               <Cell key={v.issuer}>
                 {v.oracle ? (
@@ -69,17 +82,15 @@ export function VenueTable({ venues, referenceSep }: { venues: VenueView[]; refe
                 )}
               </Cell>
             ))}
-          </tr>
-          <tr>
-            <Cell className="text-muted">Shares per token</Cell>
+          </Row>
+          <Row label="Shares per token">
             {venues.map((v) => (
               <Cell key={v.issuer} className="text-sm">
                 {v.shareRatio.toFixed(6)}
               </Cell>
             ))}
-          </tr>
-          <tr>
-            <Cell className="text-muted">Verdict</Cell>
+          </Row>
+          <Row label="Verdict">
             {venues.map((v) => (
               <Cell key={v.issuer}>
                 {v.gate ? (
@@ -96,7 +107,7 @@ export function VenueTable({ venues, referenceSep }: { venues: VenueView[]; refe
                 )}
               </Cell>
             ))}
-          </tr>
+          </Row>
         </tbody>
       </table>
     </div>
