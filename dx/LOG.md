@@ -98,5 +98,13 @@ These came from desk research, not from our own use. **None of them go in the re
 - Actual: stderr `[50001002] Connect Timeout Error (attempted address: www.binance.com:443, timeout: 10000ms)`; stdout empty. Sign-in goes through `www.binance.com`, which times out from this network without a VPN (21 Sep 13:50 entry). At 08:54 local DNS was also failing (`curl: (6) Could not resolve host: www.binance.com`; `dig`: `no servers could be reached`; google.com reachable), so this run does not isolate a Binance-side cause. Retry pending with a working VPN.
 - 09:10 UTC, same result on a second `baw auth signin`. Exit network (ipinfo.io) was `AS29465 MTN NIGERIA Communication limited`, no VPN active. On that network `www.binance.com` and `api.binance.com` fail with `curl: (6) Could not resolve host` and `web3.binance.com` with `Resolving timed out after 12003 milliseconds`, while `www.google.com` returns 200. On MTN Nigeria, Binance hostnames do not resolve.
 - Time lost: 20
+
+### 2026-09-22 09:13 UTC · user (dev laptop, VPN on) · Agentic Wallet
+- Did: `baw auth signin`, twice (09:13:09 and 09:25:17 UTC)
+- Expected: QR code, scan in the Binance Wallet app, signed in
+- Actual: both runs printed `Pairing code`, `Opening login page in browser...`, `QR Code ID`, `Expires at` and `ℹ Please scan and confirm in the app...`. The QR lifetime is 5 minutes: run 1 `Expires at: 2026-09-22 10:18:11` (created 10:13:09 WAT), run 2 `Expires at: 2026-09-22 10:30:19` (created 10:25:17 WAT). `Expires at` is local time (WAT, UTC+1) with no timezone shown. Same situation, two different outcomes: run 1 `⚠ [10001003] QR code expired` with **exit code 0**; run 2 `[10002004] QR code does not exist or expired, please try a new code or restart the log in process. [351701]` with exit code 1. What happened in the phone app: to be added.
+- Time lost: 20
+- Severity: slowed us
+- Suggestion:
 - Severity: blocker
 - Suggestion:
