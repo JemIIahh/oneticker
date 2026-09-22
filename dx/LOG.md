@@ -190,3 +190,12 @@ These came from desk research, not from our own use. **None of them go in the re
 - Time lost: 0
 - Severity: slowed us
 - Suggestion:
+
+### 2026-09-22 13:25 UTC · claude (Railway) · Web3 API / compliance block
+- Did: the Tape's signed calls from Railway region `sfo` (US West, runs 168 to 185, 12:11 to 13:20 UTC) and then `asia-southeast1` (Singapore, run 186 onward, from 13:24 UTC), same API key that works from the laptop over a French VPN. Raw: `https://tape-production-c409.up.railway.app/api/raw?instrument=US:NVDA&venue=bstocks`
+- Expected: the same responses as from the laptop
+- Actual: every Binance endpoint (`/rwa/price`, `/market/price`, `/aggregator/quote`) returns HTTP 200 with `{"code":40304,"msg":"Service not available due to compliance restriction","success":false}` from both regions. Code 40304 is not on the error-codes page (it lists 40301 to 40303 as "IP Compliance"). The unsigned call from `sfo` on 21 Sep got 40101, so the auth check runs before the compliance check. On-chain reads (APRO, BEP-677) work from both regions.
+- Time lost: 60
+- Severity: blocker
+- Suggestion:
+- 13:33 UTC, Railway `europe-west4` (Amsterdam, run from 13:33): same `40304 Service not available due to compliance restriction`. All three Railway regions tried (US West, Singapore, Netherlands) are blocked; the laptop over a French VPN is not. The Web3 API docs do not list which server locations are allowed.
