@@ -1,24 +1,16 @@
 // T1 probe. Saves every response, success or error, to fixtures/web3/.
 //
-//   pnpm probe discover   platforms, BSC token list, and search for each candidate ticker
-//   pnpm probe prices     price, underlying market, market price and a $100 quote for each
-//                         token in scripts/probe-targets.json (fill it in from the discover fixtures)
+//   pnpm probe discover   platforms, BSC token list, and search for each registry ticker
+//   pnpm probe prices     price, underlying market, market price and a $100 quote for every venue in the
+//                         registry; set TAPE_QUOTE_WALLET for RFQ quotes (Ondo, bStocks)
 
-import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { createWeb3Client, saveFixture, Web3ApiError, type ApiCall, type Web3Response } from '@oneticker/clients';
+import { instruments } from '@oneticker/core';
 
 const FIXTURES = fileURLToPath(new URL('../fixtures', import.meta.url));
-const TARGETS = fileURLToPath(new URL('./probe-targets.json', import.meta.url));
 const BSC = '56';
 const USDT_BSC = '0x55d398326f99059fF775485246999027B3197955'; // BSC-USD, 18 decimals
-const CANDIDATE_TICKERS = ['NVDA', 'TSLA', 'QQQ', 'CRCL', 'META', 'MSFT', 'MSTR'];
-
-interface Targets {
-  /** Receiver for RFQ quotes (Ondo, bStocks). Use the hot wallet address. */
-  wallet?: string;
-  tokens: { instrument: string; venue: string; symbol: string; address: string }[];
-}
 
 const apiKey = process.env.BINANCE_WEB3_API_KEY;
 const apiSecret = process.env.BINANCE_WEB3_API_SECRET;
@@ -52,7 +44,7 @@ async function probe(name: string, call: () => Promise<Web3Response<unknown>>): 
 async function discover(): Promise<void> {
   await probe('rwa-platforms', () => client.get('/api/v1/dex/market/rwa/platforms'));
   await probe('rwa-tokens-bsc', () => client.get('/api/v1/dex/market/rwa/tokens', { binanceChainId: BSC }));
-  for (const ticker of CANDIDATE_TICKERS) {
+  for (const { ticker } of instruments) {
     await probe(`rwa-search-${ticker}`, () => client.get('/api/v1/dex/market/rwa/search', { keyword: ticker }));
     // xStocks is not an RWA platform in the connector, so look for it through general token search too.
     await probe(`market-token-search-${ticker}`, () => client.get('/api/v1/dex/market/token/search', { chains: BSC, search: ticker }));
@@ -60,14 +52,15 @@ async function discover(): Promise<void> {
 }
 
 async function prices(): Promise<void> {
-  const targets = JSON.parse(await readFile(TARGETS, 'utf8')) as Targets;
-  const addresses = targets.tokens.map((t) => t.address);
+  const tokens = instruments.flatMap((i) => i.venues);
+  const addresses = tokens.map((t) => t.address);
+  const wallet = process.env.TAPE_QUOTE_WALLET || undefined;
 
   await probe('rwa-price', () => client.get('/api/v1/dex/market/rwa/price', { binanceChainId: BSC, tokenContractAddresses: addresses.join(',') }));
   // Body shape is undocumented in both official connectors; this is a guess, and an error fixture is also an answer.
   await probe('market-price', () => client.post('/api/v1/dex/market/price', addresses.map((a) => ({ binanceChainId: BSC, tokenContractAddress: a }))));
 
-  for (const t of targets.tokens) {
+  for (const t of tokens) {
     const token = { binanceChainId: BSC, tokenContractAddress: t.address };
     await probe(`rwa-underlying-market-${t.symbol}`, () => client.get('/api/v1/dex/market/rwa/underlying-market', token));
     await probe(`rwa-underlying-profile-${t.symbol}`, () => client.get('/api/v1/dex/market/rwa/underlying-profile', token));
@@ -77,7 +70,7 @@ async function prices(): Promise<void> {
         amount: (100n * 10n ** 18n).toString(),
         fromTokenAddress: USDT_BSC,
         toTokenAddress: t.address,
-        userWalletAddress: targets.wallet,
+        userWalletAddress: wallet,
       }),
     );
   }

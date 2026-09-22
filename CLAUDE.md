@@ -65,7 +65,8 @@ pnpm -r build                  # typecheck every package
 pnpm -r test
 pnpm build                     # all packages plus scripts/
 pnpm probe discover            # T1: platforms, token lists, search; saves fixtures/web3/
-pnpm probe prices              # T1: prices and quotes for scripts/probe-targets.json
+pnpm probe prices              # T1: prices and quotes for every registry venue
+pnpm registry                  # rebuild instruments.json from fixtures/bapi, verified on-chain
 pnpm --filter tape once        # one logger run
 pnpm --filter tape start       # logger every 5 minutes (Railway start command)
 pnpm --filter tape check [day] # gap check for one UTC day; exit 1 on gaps

@@ -25,6 +25,7 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 - [ ] `scripts/probe.ts` calls `rwa/platforms`, `rwa/tokens`, `rwa/search`, `rwa/price`, `rwa/underlying-market`, `market/price`, and an aggregator quote for every candidate venue, saving each response to `fixtures/`.
 - [ ] Unverified items 1, 2 and 3 in `docs/RESEARCH.md` answered with fixture evidence.
 - [ ] `instruments.json` written: 5 instruments, up to 3 venues each, addresses and execution paths confirmed.
+  - 22 Sep: written by `pnpm registry` from the `bapi` fixtures. NVDA, TSLA, QQQ, CRCL, and **MSTR as the fifth** (team decision; it tracks Bitcoin, which trades all weekend). All 15 addresses confirmed on-chain (`symbol()`, `decimals()`). Execution paths not yet confirmed: `baw` quoted NVDAB and NVDAon; NVDAx had no liquidity pre-market. The probe's `prices` phase checks the rest once API keys arrive.
 - [x] closing-bell-agent README read; differences noted in `SPEC.md` section 12.
 
 ### T2 · Agentic Wallet smoke test · B · Tue 22

@@ -1,1 +1,142 @@
-[]
+[
+  {
+    "id": "US:NVDA",
+    "ticker": "NVDA",
+    "name": "NVIDIA",
+    "venues": [
+      {
+        "issuer": "bstocks",
+        "symbol": "NVDAB",
+        "address": "0x02fca66c1d1afb4e2a7884261eb00f63598a7436",
+        "decimals": 18,
+        "path": "RFQ_BSTOCK"
+      },
+      {
+        "issuer": "ondo",
+        "symbol": "NVDAon",
+        "address": "0xa9ee28c80f960b889dfbd1902055218cba016f75",
+        "decimals": 18,
+        "path": "RFQ_ONDO"
+      },
+      {
+        "issuer": "xstocks",
+        "symbol": "NVDAx",
+        "address": "0xc845b2894dbddd03858fd2d643b4ef725fe0849d",
+        "decimals": 18,
+        "path": "AMM"
+      }
+    ]
+  },
+  {
+    "id": "US:TSLA",
+    "ticker": "TSLA",
+    "name": "Tesla",
+    "venues": [
+      {
+        "issuer": "bstocks",
+        "symbol": "TSLAB",
+        "address": "0x5b1910eaad6450e50f816082aa078c41f10c292f",
+        "decimals": 18,
+        "path": "RFQ_BSTOCK"
+      },
+      {
+        "issuer": "ondo",
+        "symbol": "TSLAon",
+        "address": "0x2494b603319d4d9f9715c9f4496d9e0364b59d93",
+        "decimals": 18,
+        "path": "RFQ_ONDO"
+      },
+      {
+        "issuer": "xstocks",
+        "symbol": "TSLAx",
+        "address": "0x8ad3c73f833d3f9a523ab01476625f269aeb7cf0",
+        "decimals": 18,
+        "path": "AMM"
+      }
+    ]
+  },
+  {
+    "id": "US:QQQ",
+    "ticker": "QQQ",
+    "name": "Invesco QQQ Trust",
+    "venues": [
+      {
+        "issuer": "bstocks",
+        "symbol": "QQQB",
+        "address": "0x205812cdbed920aff76c6580abd681a46d11efc7",
+        "decimals": 18,
+        "path": "RFQ_BSTOCK"
+      },
+      {
+        "issuer": "ondo",
+        "symbol": "QQQon",
+        "address": "0x0cde6936d305d5b34667fc46425e852efd73559a",
+        "decimals": 18,
+        "path": "RFQ_ONDO"
+      },
+      {
+        "issuer": "xstocks",
+        "symbol": "QQQx",
+        "address": "0xa753a7395cae905cd615da0b82a53e0560f250af",
+        "decimals": 18,
+        "path": "AMM"
+      }
+    ]
+  },
+  {
+    "id": "US:CRCL",
+    "ticker": "CRCL",
+    "name": "Circle Internet Group",
+    "venues": [
+      {
+        "issuer": "bstocks",
+        "symbol": "CRCLB",
+        "address": "0x80f3d493ebce97e343c53d29a137942416b4ffc0",
+        "decimals": 18,
+        "path": "RFQ_BSTOCK"
+      },
+      {
+        "issuer": "ondo",
+        "symbol": "CRCLon",
+        "address": "0x992879cd8ce0c312d98648875b5a8d6d042cbf34",
+        "decimals": 18,
+        "path": "RFQ_ONDO"
+      },
+      {
+        "issuer": "xstocks",
+        "symbol": "CRCLx",
+        "address": "0xfebded1b0986a8ee107f5ab1a1c5a813491deceb",
+        "decimals": 18,
+        "path": "AMM"
+      }
+    ]
+  },
+  {
+    "id": "US:MSTR",
+    "ticker": "MSTR",
+    "name": "Strategy",
+    "venues": [
+      {
+        "issuer": "bstocks",
+        "symbol": "MSTRB",
+        "address": "0xe87afb3076aeb0f9b14e368de8145ae6a2826a14",
+        "decimals": 18,
+        "path": "RFQ_BSTOCK"
+      },
+      {
+        "issuer": "ondo",
+        "symbol": "MSTRon",
+        "address": "0x7313ea16493b2f55054df0131a3a14b043ec8992",
+        "decimals": 18,
+        "path": "RFQ_ONDO"
+      },
+      {
+        "issuer": "xstocks",
+        "symbol": "MSTRx",
+        "address": "0xae2f842ef90c0d5213259ab82639d5bbf649b08e",
+        "decimals": 18,
+        "path": "AMM"
+      }
+    ]
+  }
+]

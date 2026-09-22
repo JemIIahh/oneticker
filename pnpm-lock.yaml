@@ -11,6 +11,9 @@ importers:
       '@oneticker/clients':
         specifier: workspace:*
         version: link:packages/clients
+      '@oneticker/core':
+        specifier: workspace:*
+        version: link:packages/core
       '@types/node':
         specifier: ^22.20.4
         version: 22.20.4
