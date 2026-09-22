@@ -54,8 +54,8 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 - [ ] Run it during market hours on Friday and again on Saturday. Save both outputs; this is the first look at off-hours behavior.
 
 ### T6 · Terminal design and shell · C · Mon 21 to Sun 27
-- [ ] Screens designed: instrument page, route panel, week clock, `/tape`.
-- [ ] Next.js shell rendering the instrument page from saved fixtures (no live backend needed).
+- [ ] Screens designed: instrument page, route panel, week clock, `/tape`. (22 Sep: first three built as a working shell; `/tape` is a placeholder until weekend-1 data.)
+- [x] Next.js shell rendering the instrument page from saved fixtures (no live backend needed). (`apps/web`, 22 Sep. `pnpm --filter web dev`, then `/s/NVDA`; add `?at=2026-09-26T10:12:00Z` to preview a closed-market state.)
 - [ ] README draft and demo storyboard started.
 
 **Checkpoint, Sun 27 Sep:** Tape has at least 72 hours of data including a weekend. The CLI quotes all 5 instruments. The shell renders.
