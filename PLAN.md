@@ -67,8 +67,8 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 **Mon 28 Sep, 13:30 UTC:** capture backup footage of the US open with whatever works (CLI is fine).
 
 ### T7 · Gate · A · Mon 28
-- [ ] `packages/core/policy/default.json` and the gate engine from SPEC 3.5.
-- [ ] A test for every rule, including a weekend fixture that produces CAUTION.
+- [x] `packages/core/policy/default.json` and the gate engine from SPEC 3.5. (Built early, 22 Sep: `packages/core/src/gate`.)
+- [x] A test for every rule, including a weekend fixture that produces CAUTION. (20 tests; the weekend case uses 22 Sep APRO and multiplier numbers.)
 - [ ] One short note in `docs/` on what weekend 1 looked like in the Tape, used to sanity-check thresholds.
 
 ### T8 · MCP server · A · Tue 29 to Wed 30

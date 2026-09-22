@@ -1,0 +1,9 @@
+{
+  "id": "default@1",
+  "note": "Starting thresholds from SPEC 3.5. Guesses until the Tape shows what normal looks like; retune in week three.",
+  "referenceAgeSec": { "caution": 3600 },
+  "premiumBps": { "caution": 75, "block": 200 },
+  "oracleAgeSec": { "caution": 3600, "block": 7200 },
+  "oracleDivergenceBps": { "caution": 100, "block": 300 },
+  "impactBps": { "caution": 50, "block": 150 }
+}
