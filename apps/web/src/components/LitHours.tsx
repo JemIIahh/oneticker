@@ -1,7 +1,7 @@
 import { toEt } from '@oneticker/core';
 
 /** Hours since Monday 00:00 ET, or null when no instant is given. */
-function weekHour(at?: Date): number | null {
+export function weekHour(at?: Date): number | null {
   if (!at) return null;
   const et = toEt(at);
   const weekday = new Date(Date.UTC(et.y, et.m - 1, et.d)).getUTCDay();
@@ -25,7 +25,7 @@ export function LitHours({ cell = 6, gap = 2, at, className = '' }: { cell?: num
     for (let hour = 0; hour < 24; hour++) {
       const isNow = now !== null && Math.floor(now) === day * 24 + hour;
       const fill = lit(day, hour) ? 'fill-lit' : dim(day, hour) ? 'fill-lit/35' : 'fill-rule';
-      cells.push(<rect key={`${day}-${hour}`} x={day * step} y={hour * step} width={cell} height={cell} className={isNow ? 'fill-ivory' : fill} rx={cell > 8 ? 1 : 0} />);
+      cells.push(<rect key={`${day}-${hour}`} x={day * step} y={hour * step} width={cell} height={cell} className={isNow ? 'fill-ivory now-pulse' : fill} rx={cell > 8 ? 1 : 0} />);
     }
   }
   return (
@@ -43,7 +43,17 @@ export function LitHoursBand({ at }: { at?: Date }) {
     const day = Math.floor(i / 24);
     const hour = i % 24;
     const isNow = now !== null && Math.floor(now) === i;
-    cells.push(<rect key={i} x={i * 6} y="0" width="4" height="4" className={isNow ? 'fill-ivory' : lit(day, hour) ? 'fill-lit' : dim(day, hour) ? 'fill-lit/35' : 'fill-rule'} />);
+    cells.push(
+      <rect
+        key={i}
+        x={i * 6}
+        y="0"
+        width="4"
+        height="4"
+        className={`band-cell ${isNow ? 'fill-ivory now-pulse' : lit(day, hour) ? 'fill-lit' : dim(day, hour) ? 'fill-lit/35' : 'fill-rule'}`}
+        style={{ animationDelay: `${i * 6}ms` }}
+      />,
+    );
   }
   return (
     <svg viewBox="0 0 1006 4" preserveAspectRatio="none" className="h-1 w-full" aria-hidden="true">

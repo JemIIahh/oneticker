@@ -39,7 +39,7 @@ export function WeekClock({ clock, at }: { clock: MarketClock; at: Date }) {
             <circle r={R} fill="none" strokeWidth="12" className="stroke-rule" />
             {sessions}
             <g transform={`rotate(${angle})`}>
-              <line x1={R - 12} x2={R + 12} y1="0" y2="0" strokeWidth="3" className="stroke-ivory" strokeLinecap="round" />
+              <line x1={R - 12} x2={R + 12} y1="0" y2="0" strokeWidth="3" className="stroke-ivory now-pulse" strokeLinecap="round" />
             </g>
           </g>
           <text textAnchor="middle" y="-1" className="fill-ivory text-[15px] font-semibold">

@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { LitHours } from '@/components/LitHours';
+import { weekHour } from '@/components/LitHours';
 import { Verdict } from '@/components/Verdict';
+import { WeekRingPanel } from '@/components/WeekRingPanel';
 import { listInstruments, loadInstrument } from '@/lib/fixtures';
 import { duration, usd } from '@/lib/format';
 
@@ -25,13 +26,10 @@ export default function Home() {
             </p>
           )}
         </div>
-        <div className="panel px-6 py-5">
+        <div className="panel w-full px-4 py-4 md:w-[440px]">
           <span className="panel-tab">This week, hour by hour</span>
-          <LitHours cell={14} gap={3} at={now} />
-          <div className="mt-3 flex justify-between text-xs text-muted">
-            <span>Mon</span>
-            <span>Sun</span>
-          </div>
+          <WeekRingPanel nowHour={weekHour(now) ?? 0} />
+          <p className="px-2 pb-1 text-xs text-muted">168 bars, one per hour. The tall amber ones are when Wall Street trades; the ivory one is now.</p>
         </div>
       </section>
 

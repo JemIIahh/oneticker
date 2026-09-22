@@ -68,6 +68,33 @@ body {
   letter-spacing: -0.01em;
 }
 
+/* The one page-load moment: the header band lights up Monday to Sunday. */
+@keyframes band-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.band-cell {
+  animation: band-in 320ms ease-out both;
+}
+
+/* The current hour breathes so it can always be found. */
+@keyframes now-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+.now-pulse {
+  animation: now-pulse 2.4s ease-in-out infinite;
+}
+
 :focus-visible {
   outline: 2px solid var(--lit);
   outline-offset: 2px;
