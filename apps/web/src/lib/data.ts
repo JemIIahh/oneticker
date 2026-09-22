@@ -12,7 +12,11 @@ export function listInstruments(): Instrument[] {
 export async function getAllInstruments(at?: Date): Promise<InstrumentView[]> {
   const now = at ?? new Date();
   const payload = await fetchLatest();
-  if (payload) return liveViews(payload, now);
+  if (payload) {
+    const views = liveViews(payload, now);
+    // A live feed with no Binance prices at all (e.g. the 40304 compliance block) is worse than the fixtures.
+    if (views.some((v) => v.venues.some((venue) => venue.execSep !== null || venue.onchainSep !== null))) return views;
+  }
   return instruments.map((i) => fixtureView(i.ticker, at)!);
 }
 
