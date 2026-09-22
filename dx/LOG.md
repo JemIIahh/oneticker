@@ -182,3 +182,11 @@ These came from desk research, not from our own use. **None of them go in the re
 - Time lost: 0
 - Severity: annoyance
 - Suggestion:
+
+### 2026-09-22 12:14 UTC · claude (dev laptop, VPN) · Web3 API / aggregator quote
+- Did: `GET /api/v1/dex/aggregator/quote` USDT → NVDAon at $100, $1,000 and $10,000 with `userWalletAddress` (Tape run 3, local; raw in `raw_json`)
+- Expected: a worse but sane price at size, and `priceImpactPercent` to describe it
+- Actual: $100 → 0.4399 NVDAon ($227.32 each, route `Rfq Halfmoon` 100%, `priceImpactPercent` 0.0001). $1,000 → 4.354 ($229.66 each, `Rfq Halfmoon` 20% / `Pancakeswap V3` 80%, impact 0.0129). **$10,000 → 12.152 NVDAon ($822.88 each**, `Pancakeswap V3` 97.2% / `Rfq Halfmoon` 2.8%, `priceImpactPercent` 0.7246, `isBest: true`, `toToken.tokenUnitPrice` 227.15). The quote is 262% above the unit price it reports; `priceImpactPercent` says 0.72%. bStocks at the same sizes: $227.02 / $227.03 / $227.08.
+- Time lost: 0
+- Severity: slowed us
+- Suggestion:
