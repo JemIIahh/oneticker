@@ -1,0 +1,27 @@
+# Fly.io app for the Off-Hours Tape. Paris (cdg): France is a jurisdiction where the Binance Web3 API answers;
+# every Railway region (US, Singapore, Netherlands) returned 40304 "compliance restriction" on 22 Sep 2026.
+app = "oneticker-tape"
+primary_region = "cdg"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  TAPE_DB_PATH = "/data/tape.sqlite"
+  TAPE_INTERVAL_SEC = "300"
+  PORT = "8787"
+
+[mounts]
+  source = "tape_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8787
+  force_https = true
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

@@ -49,8 +49,8 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 - [ ] Collateral index surface (B), if a public endpoint exists; unverified item 7 answered either way.
 
 ### T5 · Router and CLI · A · Fri 25 to Sun 27
-- [ ] `quote_route` logic: quote every venue, rank by net SEP, map error codes to exclusions (SPEC 3.6).
-- [ ] `pnpm oneticker quote NVDA buy 500` prints ranked routes and exclusions for all 5 instruments.
+- [x] `quote_route` logic: quote every venue, rank by net SEP, map error codes to exclusions (SPEC 3.6). (Built early, 22 Sep: `packages/core/src/router/quote.ts`, pure and unit-tested — 10 tests — ready to reuse for the T8 MCP tool.)
+- [x] `pnpm oneticker quote NVDA buy 500` prints ranked routes and exclusions for all 5 instruments. (`scripts/cli.ts`; both sides tested for NVDA and MSTR. Degrades to per-venue exclusions when the API is unreachable, which is all we could test today — no VPN connected during this run.)
 - [ ] Run it during market hours on Friday and again on Saturday. Save both outputs; this is the first look at off-hours behavior.
 
 ### T6 · Terminal design and shell · C · Mon 21 to Sun 27

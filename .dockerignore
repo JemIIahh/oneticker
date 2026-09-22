@@ -1,0 +1,14 @@
+node_modules
+**/node_modules
+**/.next
+**/dist
+data
+*.sqlite*
+.env
+.env.*
+!.env.example
+.git
+.vercel
+fixtures
+docs
+dx
