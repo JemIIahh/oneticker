@@ -150,6 +150,7 @@ export function openTape(path: string) {
     SELECT ts, venue, market_state, onchain_px, exec_px_100, exec_px_1k, exec_px_10k, oracle_px, oracle_updated_at, share_ratio
     FROM snapshots WHERE instrument = ? AND ts >= ? ORDER BY ts`);
   const latestEvents = db.prepare(`SELECT instrument, venue, kind, detail FROM events WHERE ts = (SELECT MAX(ts) FROM snapshots)`);
+  const latestRaw = db.prepare(`SELECT ts, raw_json FROM snapshots WHERE instrument = ? AND venue = ? ORDER BY id DESC LIMIT 1`);
 
   return {
     raw: db,
@@ -200,6 +201,12 @@ export function openTape(path: string) {
 
     latestEvents(): EventRow[] {
       return latestEvents.all() as EventRow[];
+    },
+
+    /** The newest raw_json for one venue, for debugging what the APIs actually returned. */
+    latestRaw(instrument: string, venue: string): { ts: string; raw: unknown } | null {
+      const row = latestRaw.get(instrument, venue) as { ts: string; raw_json: string } | undefined;
+      return row ? { ts: row.ts, raw: JSON.parse(row.raw_json) } : null;
     },
   };
 }

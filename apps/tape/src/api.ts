@@ -3,6 +3,7 @@
 //   GET /health                                  -> { ok, lastRun }
 //   GET /api/latest                              -> newest run: every instrument and venue, plus quote exclusions
 //   GET /api/history?instrument=US:NVDA&hours=72 -> rows for one instrument, oldest first
+//   GET /api/raw?instrument=US:NVDA&venue=bstocks -> the newest raw responses for one venue
 
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { instruments, marketClock } from '@oneticker/core';
@@ -55,6 +56,12 @@ export function handle(db: TapeDb, req: IncomingMessage, res: ServerResponse): v
     const hours = Math.min(MAX_HOURS, Math.max(1, Number(url.searchParams.get('hours') ?? 72) || 72));
     const from = new Date(Date.now() - hours * 3_600_000).toISOString();
     return json(res, 200, { instrument, from, rows: db.historySince(instrument, from) });
+  }
+  if (url.pathname === '/api/raw') {
+    const instrument = url.searchParams.get('instrument') ?? '';
+    const venue = url.searchParams.get('venue') ?? '';
+    const raw = db.latestRaw(instrument, venue);
+    return raw ? json(res, 200, raw) : json(res, 404, { error: 'no snapshot for that instrument and venue' });
   }
   return json(res, 404, { error: 'not found' });
 }
