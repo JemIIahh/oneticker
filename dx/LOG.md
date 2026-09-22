@@ -199,3 +199,4 @@ These came from desk research, not from our own use. **None of them go in the re
 - Severity: blocker
 - Suggestion:
 - 13:33 UTC, Railway `europe-west4` (Amsterdam, run from 13:33): same `40304 Service not available due to compliance restriction`. All three Railway regions tried (US West, Singapore, Netherlands) are blocked; the laptop over a French VPN is not. The Web3 API docs do not list which server locations are allowed.
+- 13:44 UTC, laptop over a VPN exiting in Amsterdam (`AS393406 DigitalOcean`): `pnpm probe discover`, 12 signed calls, all `200` with `40304`. Same laptop and key over a French exit at 11:28: all `200` and `success: true`. The block follows the exit country.
