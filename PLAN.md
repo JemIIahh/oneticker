@@ -104,8 +104,8 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 ### T13 · Terminal on live data · C · Mon 28 to Sat 3
 - [ ] Instrument page and route panel wired to the live core through an API route.
   - 22 Sep: the Tape serves a read-only HTTP API (`/api/latest`, `/api/history`, `/health`) at `https://tape-production-c409.up.railway.app`; the web app reads it when `TAPE_API_URL` is set, refreshes every minute, and falls back to fixtures. Still to do: the route panel's live quotes at the requested size (needs the router, T5), and the reference price (Finnhub).
-- [ ] Week clock and 72-hour surfaces chart with closed-market shading.
-- [ ] Deployed on Vercel; works at phone width.
+- [x] Week clock and 72-hour surfaces chart with closed-market shading. (23 Sep: the redesign's week strip, plus a 72-hour chart on `/s/<ticker>` from the Tape's `/api/history`, per share: 24/7 perp, PancakeSwap pool, best $100 quote. Closed hours shaded from the market clock; zooms to the recorded range until 72 h exist; crosshair tooltip with pool vs perp in bps; hourly table view. Colors validated all-pairs in both themes.)
+- [ ] Deployed on Vercel; works at phone width. (23 Sep: phone width checked at a true 390 px with mobile emulation, no horizontal overflow. Plain `--window-size` screenshots are misleading: headless Chrome's minimum is 500 px. Vercel still needs the Root Directory set to `apps/web`.)
 
 **Cut decision, Thu 1 Oct.** If behind, cut in this order: (1) T12 intents, (2) RFQ execution (keep AMM), (3) T10 Agent Studio (keep MCP and the skill), (4) the `/tape` page (put the chart in the README instead).
 **Never cut:** the Tape, the gate, MCP read tools, the instrument page, the DX report, the video.

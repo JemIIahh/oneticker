@@ -25,6 +25,10 @@ function latest<T>(dir: string, prefix: string): T | null {
 }
 
 const stamp = (file: string | null) => file?.match(/(\d{8}T\d{6}Z)\.json$/)?.[1] ?? '';
+/** "20260922T105815Z" to a Date. */
+const stampDate = (s: string) => (s ? new Date(`${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}T${s.slice(9, 11)}:${s.slice(11, 13)}:${s.slice(13, 15)}Z`) : null);
+/** Fixtures come from separate probe runs. A chain reading captured this long before the price snapshot says nothing about the oracle at that moment. */
+const MAX_FIXTURE_SKEW_MS = 3_600_000;
 const same = (a: string, b: string) => a.toLowerCase() === b.toLowerCase();
 
 interface Envelope<T> {
@@ -87,7 +91,10 @@ export function fixtureView(ticker: string, at?: Date): InstrumentView | null {
     const rwaItem = rwa?.data.find((i) => same(i.tokenContractAddress, venue.address));
     const marketItem = market?.data.find((i) => same(i.tokenContractAddress, venue.address));
     const bep = venue.issuer === 'bstocks' ? latest<{ multiplier: number; pending: unknown | null }>('chain', `bep677-${venue.symbol}-`) : null;
-    const apro = venue.issuer === 'bstocks' ? latest<{ price: number; updatedAt: string }>('chain', `apro-${venue.symbol}-`) : null;
+    const aproFile = venue.issuer === 'bstocks' ? latestFile('chain', `apro-${venue.symbol}-2026`) : null;
+    const aproAt = stampDate(stamp(aproFile));
+    const aproInSync = aproAt !== null && asOf.getTime() - aproAt.getTime() <= MAX_FIXTURE_SKEW_MS;
+    const apro = aproFile && aproInSync ? latest<{ price: number; updatedAt: string }>('chain', aproFile.replace(/\.json$/, '')) : null;
     const q = quoteFor(venue);
     return {
       issuer: venue.issuer,

@@ -35,6 +35,10 @@
   --go: #3ecf8e;
   --caution: #f0b429;
   --block: #f2605c;
+  /* Chart series: categorical slots 1 to 3, stepped for this dark surface (validated all-pairs, CVD ΔE >= 9.4). */
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
 }
 
 :root[data-theme='day'] {
@@ -50,6 +54,10 @@
   --go: #0a8f5a;
   --caution: #b7791f;
   --block: #d64545;
+  /* Same three slots, light steps (slot 3 is under 3:1 here, so the chart ships direct labels and a table view). */
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
 }
 
 html {

@@ -128,11 +128,11 @@ export function Router({ views, initial, now, lock = false }: { views: Instrumen
             ))}
             {excluded.map((v) => (
               <li key={v.issuer} className="flex items-center gap-4 py-4 text-muted">
-                <div className="min-w-0 flex-1">
+                <div className="shrink-0">
                   <p className="font-medium">{v.label}</p>
                   <p className="text-sm">{v.symbol}</p>
                 </div>
-                <p className="text-right text-sm">{v.quote.ok ? '' : v.quote.reason}</p>
+                <p className="min-w-0 flex-1 text-right text-sm">{v.quote.ok ? '' : v.quote.reason}</p>
               </li>
             ))}
           </ul>

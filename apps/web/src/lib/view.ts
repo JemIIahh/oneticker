@@ -24,7 +24,8 @@ export interface VenueView {
   label: string;
   symbol: string;
   address: string;
-  shareRatio: number;
+  /** Shares per token; null when unknown, and then every per-share figure for the venue is null too. */
+  shareRatio: number | null;
   onchainSep: number | null;
   onchainAgeSec: number | null;
   execSep: number | null;
@@ -62,13 +63,18 @@ const age = (now: Date, at: number | null) => (at === null ? null : Math.max(0, 
 export function buildView(input: ViewInput): InstrumentView {
   const clock = marketClock(input.now);
   const venues = input.venues.map((v): VenueView => {
-    const shareRatio = v.shareRatio ?? 1;
-    const onchainSep = v.onchainPx === null ? null : v.onchainPx / shareRatio;
-    const execSep = v.execPxToken === null ? null : v.execPxToken / shareRatio;
-    const oracle = v.oraclePxToken !== null && v.oracleAt !== null ? { sep: v.oraclePxToken / shareRatio, ageSec: age(input.now, v.oracleAt)! } : null;
+    // xStocks on BSC are 1:1. For the others an unknown ratio means no per-share price, never an assumed 1
+    // (Ondo's is about 1.0017 for NVDA: assuming 1 misprices it by 17 bps and can flip the ranking).
+    const shareRatio = v.shareRatio ?? (v.issuer === 'xstocks' ? 1 : null);
+    const perShare = (px: number | null) => (px === null || shareRatio === null ? null : px / shareRatio);
+    const onchainSep = perShare(v.onchainPx);
+    const execSep = perShare(v.execPxToken);
+    const oracleSep = perShare(v.oraclePxToken);
+    const oracle = oracleSep !== null && v.oracleAt !== null ? { sep: oracleSep, ageSec: age(input.now, v.oracleAt)! } : null;
     const premiumBps = execSep !== null && input.referenceSep !== null ? (execSep / input.referenceSep - 1) * 10_000 : null;
+    const code = v.execPxToken !== null && shareRatio === null ? 'NO_SHARE_RATIO' : (v.quoteError ?? 'NO_QUOTE');
     const quote: VenueView['quote'] =
-      execSep !== null ? { ok: true, vendor: v.quoteVendor ?? 'the aggregator' } : { ok: false, code: v.quoteError ?? 'NO_QUOTE', reason: v.quoteError ? exclusionReason(v.quoteError).reason : 'No quote recorded yet' };
+      execSep !== null ? { ok: true, vendor: v.quoteVendor ?? 'the aggregator' } : { ok: false, code, reason: code === 'NO_QUOTE' ? 'No quote recorded yet' : exclusionReason(code).reason };
     const gate =
       execSep === null
         ? null
