@@ -1,69 +1,27 @@
-import Link from 'next/link';
-import { weekHour } from '@/components/LitHours';
-import { Verdict } from '@/components/Verdict';
-import { WeekRingPanel } from '@/components/WeekRingPanel';
-import { getAllInstruments, listInstruments } from '@/lib/data';
-import { duration, usd } from '@/lib/format';
-import { card, label, row } from '@/lib/ui';
+import { Router } from '@/components/Router';
+import { StockList } from '@/components/StockList';
+import { WeekStrip } from '@/components/WeekStrip';
+import { getAllInstruments } from '@/lib/data';
 
 export default async function Home() {
-  const now = new Date();
-  const rows = await getAllInstruments();
-  const clock = rows[0]?.clock;
+  const views = await getAllInstruments();
 
   return (
-    <div className="py-14">
-      <section className="grid items-start gap-10 md:grid-cols-[1fr_auto]">
-        <div className="rise max-w-xl">
-          <p className={`flex items-center gap-3 ${label}`}>
-            <span className="live-dot inline-block h-1.5 w-1.5 rounded-full bg-ink" />
-            {clock && (clock.state === 'REGULAR' ? 'Wall Street open' : `Wall Street closed ${duration(clock.referenceAgeSec)}`)}
-          </p>
-          <h1 className="mt-6 text-[2.75rem] font-semibold leading-[1.02] tracking-[-0.03em]">One ticker in. The safest fill out, even when Wall Street is closed.</h1>
-          <p className="mt-6 text-lg leading-relaxed text-graphite">
-            Every US stock on BNB Chain exists as three tokens from three issuers. OneTicker compares them per share, tells you which ones you can buy right now, and says
-            whether now is a safe moment.
-          </p>
-        </div>
-        <div className={`rise [animation-delay:220ms] ${card} w-full md:w-[440px]`}>
-          <p className={label}>This week, hour by hour</p>
-          <WeekRingPanel nowHour={weekHour(now) ?? 0} />
-          <p className="mt-2 text-sm text-graphite">168 bars, one per hour. The tall ones are when Wall Street trades; the red one is now.</p>
-        </div>
+    <div className="pt-16 sm:pt-24">
+      <Router views={views} initial="NVDA" now={new Date().getTime()} />
+
+      <section className="mt-24" aria-labelledby="week">
+        <h2 id="week" className="max-w-2xl font-display text-3xl font-semibold tracking-[-0.025em] sm:text-4xl">
+          Wall Street trades 32½ hours a week. The tokens trade all 168.
+        </h2>
+        <WeekStrip at={new Date()} className="mt-8" />
       </section>
 
-      <section className={`rise [animation-delay:320ms] ${card} mt-12`}>
-        <p className={label}>Five stocks, three issuers each</p>
-        <ol className="mt-5 space-y-2">
-          {rows.map((r) => {
-            const quotable = r.venues.filter((v) => v.quote.ok && v.execSep !== null).sort((a, b) => a.execSep! - b.execSep!);
-            const best = quotable[0];
-            return (
-              <li key={r.ticker}>
-                <Link href={`/s/${r.ticker}`} className={`${row} grid grid-cols-[1fr_auto] items-center gap-x-6 gap-y-1 transition hover:bg-black/[0.06] sm:grid-cols-[9rem_1fr_auto_auto]`}>
-                  <span>
-                    <span className="text-xl font-semibold tracking-[-0.02em]">{r.ticker}</span>
-                    <span className="ml-3 text-sm text-graphite">{r.name}</span>
-                  </span>
-                  <span className="col-span-2 text-sm text-graphite sm:col-span-1">
-                    {best ? (
-                      <>
-                        <span className="font-mono text-ink">{usd(best.execSep)}</span> per share on {best.label}
-                      </>
-                    ) : (
-                      'no quote'
-                    )}
-                  </span>
-                  <span className="font-mono text-[11px] uppercase tracking-wider text-graphite">
-                    {quotable.length} of {r.venues.length} buyable
-                  </span>
-                  {best?.gate ? <Verdict value={best.gate.verdict} className="justify-self-end" /> : <span className="justify-self-end font-mono text-[11px] text-graphite">no route</span>}
-                </Link>
-              </li>
-            );
-          })}
-        </ol>
-        <p className="mt-4 font-mono text-[11px] text-graphite">{rows[0]?.source === 'live' ? 'Live from the Tape, refreshed every minute' : 'Saved fixtures'}; recorded {new Date(rows[0]?.asOf ?? now).toUTCString().replace(' GMT', ' UTC')}.</p>
+      <section id="stocks" className="mt-24 scroll-mt-8" aria-labelledby="stocks-h">
+        <h2 id="stocks-h" className="font-display text-3xl font-semibold tracking-[-0.025em] sm:text-4xl">
+          Five stocks, three issuers each
+        </h2>
+        <StockList views={views} className="mt-8" />
       </section>
     </div>
   );

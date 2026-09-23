@@ -1,19 +1,55 @@
 @import 'tailwindcss';
 
-/* Design tokens: light, monochrome, Swiss-editorial. Same system as Stow. */
+/*
+ * Two palettes, picked by the market: "day" while Wall Street trades, "night" the other 80% of the week.
+ * The signal colours (go, caution, block) are the only saturated colours on the page.
+ */
 @theme {
-  --font-sans: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-face), var(--font-body), ui-sans-serif, sans-serif;
 
-  --color-paper: #e7e7e4;
-  --color-ink: #0d0d0d;
-  --color-graphite: #6a6a67;
-  --color-mist: #b9b9b4;
-  --color-block: #b8362a;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-go: var(--go);
+  --color-caution: var(--caution);
+  --color-block: var(--block);
+  --color-session: var(--session);
 }
 
-:root {
+:root,
+:root[data-theme='night'] {
+  color-scheme: dark;
+  --bg: #0e1013;
+  --surface: #16181d;
+  --raised: #1d2027;
+  --line: rgba(255, 255, 255, 0.08);
+  --ink: #eceef2;
+  --muted: #8b919d;
+  --faint: #4b505b;
+  --session: #eceef2;
+  --go: #3ecf8e;
+  --caution: #f0b429;
+  --block: #f2605c;
+}
+
+:root[data-theme='day'] {
   color-scheme: light;
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --raised: #f0f1f4;
+  --line: rgba(15, 20, 30, 0.09);
+  --ink: #12151b;
+  --muted: #5f6572;
+  --faint: #b4b8c1;
+  --session: #12151b;
+  --go: #0a8f5a;
+  --caution: #b7791f;
+  --block: #d64545;
 }
 
 html {
@@ -23,80 +59,93 @@ html {
 body {
   margin: 0;
   min-height: 100dvh;
-  background-color: var(--color-paper);
-  color: var(--color-ink);
+  background: var(--bg);
+  color: var(--ink);
   font-family: var(--font-sans);
   font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* Atmosphere: soft silver gradient plus fine grain. */
-.atmosphere {
+/* A single wash of light from the top, stronger at night so the page reads as "after hours". */
+.sky {
   position: fixed;
   inset: 0;
   z-index: -10;
   pointer-events: none;
-  background: radial-gradient(135% 125% at 50% -12%, #f5f5f3 0%, #e6e6e3 46%, #cfcfcb 100%);
-}
-.atmosphere::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.05;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background: radial-gradient(90% 60% at 50% -10%, color-mix(in srgb, var(--session) 9%, transparent) 0%, transparent 70%);
 }
 
-/* Motion: one rise on load, one blink for live things. */
-@keyframes rise {
+/* Verdict tint: a soft wash and hairline in the verdict's own colour; set the colour with a text-* class. */
+.tint {
+  background: color-mix(in srgb, currentColor 13%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 26%, transparent);
+}
+
+/* Hours when only the tokens trade: hatched, so it reads as "something, but not the real market". */
+.hatch {
+  background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--muted) 22%, transparent) 0 2px, transparent 2px 7px), var(--raised);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* The answer panel updates when the order changes: one short settle, nothing else moves on its own. */
+@keyframes settle {
   from {
-    opacity: 0;
-    transform: translateY(14px);
+    opacity: 0.4;
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
     transform: none;
   }
 }
-@keyframes blink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.25;
-  }
-}
-.rise {
-  opacity: 0;
-  animation: rise 0.75s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
-}
-.live-dot {
-  animation: blink 1.9s steps(1, end) infinite;
+.settle {
+  animation: settle 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-.rule {
-  height: 1px;
-  background: rgba(13, 13, 13, 0.14);
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+/* Inputs that grow with what is typed; the inline width is the fallback where field-sizing is missing. */
+@supports (field-sizing: content) {
+  .fit {
+    field-sizing: content;
+    width: auto !important;
+    min-width: 1ch;
+  }
 }
 
 ::selection {
-  background: var(--color-ink);
-  color: var(--color-paper);
+  background: var(--ink);
+  color: var(--bg);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-ink);
-  outline-offset: 2px;
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rise {
-    opacity: 1;
-    animation: none;
-  }
-  .live-dot {
+  .pulse,
+  .settle {
     animation: none;
   }
 }
