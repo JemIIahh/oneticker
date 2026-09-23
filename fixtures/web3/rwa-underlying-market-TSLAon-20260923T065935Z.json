@@ -1,0 +1,35 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "binanceChainId": "56",
+    "tokenContractAddress": "0x2494b603319d4d9f9715c9f4496d9e0364b59d93",
+    "platformId": "ondo",
+    "assetType": 1,
+    "statusInfo": {
+      "openState": true,
+      "marketStatus": "overnight",
+      "reasonCode": "TRADING",
+      "reasonMsg": null,
+      "nextOpenTime": 1790150460000,
+      "nextCloseTime": 1790150100000
+    },
+    "marketData": {
+      "referencePrice": "379.332889",
+      "high52W": "498.83",
+      "low52W": "297.38",
+      "volumeShares24H": "28229908.803628",
+      "avgDailyVolume1Y": "60995852",
+      "totalShares": "3949547394",
+      "marketCap": "1496001248102",
+      "turnoverRate": "0.7148",
+      "amplitude": "0.304000",
+      "dividendYield": "0",
+      "latestDividend": "0.000000",
+      "peRatioTTM": "389.66",
+      "pbRatio": "17.07"
+    }
+  },
+  "timestamp": 1790146775091,
+  "success": true
+}

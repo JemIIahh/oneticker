@@ -1,0 +1,12 @@
+{
+  "httpStatus": 200,
+  "code": "40374",
+  "message": "/api/v1/dex/aggregator/quote: 40374 Insufficient liquidity for a quote. Please decrease the transaction amount or try again later.",
+  "response": {
+    "code": 40374,
+    "msg": "Insufficient liquidity for a quote. Please decrease the transaction amount or try again later.",
+    "data": null,
+    "timestamp": 1790146793433,
+    "success": false
+  }
+}

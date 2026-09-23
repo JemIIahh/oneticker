@@ -1,0 +1,36 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "binanceChainId": "56",
+    "tokenContractAddress": "0x992879cd8ce0c312d98648875b5a8d6d042cbf34",
+    "platformId": "ondo",
+    "underlyingTicker": "CRCL",
+    "underlyingFullName": "Circle Internet Group (Ondo)",
+    "assetType": 1,
+    "tokenToShareRatio": "1",
+    "protections": {
+      "dailyAttestationReport": {
+        "supported": true,
+        "description": null,
+        "url": "https://onchainos.bnbstatic.com/images/web3-data/public/token/ondo/pdf/daily-2026-09-17.pdf"
+      },
+      "monthlyAttestationReport": {
+        "supported": true,
+        "description": null,
+        "url": "https://onchainos.bnbstatic.com/images/web3-data/public/token/ondo/pdf/monthly-2026-07.pdf"
+      }
+    },
+    "companyInfo": {
+      "ceo": "Jeremy D. Allaire",
+      "website": "https://www.circle.com",
+      "industry": "Financial Services",
+      "conceptsEn": [],
+      "conceptsCn": [],
+      "description": "Circle Internet Group Inc is a financial technology firm engaged in digital currencies and public blockchains for payments, commerce, and financial applications. The company is the issuer of USD Coin (USDC).",
+      "descriptionZh": "Circle Internet Group Inc是一家金融科技公司，专注于数字货币和用于支付、商业及金融应用的公共区块链。该公司是美元硬币（USDC）的发行方。"
+    }
+  },
+  "timestamp": 1790146790087,
+  "success": true
+}

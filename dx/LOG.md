@@ -224,3 +224,11 @@ These came from desk research, not from our own use. **None of them go in the re
 - Time lost: 2
 - Severity: annoyance
 - Suggestion:
+
+### 2026-09-23 07:00 UTC · claude (laptop over VPN) · Web3 API / trading docs
+- Did: `pnpm probe prices` (a $100 USDT buy quote, `GET /api/v1/dex/aggregator/quote`, for all 15 registry tokens), compared with the 22 Sep 11:29 run. Raw: `fixtures/web3/aggregator-quote-*-100usd-20260923T06*.json` and `-20260922T11*.json`
+- Expected: per the Trading API docs, equity tokens trade via RFQ (`order/submit`, EIP-712, settlement polling); Ondo via multi-vendor RFQ, bStocks via LiquidMesh or PcsXRfq
+- Actual: all 10 bStocks and Ondo quotes return `"vendorName":"LiquidMesh"`, `"executionMode":"SWAP"`. The filling venue in `dexRouterList[].dexProtocol.dexName` changes between runs for the same token: MSTRB `Metric` → `Rfq Neptunex`, NVDAB `Kipseli` → `Metric`, NVDAon `Rfq Halfmoon` → `Metric`, QQQB `Metric` and `Fluxpool V2` one minute apart. `PcsXRfq` never appeared. The response does not say whether a `SWAP`-mode quote on an equity token needs the RFQ order flow to execute.
+- Time lost: 15
+- Severity: slowed us
+- Suggestion:

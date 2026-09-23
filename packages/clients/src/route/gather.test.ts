@@ -15,7 +15,7 @@ const nvda = instruments.find((i) => i.ticker === 'NVDA')!;
 const [nvdab, nvdaon, nvdax] = nvda.venues as [(typeof nvda.venues)[0], (typeof nvda.venues)[0], (typeof nvda.venues)[0]];
 const ok = <T>(data: T): Web3Response<T> => ({ data, envelope: {}, httpStatus: 200, latencyMs: 1 });
 // 500 USDT in (18 decimals) for 2.18 tokens out (18 decimals): 229.36 USD per token.
-const quote = [{ vendorName: 'LiquidMesh', fromTokenAmount: '500000000000000000000', toTokenAmount: '2180000000000000000', fromToken: { decimal: '18' }, toToken: { decimal: '18' } }];
+const quote = [{ vendorName: 'LiquidMesh', dexRouterList: [{ dexProtocol: { dexName: 'Rfq Halfmoon', percent: '100.00' } }], fromTokenAmount: '500000000000000000000', toTokenAmount: '2180000000000000000', fromToken: { decimal: '18' }, toToken: { decimal: '18' } }];
 
 function fakeWeb3(opts: { rwaFails?: boolean; quoteCode?: string }): Web3Client {
   return {
@@ -46,7 +46,7 @@ describe('gatherRouteInputs', () => {
     expect(v.ondo?.shareRatio).toBeCloseTo(229.6 / 229.2);
     expect(v.xstocks?.shareRatio).toBe(1);
     expect(v.ondo?.execPxAtAmount).toBeCloseTo(500 / 2.18);
-    expect(v.ondo?.quoteVendor).toBe('LiquidMesh');
+    expect(v.ondo?.quoteVendor).toBe('LiquidMesh via Rfq Halfmoon');
   });
 
   it('excludes a quoted Ondo venue whose share ratio is unknown instead of assuming 1', async () => {

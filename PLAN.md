@@ -24,7 +24,8 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 - [x] `packages/clients/web3`: HMAC signing with the `/build` prefix, one rate limiter per endpoint, `OCResult` unwrapping, typed errors, and a hook that records every call for `api_calls`.
 - [x] `scripts/probe.ts` calls `rwa/platforms`, `rwa/tokens`, `rwa/search`, `rwa/price`, `rwa/underlying-market`, `market/price`, and an aggregator quote for every candidate venue, saving each response to `fixtures/`. (22 Sep 11:28 UTC: first signed call; 106 fixtures in `fixtures/web3/`.)
 - [x] Unverified items 1, 2 and 3 in `docs/RESEARCH.md` answered with fixture evidence. (1: `referencePrice` is derived. 2: prices are per raw token; ratio from `tokenToShareRatio`. 3: yes, all listed; xStocks illiquid.)
-- [ ] `instruments.json` written: 5 instruments, up to 3 venues each, addresses and execution paths confirmed.
+- [x] `instruments.json` written: 5 instruments, up to 3 venues each, addresses and execution paths confirmed.
+  - 23 Sep 06:59 UTC, `pnpm probe prices`: execution paths are per quote, not per issuer. All 10 bStocks and Ondo tokens quote as LiquidMesh `SWAP`, filled by an RFQ maker or an AMM-style pool that varies between quotes; all 5 xStocks `40374`. Details in `docs/RESEARCH.md` (Trading). The registry `path` stays as the issuer's documented path; `quote_route` now names the actual filling venue.
   - 22 Sep: written by `pnpm registry` from the `bapi` fixtures. NVDA, TSLA, QQQ, CRCL, and **MSTR as the fifth** (team decision; it tracks Bitcoin, which trades all weekend). All 15 addresses confirmed on-chain (`symbol()`, `decimals()`). Execution paths not yet confirmed: `baw` quoted NVDAB and NVDAon; NVDAx had no liquidity pre-market. The probe's `prices` phase checks the rest once API keys arrive.
 - [x] closing-bell-agent README read; differences noted in `SPEC.md` section 12.
 
@@ -56,7 +57,7 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 ### T6 · Terminal design and shell · C · Mon 21 to Sun 27
 - [ ] Screens designed: instrument page, route panel, week clock, `/tape`. (22 Sep: first three built as a working shell; `/tape` is a placeholder until weekend-1 data.)
 - [x] Next.js shell rendering the instrument page from saved fixtures (no live backend needed). (`apps/web`, 22 Sep. `pnpm --filter web dev`, then `/s/NVDA`; add `?at=2026-09-26T10:12:00Z` to preview a closed-market state.)
-- [ ] README draft and demo storyboard started.
+- [x] README draft and demo storyboard started. (23 Sep: README matches what works today, with install lines, tools, safety design and verified findings; `docs/storyboard.md` maps SPEC section 10 to what exists, with open items marked.)
 
 **Checkpoint, Sun 27 Sep:** Tape has at least 72 hours of data including a weekend. The CLI quotes all 5 instruments. The shell renders.
 

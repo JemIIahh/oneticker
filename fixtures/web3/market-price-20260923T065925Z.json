@@ -1,0 +1,98 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": [
+    {
+      "binanceChainId": "56",
+      "tokenContractAddress": "0x02fca66c1d1afb4e2a7884261eb00f63598a7436",
+      "price": "228.89",
+      "time": 1790146764631
+    },
+    {
+      "binanceChainId": "56",
+      "tokenContractAddress": "0xa9ee28c80f960b889dfbd1902055218cba016f75",
+      "price": "229.239426364545251774",
+      "time": 1790146760628
+    },
+    {
+      "binanceChainId": "56",
+      "tokenContractAddress": "0xc845b2894dbddd03858fd2d643b4ef725fe0849d",
+      "price": "226.565390020320031841313297186531632116",
+      "time": 1790053212000
+    },
+    {
+      "binanceChainId": "56",
+      "tokenContractAddress": "0x5b1910eaad6450e50f816082aa078c41f10c292f",
+      "price": "379.42",
+      "time": 1790146764633
+    },
+    {
+      "binanceChainId": "56",
+      "tokenContractAddress": "0x2494b603319d4d9f9715c9f4496d9e0364b59d93",
+      "price": "379.251081",
+      "time": 1790146760177
+    },
+    {
+      "binanceChainId": "56",
+      "tokenContractAddress": "0x8ad3c73f833d3f9a523ab01476625f269aeb7cf0",
+      "price": "375.675439270945079833286863199148595389",
+      "time": 1790001381000
+    },
+    {
+      "binanceChainId": "56",
+      "tokenContractAddress": "0x205812cdbed920aff76c6580abd681a46d11efc7",
+      "price": "748.26",
+      "time": 1790146761654
+    },
+    {
+      "binanceChainId": "56",
+      "tokenContractAddress": "0x0cde6936d305d5b34667fc46425e852efd73559a",
+      "price": "751.104011504586956809",
+      "time": 1790146759890
+    },
+    {
+      "binanceChainId": "56",
+      "tokenContractAddress": "0xa753a7395cae905cd615da0b82a53e0560f250af",
+      "price": "721.035233395746683393",
+      "time": 1788920706000
+    },
+    {
+      "binanceChainId": "56",
+      "tokenContractAddress": "0x80f3d493ebce97e343c53d29a137942416b4ffc0",
+      "price": "95.19",
+      "time": 1790146760629
+    },
+    {
+      "binanceChainId": "56",
+      "tokenContractAddress": "0x992879cd8ce0c312d98648875b5a8d6d042cbf34",
+      "price": "95.129333",
+      "time": 1790146761366
+    },
+    {
+      "binanceChainId": "56",
+      "tokenContractAddress": "0xfebded1b0986a8ee107f5ab1a1c5a813491deceb",
+      "price": "95.0437828801044541799785221118150351",
+      "time": 1790106635000
+    },
+    {
+      "binanceChainId": "56",
+      "tokenContractAddress": "0xe87afb3076aeb0f9b14e368de8145ae6a2826a14",
+      "price": "170.83",
+      "time": 1790146764644
+    },
+    {
+      "binanceChainId": "56",
+      "tokenContractAddress": "0x7313ea16493b2f55054df0131a3a14b043ec8992",
+      "price": "170.828",
+      "time": 1790146760866
+    },
+    {
+      "binanceChainId": "56",
+      "tokenContractAddress": "0xae2f842ef90c0d5213259ab82639d5bbf649b08e",
+      "price": "138.856393745918896838404511193916025684",
+      "time": 1788849875000
+    }
+  ],
+  "timestamp": 1790146764905,
+  "success": true
+}

@@ -59,6 +59,8 @@ Base `https://web3.binance.com/build`. WebSocket `wss://web3-stream.binance.com/
 
 **Trading**: `/api/v1/dex/aggregator/` `quote`, `swap`, `quote-and-swap`, `approve-transaction`, `history`, `order/submit` (RFQ, equity tokens only), `order/{orderId}`. Routing by issuer: Ondo via multi-vendor RFQ; bStocks via LiquidMesh or PcsXRfq; xStocks via AMM pools. Integrator fee 0 to 5% on EVM.
 
+**Observed routing (verified 22 to 23 Sep, `fixtures/web3/aggregator-quote-*`):** every bStocks and Ondo quote has `vendorName: "LiquidMesh"` and `executionMode: "SWAP"`; `dexRouterList[].dexProtocol.dexName` names the filling venue and it changes between quotes for the same token. MSTRB: `Metric` (22 Sep 11:29) then `Rfq Neptunex` (23 Sep 06:59). NVDAB: `Kipseli` then `Metric`. NVDAon: `Rfq Halfmoon` then `Metric`. QQQB: `Metric` and `Fluxpool V2` one minute apart. TSLAon, QQQon, MSTRon: `Rfq Halfmoon` both days. xStocks: `40374` no liquidity both days. So the execution path is per quote, not per issuer; `quote_route` reports it as `LiquidMesh via <dexName>`. Not yet seen: `PcsXRfq`, or any `executionMode` other than `SWAP`.
+
 **Transaction**: `pre-transaction/simulate`, `broadcast-transaction`, `post-transaction/orders`, `gas-price`, `gas-limit`, `block-height`.
 
 **Wallet**: balances and history. **DeFi**: BSC only, 15 protocols readable, 10 transactable, 5 QPS.

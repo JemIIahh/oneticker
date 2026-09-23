@@ -43,6 +43,8 @@ interface MarketItem {
 }
 interface QuoteItem {
   vendorName: string;
+  /** The venue(s) actually filling the quote, e.g. "Rfq Halfmoon" or "Metric"; changes between quotes for one token. */
+  dexRouterList?: { dexProtocol?: { dexName?: string; percent?: string } }[];
   fromTokenAmount: string;
   toTokenAmount: string;
   fromToken: { decimal: string };
@@ -122,7 +124,8 @@ async function fetchQuote(
     const from = Number(q.fromTokenAmount) / 10 ** Number(q.fromToken.decimal);
     const to = Number(q.toTokenAmount) / 10 ** Number(q.toToken.decimal);
     if (from <= 0 || to <= 0) return { code: 'NO_QUOTE' };
-    return { pxPerToken: buy ? from / to : to / from, vendor: q.vendorName };
+    const dexes = (q.dexRouterList ?? []).map((r) => r.dexProtocol?.dexName).filter((n): n is string => Boolean(n));
+    return { pxPerToken: buy ? from / to : to / from, vendor: dexes.length > 0 ? `${q.vendorName} via ${[...new Set(dexes)].join(' + ')}` : q.vendorName };
   } catch (error) {
     if (error instanceof Web3ApiError) return { code: error.code };
     throw error;

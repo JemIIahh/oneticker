@@ -1,0 +1,31 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "binanceChainId": "56",
+    "tokenContractAddress": "0x80f3d493ebce97e343c53d29a137942416b4ffc0",
+    "platformId": "bstock",
+    "underlyingTicker": "CRCL",
+    "underlyingFullName": "Circle Internet Group (bStocks)",
+    "assetType": 1,
+    "tokenToShareRatio": "1.000000000000000000",
+    "protections": {
+      "collateralReport": {
+        "supported": true,
+        "description": null,
+        "url": null
+      }
+    },
+    "companyInfo": {
+      "ceo": "Jeremy D. Allaire",
+      "website": "https://www.circle.com",
+      "industry": "Financial Services",
+      "conceptsEn": [],
+      "conceptsCn": [],
+      "description": "Circle Internet Group Inc is a financial technology firm engaged in digital currencies and public blockchains for payments, commerce, and financial applications. The company is the issuer of USD Coin (USDC).",
+      "descriptionZh": "Circle Internet Group Inc是一家金融科技公司，专注于数字货币和用于支付、商业及金融应用的公共区块链。该公司是美元硬币（USDC）的发行方。"
+    }
+  },
+  "timestamp": 1790146788092,
+  "success": true
+}
