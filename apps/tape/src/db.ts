@@ -36,6 +36,20 @@ CREATE TABLE IF NOT EXISTS snapshots (
 );
 CREATE INDEX IF NOT EXISTS snapshots_instrument_ts ON snapshots(instrument, ts);
 
+-- Per instrument per run: the Binance TradFi perpetual on the underlying (per share, 24/7).
+CREATE TABLE IF NOT EXISTS underlying (
+  id INTEGER PRIMARY KEY,
+  run_id INTEGER NOT NULL REFERENCES runs(id),
+  ts TEXT NOT NULL,
+  instrument TEXT NOT NULL,
+  perp_mark_px REAL,
+  perp_index_px REAL,
+  perp_funding_rate REAL,
+  perp_ts TEXT,
+  raw_json TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS underlying_instrument_ts ON underlying(instrument, ts);
+
 CREATE TABLE IF NOT EXISTS api_calls (
   id INTEGER PRIMARY KEY,
   ts TEXT NOT NULL,
@@ -59,6 +73,14 @@ CREATE TABLE IF NOT EXISTS events (
 CREATE INDEX IF NOT EXISTS events_ts ON events(ts);
 `;
 
+/** Columns added after the first deploy: ALTER TABLE on open, so the live database upgrades in place. */
+const ADDED_SNAPSHOT_COLUMNS: Record<string, string> = {
+  pool_px: 'REAL',
+  pool_depth_usd: 'REAL',
+  index_ts: 'TEXT',
+  cex_px: 'REAL',
+};
+
 /** One venue at one moment. Parsed columns stay null until fixtures confirm the response fields. */
 export interface SnapshotRow {
   ts: string;
@@ -76,7 +98,33 @@ export interface SnapshotRow {
   indexPx: number | null;
   indexFrozen: boolean | null;
   shareRatio: number | null;
+  /** PancakeSwap v3 pool mid price (USDT per raw token) and the thinner side's USD value; bStocks only. */
+  poolPx?: number | null;
+  poolDepthUsd?: number | null;
+  indexTs?: string | null;
+  /** Binance spot last price for the bStock pair, per raw token. */
+  cexPx?: number | null;
   raw: unknown;
+}
+
+export interface UnderlyingRow {
+  ts: string;
+  instrument: string;
+  perpMarkPx: number | null;
+  perpIndexPx: number | null;
+  perpFundingRate: number | null;
+  perpTs: string | null;
+  raw: unknown;
+}
+
+/** An underlying row as stored, without raw_json. */
+export interface StoredUnderlying {
+  ts: string;
+  instrument: string;
+  perp_mark_px: number | null;
+  perp_index_px: number | null;
+  perp_funding_rate: number | null;
+  perp_ts: string | null;
 }
 
 export interface EventRow {
@@ -106,9 +154,16 @@ export interface StoredSnapshot {
   index_px: number | null;
   index_frozen: number | null;
   share_ratio: number | null;
+  pool_px: number | null;
+  pool_depth_usd: number | null;
+  index_ts: string | null;
+  cex_px: number | null;
 }
 
-export type HistoryRow = Pick<StoredSnapshot, 'ts' | 'venue' | 'market_state' | 'onchain_px' | 'exec_px_100' | 'exec_px_1k' | 'exec_px_10k' | 'oracle_px' | 'oracle_updated_at' | 'share_ratio'>;
+export type HistoryRow = Pick<
+  StoredSnapshot,
+  'ts' | 'venue' | 'market_state' | 'onchain_px' | 'exec_px_100' | 'exec_px_1k' | 'exec_px_10k' | 'oracle_px' | 'oracle_updated_at' | 'share_ratio' | 'pool_px' | 'index_px' | 'cex_px'
+>;
 
 export interface RunRow {
   id: number;
@@ -128,14 +183,28 @@ export function openTape(path: string) {
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
   db.exec(SCHEMA);
+  const existing = new Set((db.prepare('PRAGMA table_info(snapshots)').all() as { name: string }[]).map((c) => c.name));
+  for (const [column, type] of Object.entries(ADDED_SNAPSHOT_COLUMNS)) {
+    if (!existing.has(column)) db.exec(`ALTER TABLE snapshots ADD COLUMN ${column} ${type}`);
+  }
 
   const insertRun = db.prepare('INSERT INTO runs (started_at) VALUES (?)');
   const updateRun = db.prepare('UPDATE runs SET finished_at = ?, ok = ?, snapshots = ?, error = ? WHERE id = ?');
   const insertSnapshot = db.prepare(`
     INSERT INTO snapshots (run_id, ts, instrument, venue, market_state, reference_px, reference_ts, onchain_px,
-      exec_px_100, exec_px_1k, exec_px_10k, oracle_px, oracle_updated_at, index_px, index_frozen, share_ratio, raw_json)
+      exec_px_100, exec_px_1k, exec_px_10k, oracle_px, oracle_updated_at, index_px, index_frozen, share_ratio,
+      pool_px, pool_depth_usd, index_ts, cex_px, raw_json)
     VALUES (@runId, @ts, @instrument, @venue, @marketState, @referencePx, @referenceTs, @onchainPx,
-      @execPx100, @execPx1k, @execPx10k, @oraclePx, @oracleUpdatedAt, @indexPx, @indexFrozen, @shareRatio, @rawJson)`);
+      @execPx100, @execPx1k, @execPx10k, @oraclePx, @oracleUpdatedAt, @indexPx, @indexFrozen, @shareRatio,
+      @poolPx, @poolDepthUsd, @indexTs, @cexPx, @rawJson)`);
+  const insertUnderlying = db.prepare(`
+    INSERT INTO underlying (run_id, ts, instrument, perp_mark_px, perp_index_px, perp_funding_rate, perp_ts, raw_json)
+    VALUES (@runId, @ts, @instrument, @perpMarkPx, @perpIndexPx, @perpFundingRate, @perpTs, @rawJson)`);
+  const latestUnderlying = db.prepare(`
+    SELECT ts, instrument, perp_mark_px, perp_index_px, perp_funding_rate, perp_ts FROM underlying
+    WHERE run_id = (SELECT MAX(run_id) FROM underlying) ORDER BY instrument`);
+  const underlyingSince = db.prepare(`
+    SELECT ts, instrument, perp_mark_px, perp_index_px, perp_funding_rate, perp_ts FROM underlying WHERE instrument = ? AND ts >= ? ORDER BY ts`);
   const insertApiCall = db.prepare(`
     INSERT INTO api_calls (ts, method, endpoint, http_status, latency_ms, error_code, bytes)
     VALUES (@ts, @method, @endpoint, @httpStatus, @latencyMs, @errorCode, @bytes)`);
@@ -147,7 +216,8 @@ export function openTape(path: string) {
     WHERE s.run_id = (SELECT MAX(run_id) FROM snapshots)
     ORDER BY s.instrument, s.venue`);
   const historySince = db.prepare(`
-    SELECT ts, venue, market_state, onchain_px, exec_px_100, exec_px_1k, exec_px_10k, oracle_px, oracle_updated_at, share_ratio
+    SELECT ts, venue, market_state, onchain_px, exec_px_100, exec_px_1k, exec_px_10k, oracle_px, oracle_updated_at, share_ratio,
+      pool_px, index_px, cex_px
     FROM snapshots WHERE instrument = ? AND ts >= ? ORDER BY ts`);
   const latestEvents = db.prepare(`SELECT instrument, venue, kind, detail FROM events WHERE ts = (SELECT MAX(ts) FROM snapshots)`);
   const latestRaw = db.prepare(`SELECT ts, raw_json FROM snapshots WHERE instrument = ? AND venue = ? ORDER BY id DESC LIMIT 1`);
@@ -167,11 +237,28 @@ export function openTape(path: string) {
     insertSnapshot(runId: number, row: SnapshotRow): void {
       const { raw, indexFrozen, ...rest } = row;
       insertSnapshot.run({
+        poolPx: null,
+        poolDepthUsd: null,
+        indexTs: null,
+        cexPx: null,
         ...rest,
         runId,
         indexFrozen: indexFrozen === null ? null : indexFrozen ? 1 : 0,
         rawJson: JSON.stringify(raw),
       });
+    },
+
+    insertUnderlying(runId: number, row: UnderlyingRow): void {
+      const { raw, ...rest } = row;
+      insertUnderlying.run({ ...rest, runId, rawJson: JSON.stringify(raw) });
+    },
+
+    latestUnderlying(): StoredUnderlying[] {
+      return latestUnderlying.all() as StoredUnderlying[];
+    },
+
+    underlyingSince(instrument: string, fromTs: string): StoredUnderlying[] {
+      return underlyingSince.all(instrument, fromTs) as StoredUnderlying[];
     },
 
     insertApiCall(call: ApiCall): void {

@@ -31,10 +31,10 @@ export async function runOnce({ db, instruments, collect, marketState, now = () 
 
   try {
     if (instruments.length === 0) throw new Error('registry is empty: fill packages/core/src/registry/instruments.json (T1)');
-    const results = await collect(instruments);
+    const { venues: results, underlyings } = await collect(instruments);
     const state = marketState?.(started) ?? null;
     db.raw.transaction(() => {
-      for (const { instrument, venue, oracle, multiplier, raw } of results) {
+      for (const { instrument, venue, oracle, multiplier, pool, index, spotPx, raw } of results) {
         const parsed = parseVenue(venue, raw);
         db.insertSnapshot(runId, {
           ts,
@@ -49,14 +49,29 @@ export async function runOnce({ db, instruments, collect, marketState, now = () 
           execPx10k: parsed.execPx['10000'],
           oraclePx: oracle?.price ?? null,
           oracleUpdatedAt: oracle?.updatedAt.toISOString() ?? null,
-          indexPx: null,
+          indexPx: index?.price ?? null,
           indexFrozen: null,
           shareRatio: multiplier?.multiplier ?? parsed.shareRatio ?? (venue.issuer === 'xstocks' ? 1 : null),
+          poolPx: pool?.pxPerToken ?? null,
+          poolDepthUsd: pool?.depthUsd ?? null,
+          indexTs: index?.at.toISOString() ?? null,
+          cexPx: spotPx,
           raw,
         });
         for (const [usd, code] of Object.entries(parsed.quoteErrors)) {
           db.insertEvent({ ts, instrument: instrument.id, venue: venue.issuer, kind: 'QUOTE_EXCLUDED', detail: `${code} at $${usd}` });
         }
+      }
+      for (const { instrument, perp, raw } of underlyings) {
+        db.insertUnderlying(runId, {
+          ts,
+          instrument: instrument.id,
+          perpMarkPx: perp?.markPrice ?? null,
+          perpIndexPx: perp?.indexPrice ?? null,
+          perpFundingRate: perp?.lastFundingRate ?? null,
+          perpTs: perp?.at.toISOString() ?? null,
+          raw,
+        });
       }
     })();
     snapshots = results.length;

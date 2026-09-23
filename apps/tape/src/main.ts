@@ -32,6 +32,7 @@ if (!web3) console.log('TAPE_WARN BINANCE_WEB3_API_KEY and BINANCE_WEB3_API_SECR
 const collect: Collect = createCollector({
   web3,
   chain: createBscClient(config.bscRpcUrl),
+  binance: { onCall: (call) => db.insertApiCall(call) },
   ...(config.quoteWallet ? { quoteWallet: config.quoteWallet } : {}),
 });
 

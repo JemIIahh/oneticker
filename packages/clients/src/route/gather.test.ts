@@ -6,6 +6,7 @@ import { gatherRouteInputs } from './gather';
 
 vi.mock('../chain', () => ({
   APRO_FEEDS_BSC: {},
+  USDT_BSC: '0x55d398326f99059fF775485246999027B3197955',
   readAproFeed: vi.fn(),
   readMultiplier: vi.fn(async () => ({ multiplier: 1.0007782237528078, pending: null })),
 }));

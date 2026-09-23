@@ -2,7 +2,7 @@
 //
 //   GET /health                                  -> { ok, lastRun }
 //   GET /api/latest                              -> newest run: every instrument and venue, plus quote exclusions
-//   GET /api/history?instrument=US:NVDA&hours=72 -> rows for one instrument, oldest first
+//   GET /api/history?instrument=US:NVDA&hours=72 -> rows (per venue) and underlying (perp) for one instrument, oldest first
 //   GET /api/raw?instrument=US:NVDA&venue=bstocks -> the newest raw responses for one venue
 
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
@@ -23,6 +23,7 @@ function json(res: ServerResponse, status: number, body: unknown): void {
 export function latestPayload(db: TapeDb, now = new Date()) {
   const rows = db.latestSnapshots();
   const events = db.latestEvents();
+  const underlying = db.latestUnderlying();
   const asOf = rows[0]?.ts ?? null;
   return {
     asOf,
@@ -32,6 +33,7 @@ export function latestPayload(db: TapeDb, now = new Date()) {
       id: instrument.id,
       ticker: instrument.ticker,
       name: instrument.name,
+      underlying: underlying.find((u) => u.instrument === instrument.id) ?? null,
       venues: instrument.venues.map((venue) => {
         const row = rows.find((r) => r.instrument === instrument.id && r.venue === venue.issuer) ?? null;
         const exclusions = events.filter((e) => e.instrument === instrument.id && e.venue === venue.issuer && e.kind === 'QUOTE_EXCLUDED').map((e) => e.detail);
@@ -55,7 +57,7 @@ export function handle(db: TapeDb, req: IncomingMessage, res: ServerResponse): v
     if (!instruments.some((i) => i.id === instrument)) return json(res, 400, { error: `unknown instrument; one of ${instruments.map((i) => i.id).join(', ')}` });
     const hours = Math.min(MAX_HOURS, Math.max(1, Number(url.searchParams.get('hours') ?? 72) || 72));
     const from = new Date(Date.now() - hours * 3_600_000).toISOString();
-    return json(res, 200, { instrument, from, rows: db.historySince(instrument, from) });
+    return json(res, 200, { instrument, from, rows: db.historySince(instrument, from), underlying: db.underlyingSince(instrument, from) });
   }
   if (url.pathname === '/api/raw') {
     const instrument = url.searchParams.get('instrument') ?? '';

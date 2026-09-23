@@ -35,7 +35,7 @@ function fakeWeb3(fail: (endpoint: string, query: Query) => boolean = () => fals
 describe('createCollector', () => {
   it('batches rwa/price, skips RWA endpoints for xStocks, and quotes three notionals per venue', async () => {
     const { web3, calls } = fakeWeb3();
-    const results = await createCollector({ web3, chain: null, quoteWallet: '0xwallet' })([NVDA]);
+    const { venues: results } = await createCollector({ web3, chain: null, quoteWallet: '0xwallet' })([NVDA]);
 
     expect(calls.map((c) => c.endpoint)).toEqual([
       '/api/v1/dex/market/rwa/price',
@@ -60,7 +60,7 @@ describe('createCollector', () => {
 
   it('keeps API errors as data instead of failing the run', async () => {
     const { web3 } = fakeWeb3((endpoint, query) => endpoint.endsWith('/quote') && query.toTokenAddress === NVDA.venues[0]!.address);
-    const results = await createCollector({ web3, chain: null })([NVDA]);
+    const { venues: results } = await createCollector({ web3, chain: null })([NVDA]);
 
     const bstocks = results.find((r) => r.venue.issuer === 'bstocks')!;
     expect(bstocks.raw.quotes['100']).toMatchObject({ ok: false, code: '40369', httpStatus: 200, response: { code: 40369 } });
@@ -79,7 +79,7 @@ describe('createCollector', () => {
           effectiveAt: 0n,
         })[functionName],
     } as unknown as PublicClient;
-    const results = await createCollector({ web3: null, chain, now: () => new Date('2026-09-22T10:58:15.673Z') })([NVDA]);
+    const { venues: results } = await createCollector({ web3: null, chain, now: () => new Date('2026-09-22T10:58:15.673Z') })([NVDA]);
 
     const bstocks = results.find((r) => r.venue.issuer === 'bstocks')!;
     expect(bstocks.raw.rwaPrice).toMatchObject({ ok: false, code: 'NO_API_KEYS' });
@@ -98,7 +98,7 @@ describe('createCollector', () => {
         throw new Error('HTTP request failed');
       },
     } as unknown as PublicClient;
-    const results = await createCollector({ web3: null, chain })([NVDA]);
+    const { venues: results } = await createCollector({ web3: null, chain })([NVDA]);
     const bstocks = results.find((r) => r.venue.issuer === 'bstocks')!;
     expect(bstocks.oracle).toBeNull();
     expect(bstocks.raw.oracle).toMatchObject({ error: expect.stringContaining('HTTP request failed') });

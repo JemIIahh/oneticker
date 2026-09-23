@@ -1,10 +1,20 @@
 import {
   APRO_FEEDS_BSC,
+  PANCAKE_POOLS_BSC,
   readAproFeed,
+  readCollateralIndex,
   readMultiplier,
+  readPerp,
+  readPool,
+  readSpotPrice,
   Web3ApiError,
+  type CollateralIndex,
   type MultiplierReading,
   type OracleReading,
+  type PerpReading,
+  type PoolReading,
+  type PublicCallOptions,
+  type PublicCaptured,
   type Web3Client,
   type Web3Response,
 } from '@oneticker/clients';
@@ -26,6 +36,11 @@ export interface VenueResult {
   /** Parsed on-chain surfaces (bStocks only). null when the venue has none or the read failed. */
   oracle: OracleReading | null;
   multiplier: MultiplierReading | null;
+  /** bStocks only: PancakeSwap v3 USDT pool, read from BSC. */
+  pool: PoolReading | null;
+  /** bStocks only: Binance's collateral index and spot last price for the bStock pair (per token). */
+  index: CollateralIndex | null;
+  spotPx: number | null;
   raw: {
     rwaPrice: Captured | null;
     marketPrice: Captured | null;
@@ -33,10 +48,25 @@ export interface VenueResult {
     quotes: Record<string, Captured>;
     oracle: OracleReading | { error: string } | null;
     multiplier: MultiplierReading | { error: string } | null;
+    pool?: PoolReading | { error: string } | null;
+    index?: PublicCaptured<unknown> | null;
+    spot?: PublicCaptured<unknown> | null;
   };
 }
 
-export type Collect = (instruments: readonly Instrument[]) => Promise<VenueResult[]>;
+/** Per instrument, not per venue: the Binance TradFi perpetual on the underlying stock (per share, trades 24/7). */
+export interface UnderlyingResult {
+  instrument: Instrument;
+  perp: PerpReading | null;
+  raw: { perp: PublicCaptured<unknown> | null };
+}
+
+export interface CollectResult {
+  venues: VenueResult[];
+  underlyings: UnderlyingResult[];
+}
+
+export type Collect = (instruments: readonly Instrument[]) => Promise<CollectResult>;
 
 async function capture(call: () => Promise<Web3Response<unknown>>): Promise<Captured> {
   const at = new Date().toISOString();
@@ -56,15 +86,18 @@ export interface CollectorOptions {
   chain: PublicClient | null;
   /** Receiver for RFQ quotes (Ondo, bStocks); the hot wallet address. */
   quoteWallet?: string;
+  /** Unauthenticated Binance reads (collateral index, spot, perps). Omitted: not read (tests, or a host that is blocked). */
+  binance?: PublicCallOptions;
   now?: () => Date;
 }
 
 /**
  * Raw collection for one run: one batched rwa/price, underlying-market per RWA venue, a USDT buy quote at each
- * notional for every venue, and for bStocks the APRO oracle and BEP-677 multiplier from BSC. Failures of any
- * single surface are data, not exceptions.
+ * notional for every venue; for bStocks the APRO oracle, BEP-677 multiplier and PancakeSwap pool from BSC, plus
+ * Binance's collateral index and spot price; and per instrument the Binance TradFi perp. Failures of any single
+ * surface are data, not exceptions.
  */
-export function createCollector({ web3, chain, quoteWallet, now = () => new Date() }: CollectorOptions): Collect {
+export function createCollector({ web3, chain, quoteWallet, binance, now = () => new Date() }: CollectorOptions): Collect {
   const get = (endpoint: string, query: Record<string, string | undefined>) => (web3 ? capture(() => web3.get(endpoint, query)) : Promise.resolve(noKeys()));
   const post = (endpoint: string, body: unknown) => (web3 ? capture(() => web3.post(endpoint, body)) : Promise.resolve(noKeys()));
 
@@ -113,8 +146,50 @@ export function createCollector({ web3, chain, quoteWallet, now = () => new Date
         }
       }
 
-      results.push({ instrument, venue, oracle, multiplier, raw: { rwaPrice: rwa ? rwaPrice : null, marketPrice, underlyingMarket, quotes, oracle: rawOracle, multiplier: rawMultiplier } });
+      let pool: PoolReading | null = null;
+      let rawPool: VenueResult['raw']['pool'] = null;
+      const poolRef = PANCAKE_POOLS_BSC[venue.symbol];
+      if (chain && poolRef) {
+        try {
+          pool = await readPool(chain, poolRef.pool, poolRef.fee, venue.address);
+          rawPool = pool;
+        } catch (error) {
+          rawPool = { error: String(error) };
+        }
+      }
+
+      let index: CollateralIndex | null = null;
+      let spotPx: number | null = null;
+      let rawIndex: PublicCaptured<unknown> | null = null;
+      let rawSpot: PublicCaptured<unknown> | null = null;
+      if (binance && venue.issuer === 'bstocks') {
+        const pair = `${venue.symbol}USDT`;
+        const [i, sp] = await Promise.all([readCollateralIndex(pair, binance), readSpotPrice(pair, binance)]);
+        index = i.value;
+        spotPx = sp.value;
+        rawIndex = i.raw;
+        rawSpot = sp.raw;
+      }
+
+      results.push({
+        instrument,
+        venue,
+        oracle,
+        multiplier,
+        pool,
+        index,
+        spotPx,
+        raw: { rwaPrice: rwa ? rwaPrice : null, marketPrice, underlyingMarket, quotes, oracle: rawOracle, multiplier: rawMultiplier, pool: rawPool, index: rawIndex, spot: rawSpot },
+      });
     }
-    return results;
+
+    const underlyings: UnderlyingResult[] = [];
+    if (binance) {
+      for (const instrument of instruments) {
+        const { value, raw } = await readPerp(`${instrument.ticker}USDT`, binance);
+        underlyings.push({ instrument, perp: value, raw: { perp: raw } });
+      }
+    }
+    return { venues: results, underlyings };
   };
 }

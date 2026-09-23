@@ -200,3 +200,27 @@ These came from desk research, not from our own use. **None of them go in the re
 - Suggestion:
 - 13:33 UTC, Railway `europe-west4` (Amsterdam, run from 13:33): same `40304 Service not available due to compliance restriction`. All three Railway regions tried (US West, Singapore, Netherlands) are blocked; the laptop over a French VPN is not. The Web3 API docs do not list which server locations are allowed.
 - 13:44 UTC, laptop over a VPN exiting in Amsterdam (`AS393406 DigitalOcean`): `pnpm probe discover`, 12 signed calls, all `200` with `40304`. Same laptop and key over a French exit at 11:28: all `200` and `success: true`. The block follows the exit country.
+
+### 2026-09-22 23:08 UTC · claude (research agent, laptop) · docs / collateral index
+- Did: followed the FAQ "bStocks Tokenized Securities Collateral Index Price Methodology" (https://www.binance.com/en/support/faq/detail/131946c44eb5428fa249c639cc60e43b, updated 24 Jul 2026), which gives the constituents API as `/en/v1/constituents?symbol=TSLABUSDT`. Tried `https://api.binance.com/api/v3/constituents?symbol=TSLABUSDT`, `https://api.binance.com/sapi/v1/margin/constituents?symbol=TSLABUSDT`, then `https://fapi.binance.com/fapi/v1/constituents?symbol=TSLABUSDT`
+- Expected: the path in the FAQ to work on some Binance host
+- Actual: the FAQ path has no host and a wrong prefix. `api/v3/constituents` and `sapi/v1/margin/constituents`: HTTP 404. Only the futures host answers: `fapi/v1/constituents` returns the source list (binance_future, databento, dxfeed, kaiko, massive, pyth_pro) for the spot/margin symbol, with `"price":"-1"` for every source. Raw: `fixtures/binance/fapi-constituents-TSLABUSDT-20260922T231038Z.json`
+- Time lost: 10
+- Severity: slowed us
+- Suggestion:
+
+### 2026-09-22 23:10 UTC · claude (research agent, laptop over VPN) · docs / collateral index
+- Did: polled `https://www.binance.com/bapi/margin/v1/public/margin/price-index?symbol=TSLABUSDT` and `?symbol=NVDABUSDT` 4 times, 20 s apart, 23:10 to 23:12 UTC (US regular session closed at 20:00 UTC). This is the endpoint behind the web page `/en/margin/price-index`; it is not documented.
+- Expected: per the FAQ, the index "remain[s] fixed" while the US market is closed
+- Actual: it moved on every poll. TSLAB 378.832 → 378.839 → 378.825 → 378.834; NVDAB 228.399 → 228.406 → 228.393 → 228.400. It equals the TradFi perp's `indexPrice` from `https://fapi.binance.com/fapi/v1/premiumIndex?symbol=NVDAUSDT` (both 228.3985 at 23:13 UTC). Raw: `fixtures/binance/bapi-margin-price-index-*-20260922T2310*.json`, `fixtures/binance/fapi-premiumIndex-NVDAUSDT-20260922T230858Z.json`
+- Time lost: 0
+- Severity: annoyance
+- Suggestion:
+
+### 2026-09-22 23:09 UTC · claude (research agent, laptop) · Binance exchange API
+- Did: `curl 'https://api.binance.com/sapi/v1/margin/priceIndex?symbol=NVDABUSDT'`, `/sapi/v1/margin/crossMarginCollateralRatio`, `/sapi/v1/portfolio/collateralRate`, no API key
+- Expected: an error saying a key is required
+- Actual: all three return HTTP 400 `{"code":-2014,"msg":"API-key format invalid."}` with no key sent
+- Time lost: 2
+- Severity: annoyance
+- Suggestion:

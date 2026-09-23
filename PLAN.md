@@ -46,7 +46,7 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 - [x] Market calendar and state engine with unit tests at 10 or more boundary timestamps (Friday close, Sunday 20:00 ET, pre-market open, DST offset). `packages/core/src/market`, 17 boundary cases plus holiday and early close; wired into the Tape's `market_state`.
 - [ ] SEP normalization per venue. During market hours, NVDA SEP across all venues lands within a sane band of the reference.
 - [x] APRO reader (B): feed addresses found, `answer` and `updatedAt` read; unverified item 6 answered. (22 Sep: `packages/clients/src/chain/`, plus a BEP-677 multiplier reader; both recorded by the Tape every 5 minutes, keys or no keys. MSTRB has no APRO feed.)
-- [ ] Collateral index surface (B), if a public endpoint exists; unverified item 7 answered either way.
+- [x] Collateral index surface (B), if a public endpoint exists; unverified item 7 answered either way. (22 Sep: yes, an undocumented `bapi` endpoint, not frozen 3 h after a weekday close; see `docs/RESEARCH.md` item 7. The Tape now records it (`index_px`), plus Binance spot (`cex_px`), the PancakeSwap v3 pool price and depth read from BSC (`pool_px`, `pool_depth_usd`; works even where Binance blocks us), and per instrument the TradFi perp (`underlying` table).)
 
 ### T5 · Router and CLI · A · Fri 25 to Sun 27
 - [x] `quote_route` logic: quote every venue, rank by net SEP, map error codes to exclusions (SPEC 3.6). (Built early, 22 Sep: `packages/core/src/router/quote.ts`, pure and unit-tested — 10 tests — ready to reuse for the T8 MCP tool.)

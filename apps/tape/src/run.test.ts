@@ -22,16 +22,21 @@ describe('runOnce', () => {
 
   it('writes one snapshot per venue with its raw data and a successful run', async () => {
     db = openTape(':memory:');
-    const collect: Collect = async (instruments) =>
-      instruments.flatMap((instrument) =>
+    const collect: Collect = async (instruments) => ({
+      underlyings: [],
+      venues: instruments.flatMap((instrument) =>
         instrument.venues.map((venue) => ({
           instrument,
           venue,
           oracle: venue.issuer === 'bstocks' ? ({ price: 226.9, updatedAt: new Date('2026-09-26T10:25:55.000Z') } as never) : null,
           multiplier: venue.issuer === 'bstocks' ? ({ multiplier: 1.0007 } as never) : null,
+          pool: null,
+          index: null,
+          spotPx: null,
           raw: { rwaPrice: null, marketPrice: null, underlyingMarket: null, quotes: { '100': { at: 'x', ok: true as const, envelope: { symbol: venue.symbol } } }, oracle: null, multiplier: null },
         })),
-      );
+      ),
+    });
     const lines: string[] = [];
 
     const summary = await runOnce({ db, instruments: [NVDA], collect, marketState: () => 'WEEKEND', now: fixedNow('2026-09-26T12:00:00.000Z'), log: (l) => lines.push(l) });
@@ -55,6 +60,36 @@ describe('runOnce', () => {
     expect(lines[0]).toMatch(/^RUN \{/);
   });
 
+  it('writes pool, collateral index, spot and perp surfaces', async () => {
+    db = openTape(':memory:');
+    const bstocks = NVDA.venues[0]!;
+    const collect: Collect = async () => ({
+      venues: [
+        {
+          instrument: NVDA,
+          venue: bstocks,
+          oracle: null,
+          multiplier: null,
+          pool: { pxPerToken: 228.77, depthUsd: 1_815_636 } as never,
+          index: { symbol: 'NVDABUSDT', price: 228.3985, at: new Date('2026-09-22T23:10:46.000Z') },
+          spotPx: 228.35,
+          raw: { rwaPrice: null, marketPrice: null, underlyingMarket: null, quotes: {}, oracle: null, multiplier: null },
+        },
+      ],
+      underlyings: [
+        { instrument: NVDA, perp: { symbol: 'NVDAUSDT', markPrice: 228.52, indexPrice: 228.3985, lastFundingRate: 0.0002, at: new Date('2026-09-22T23:10:40.000Z') }, raw: { perp: null } },
+      ],
+    });
+
+    await runOnce({ db, instruments: [NVDA], collect, now: fixedNow('2026-09-22T23:15:00.000Z'), log: () => {} });
+
+    expect(db.latestSnapshots()[0]).toMatchObject({ pool_px: 228.77, pool_depth_usd: 1_815_636, index_px: 228.3985, index_ts: '2026-09-22T23:10:46.000Z', cex_px: 228.35 });
+    expect(db.latestUnderlying()).toEqual([
+      { ts: '2026-09-22T23:15:00.000Z', instrument: 'US:NVDA', perp_mark_px: 228.52, perp_index_px: 228.3985, perp_funding_rate: 0.0002, perp_ts: '2026-09-22T23:10:40.000Z' },
+    ]);
+    expect(db.historySince('US:NVDA', '2026-09-22T00:00:00.000Z')[0]).toMatchObject({ pool_px: 228.77, index_px: 228.3985, cex_px: 228.35 });
+  });
+
   it('records a failed run and a RUN_FAILED line when collection throws', async () => {
     db = openTape(':memory:');
     const lines: string[] = [];
@@ -71,7 +106,7 @@ describe('runOnce', () => {
 
   it('fails loudly when the registry is empty', async () => {
     db = openTape(':memory:');
-    const summary = await runOnce({ db, instruments: [], collect: async () => [], log: () => {} });
+    const summary = await runOnce({ db, instruments: [], collect: async () => ({ venues: [], underlyings: [] }), log: () => {} });
     expect(summary.error).toMatch(/registry is empty/);
   });
 });

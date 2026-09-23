@@ -4,11 +4,10 @@
 
 import { isRwaVenue, type Instrument, type RouteVenueInput, type Venue } from '@oneticker/core';
 import type { PublicClient } from 'viem';
-import { APRO_FEEDS_BSC, readAproFeed, readMultiplier } from '../chain';
+import { APRO_FEEDS_BSC, readAproFeed, readMultiplier, USDT_BSC } from '../chain';
 import { Web3ApiError, type Web3Client } from '../web3';
 
 const BSC = '56';
-export const USDT_BSC = '0x55d398326f99059fF775485246999027B3197955'; // BSC-USD, 18 decimals
 
 export interface GatherDeps {
   /** Null when no API keys are configured: every venue comes back excluded with NO_API_KEYS. */

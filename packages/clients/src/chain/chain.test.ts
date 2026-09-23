@@ -75,3 +75,14 @@ describe('readMultiplier', () => {
     await expect(readMultiplier(client, bep.token, now)).resolves.toMatchObject({ multiplier: 1, pending: null, raw: { newUIMultiplier: null, effectiveAt: null } });
   });
 });
+
+describe('priceFromSqrtX96', () => {
+  it('recovers the price from a PancakeSwap v3 sqrtPriceX96', async () => {
+    const { priceFromSqrtX96 } = await import('./pancake');
+    // 228.456 USDT per token, both 18 decimals: sqrt(228.456) * 2^96
+    const sqrt = BigInt(Math.round(Math.sqrt(228.456) * 2 ** 96));
+    expect(priceFromSqrtX96(sqrt, 18, 18)).toBeCloseTo(228.456, 6);
+    // Decimal adjustment: token0 with 6 decimals, token1 with 18.
+    expect(priceFromSqrtX96(sqrt, 6, 18)).toBeCloseTo(228.456e-12, 15);
+  });
+});
