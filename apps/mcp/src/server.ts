@@ -1,9 +1,10 @@
-// The OneTicker MCP server (T8, SPEC 4): read tools over one core. No tool here signs anything; execute_route
-// (T9) will live only in the local server and always preview first.
+// The OneTicker MCP server (T8, SPEC 4): read tools over one core, plus execute_route (T9) only when the local
+// stdio entry point passes execution deps. The HTTP server never has it.
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
+import { executeRouteTool, type ExecDeps } from './execute';
 import { checkGateTool, marketStateTool, priceSurfacesTool, quoteRouteTool, resolveTool, ToolError, type ToolDeps } from './tools';
 
 export const SERVER_INFO = { name: 'oneticker', version: '0.1.0' };
@@ -33,7 +34,8 @@ async function run(fn: () => unknown): Promise<CallToolResult> {
 const instrumentArg = z.string().min(1).max(64).describe('Ticker (NVDA), company name (nvidia), issuer token symbol (NVDAon) or BSC contract address');
 const READ_ONLY = { readOnlyHint: true, destructiveHint: false, idempotentHint: true } as const;
 
-export function createServer(deps: ToolDeps): McpServer {
+/** `exec` is passed only by the local stdio entry point; without it, execute_route does not exist on the server. */
+export function createServer(deps: ToolDeps, exec?: ExecDeps): McpServer {
   const server = new McpServer(SERVER_INFO, { instructions: INSTRUCTIONS });
 
   server.registerTool(
@@ -99,6 +101,27 @@ export function createServer(deps: ToolDeps): McpServer {
     },
     ({ routeId }) => run(() => checkGateTool(deps, routeId)),
   );
+
+  if (exec) {
+    server.registerTool(
+      'execute_route',
+      {
+        title: 'Execute a quoted route (local only)',
+        description:
+          `Trade a route from quote_route through the Binance Agentic Wallet. First call (no confirm) returns a preview: the route, its verdict, the wallet's own quote and how far it is from the routed price. Show it to the user. Only after they confirm, call again with confirm: true within 60s. ` +
+          `Refuses: BLOCK verdicts, CAUTION without acknowledgeCaution (set only after the user accepts the reasons), quotes older than 60s, amounts over the per-trade limit, and wallet quotes more than 50 bps worse than the routed price. Sends nothing unless EXEC_MODE=agentic-wallet.`,
+        inputSchema: {
+          routeId: z.string().regex(/^rt_[0-9a-f]{32}$/).describe('The routeId returned by quote_route'),
+          symbol: z.string().max(16).optional().describe('Token symbol of the route to trade (default: the best route)'),
+          confirm: z.boolean().optional().describe('true only after the user confirmed the preview'),
+          acknowledgeCaution: z.boolean().optional().describe('true only after the user accepted the CAUTION reasons'),
+          slippage: z.string().regex(/^(auto|\d+(\.\d+)?)$/).optional().describe('"auto" (default) or a percentage, e.g. "1"'),
+        },
+        annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
+      },
+      (args) => run(() => executeRouteTool(exec, args)),
+    );
+  }
 
   return server;
 }

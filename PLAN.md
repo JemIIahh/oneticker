@@ -79,8 +79,8 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
   - [ ] Claude desktop.
 
 ### T9 · Execution adapters · B · Mon 28 to Wed 30
-- [ ] Adapter interface, plus AgenticWalletAdapter or DirectSignerAdapter per the T2 decision.
-- [ ] `execute_route` in the local MCP server: preview first, execute only with `confirm: true`, $25 cap enforced.
+- [x] Adapter interface, plus AgenticWalletAdapter or DirectSignerAdapter per the T2 decision. (23 Sep: `packages/clients/src/execution/`; `baw` via `execFile`, no shell; the JSON envelope decides, not the exit code. DirectSignerAdapter not built.)
+- [x] `execute_route` in the local MCP server: preview first, execute only with `confirm: true`, $25 cap enforced. (23 Sep: stdio server only, never HTTP. Also refuses BLOCK, CAUTION without `acknowledgeCaution`, quotes over 60 s old, a confirm without a preview in the last 60 s, and a `baw` quote more than 50 bps worse per share than the routed price; one execution per preview; polls `market-order list` to FINISHED/FAILED and never reports a pending order as filled. Sends nothing unless `EXEC_MODE=agentic-wallet`. Live preview 23 Sep, about 06:55 UTC: NVDAon $10, `baw` quote 4.8 bps better than the route, confirm returned `not-sent` under `EXEC_MODE=preview`.)
 - [ ] AMM path working first, then RFQ.
 - [ ] **At least one real mainnet trade** of $25 or less; tx hash in `dx/LOG.md`. If RFQ fails, its blocker is documented with exact errors.
 
