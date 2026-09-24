@@ -6,7 +6,7 @@ export function MarketStatus({ clock, at = new Date(), className = '' }: { clock
   const open = clock.state === 'REGULAR';
   const wait = Math.max(0, Math.floor((new Date(clock.nextOpen).getTime() - at.getTime()) / 1000));
   return (
-    <p className={`flex shrink-0 items-center gap-2.5 whitespace-nowrap rounded-full border border-line bg-surface/60 px-3.5 py-1.5 text-sm backdrop-blur ${className}`}>
+    <p className={`flex shrink-0 items-center gap-2.5 whitespace-nowrap rounded-full border border-line bg-surface/60 h-9 px-3.5 text-sm backdrop-blur ${className}`}>
       <span className={`h-2 w-2 rounded-full ${open ? 'pulse bg-go' : 'bg-faint'}`} aria-hidden="true" />
       <span className="font-medium">
         <span className="sm:hidden">Market </span>

@@ -232,3 +232,12 @@ These came from desk research, not from our own use. **None of them go in the re
 - Time lost: 15
 - Severity: slowed us
 - Suggestion:
+
+### 2026-09-23 22:36 UTC · claude (Render, us-west) · Binance public API / geo-block
+- Did: the Tape's first run on Render (`https://oneticker.onrender.com`, origin `gcp-us-west1-1.origin.onrender.com`): `GET https://api.binance.com/api/v3/ticker/price?symbol=NVDABUSDT`, `GET https://fapi.binance.com/fapi/v1/premiumIndex?symbol=NVDAUSDT`, `GET https://www.binance.com/bapi/margin/v1/public/margin/price-index?symbol=NVDABUSDT`. Raw: `https://oneticker.onrender.com/api/raw?instrument=US:NVDA&venue=bstocks`
+- Expected: the same public market data as from the laptop
+- Actual: `api.binance.com` HTTP 451 `{"code":0,"msg":"Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. ..."}`; the perp endpoint on `fapi.binance.com` returned no data. The `www.binance.com/bapi` collateral index answered 200 from the same host. So three Binance hosts give three different answers to one US server: 451, blocked, and allowed.
+- Time lost: 10
+- Severity: slowed us
+- Suggestion:
+- 2026-09-24 11:31 UTC, same Render service (still `gcp-us-west1`) with the Web3 API keys now set: `/api/v1/dex/market/rwa/price` and `/api/v1/dex/aggregator/quote` both HTTP 200 `{"code":40304,"msg":"Service not available due to compliance restriction","success":false}`; spot still 451. Same result as Railway `sfo` on 22 Sep: a US server gets 40304 from the Web3 API with valid keys.

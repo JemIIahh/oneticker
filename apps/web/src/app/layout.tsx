@@ -3,6 +3,7 @@ import { Bricolage_Grotesque, Instrument_Sans } from 'next/font/google';
 import Link from 'next/link';
 import { marketClock } from '@oneticker/core';
 import { MarketStatus } from '@/components/MarketStatus';
+import { NavLinks } from '@/components/NavLinks';
 import './globals.css';
 
 const display = Bricolage_Grotesque({ subsets: ['latin'], weight: ['500', '600', '700'], variable: '--font-display-face' });
@@ -36,20 +37,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" data-theme={theme} className={`${display.variable} ${body.variable}`}>
       <body>
         <div className="sky" aria-hidden="true" />
-        <header className="mx-auto flex max-w-6xl items-center gap-4 px-4 pt-6 sm:gap-8 sm:px-6">
-          <Link href="/" className="flex items-center gap-2.5 font-display text-lg font-semibold tracking-[-0.02em]">
-            <Mark />
-            OneTicker
-          </Link>
-          <nav className="flex items-center gap-5 text-sm text-muted">
-            <Link href="/#stocks" className="hidden transition hover:text-ink sm:inline">
-              Stocks
+        <header className="sticky top-0 z-20 border-b border-line bg-bg/75 backdrop-blur-md">
+          <div className="mx-auto grid max-w-6xl grid-cols-[1fr_auto] items-center gap-3 px-4 py-3 sm:h-16 sm:py-0 sm:grid-cols-[1fr_auto_1fr] sm:px-6">
+            <Link href="/" className="flex items-center gap-2.5 justify-self-start font-display text-lg font-semibold tracking-[-0.02em]">
+              <Mark />
+              OneTicker
             </Link>
-            <Link href="/tape" className="transition hover:text-ink">
-              Tape
-            </Link>
-          </nav>
-          <MarketStatus clock={clock} className="ml-auto" />
+            <NavLinks className="hidden sm:flex" />
+            <MarketStatus clock={clock} className="justify-self-end" />
+            <NavLinks className="col-span-2 justify-self-start sm:hidden" />
+          </div>
         </header>
         <main className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">{children}</main>
         <footer className="mx-auto max-w-6xl px-4 pb-10 text-xs text-faint sm:px-6">Research software, not investment advice. Tokenized stocks are not available to US persons.</footer>
