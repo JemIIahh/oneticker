@@ -4,7 +4,7 @@ import { createAgenticWalletAdapter, createBscClient, createWeb3Client, gatherRo
 import type { ExecDeps, ExecMode } from './execute';
 import { RouteStore, type TapeLatest, type ToolDeps } from './tools';
 
-export const DEFAULT_TAPE_API_URL = 'https://tape-production-c409.up.railway.app';
+export const DEFAULT_TAPE_API_URL = 'http://localhost:8787';
 
 export function liveDeps(env: NodeJS.ProcessEnv = process.env): ToolDeps {
   const web3: Web3Client | null =

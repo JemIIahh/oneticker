@@ -1,0 +1,25 @@
+# The Tape in Docker, host-neutral. `docker compose up -d --build` from the repo root.
+# Values come from .env (compose reads it for interpolation). Only the variables the Tape reads are passed in,
+# so DIRECT_SIGNER_PRIVATE_KEY and the rest of .env never enter the container.
+services:
+  tape:
+    build:
+      context: .
+      dockerfile: apps/tape/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${TAPE_HOST_PORT:-8787}:8787"
+    environment:
+      TAPE_DB_PATH: /data/tape.sqlite
+      PORT: "8787"
+      TAPE_INTERVAL_SEC: ${TAPE_INTERVAL_SEC:-300}
+      TAPE_QUOTE_WALLET: ${TAPE_QUOTE_WALLET:-}
+      BINANCE_WEB3_API_KEY: ${BINANCE_WEB3_API_KEY:-}
+      BINANCE_WEB3_API_SECRET: ${BINANCE_WEB3_API_SECRET:-}
+      BINANCE_WEB3_BASE_URL: ${BINANCE_WEB3_BASE_URL:-https://web3.binance.com/build}
+      BSC_RPC_URL: ${BSC_RPC_URL:-https://bsc-dataseed.bnbchain.org}
+    volumes:
+      - tape-data:/data
+
+volumes:
+  tape-data:

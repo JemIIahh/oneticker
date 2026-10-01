@@ -1,4 +1,5 @@
-# The Tape on Fly.io (Paris). Built from the repo root: `fly deploy --config apps/tape/fly.toml`.
+# The Tape, host-neutral. Build context is the repo root: `docker compose up -d --build`, or on Fly.io
+# `fly deploy --config apps/tape/fly.toml` (apps/tape/fly.toml is parked until a host is chosen).
 FROM node:22-bookworm-slim AS base
 ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable && apt-get update && apt-get install -y --no-install-recommends python3 make g++ && rm -rf /var/lib/apt/lists/*

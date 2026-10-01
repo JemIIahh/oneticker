@@ -71,7 +71,8 @@ pnpm chain-probe               # read APRO feeds and BEP-677 multipliers from BS
 pnpm --filter tape once        # one logger run
 pnpm --filter tape start       # logger every 5 minutes (Railway start command)
 pnpm --filter tape check [day] # gap check for one UTC day; exit 1 on gaps
-pnpm --filter web dev          # web terminal; reads TAPE_API_URL (https://tape-production-c409.up.railway.app) or falls back to fixtures
+docker compose up -d --build   # the Tape in Docker on :8787, data in the tape-data volume (host not chosen yet; Railway trial ended 23 Sep)
+pnpm --filter web dev          # web terminal; reads TAPE_API_URL (http://localhost:8787 for the Docker Tape) or falls back to fixtures
 pnpm reach                     # can this host reach the Web3 API? (unsigned, no keys)
 pnpm --filter mcp dev          # MCP over Streamable HTTP on :3333/mcp (PORT to change); stdio: pnpm --filter mcp stdio
 pnpm --filter web dev

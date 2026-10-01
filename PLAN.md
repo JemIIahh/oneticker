@@ -18,6 +18,7 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 - [x] Public GitHub repo created with this package committed. https://github.com/JemIIahh/oneticker
 - [x] pnpm workspace scaffolded to match the layout in `CLAUDE.md`; `pnpm -r test` passes on empty packages.
 - [ ] Hosting chosen for always-on services (Railway, Fly, or a small VPS) and a Vercel project for the web terminal.
+  - Update 1 Oct: Railway trial ended 23 Sep (its Tape is gone); Render us-west (Andrew's) and Railway both get 40304 from the Web3 API. Decision: run the Tape in Docker (`docker compose up -d --build`) for now and pick a host later. `apps/tape/fly.toml` is parked.
   - Decided 21 Sep: **Railway** for always-on services, **Vercel** for the web terminal. Railway project `oneticker` created with a `tape` service (deploys `main` from GitHub, `/data` volume for SQLite, idles until T3). Vercel project still to create once `apps/web` exists (T6).
 
 ### T1 · Web3 API client and probe · A · Mon 21 to Tue 22
