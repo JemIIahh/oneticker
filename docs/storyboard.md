@@ -24,3 +24,15 @@ Decided by the data, from `docs/tape-findings.md` (weekend 2, Fri 2 Oct 20:00 to
 - The real difference was the issuer: at $1,000, Ondo was more than 10% above bStocks in 45% of weekend samples; xStocks never quoted.
 
 Say plainly that this is one partial weekend. The earlier lead ("pools 10 to 50 bps above the index on 22 Sep evening") was a single evening and is not what the weekend showed.
+
+## Recording checklist
+
+Do these in order before the first take. Binance's Web3 API only answers from some countries, so step 1 is not optional.
+
+1. VPN on, exit **France**. Check: `curl -s ipinfo.io/country` prints `FR`. Then `pnpm reach` should print status 401 (reachable), not a network error.
+2. Agentic Wallet: `baw wallet status --json`. If `UNCONNECTED`, run `baw auth signin --json`, open the `urlForWeb` link, scan it in the Binance app (Wallet tab, scan icon, top right), then `baw auth verify --qrCodeId <id> --json`. The session lasts 48 hours.
+3. The Tape: `docker compose up -d`. The web terminal: `pnpm --filter web dev`, then open `localhost:3456` (the root `.env` points `TAPE_API_URL` at the Tape on `localhost:8788`).
+4. MCP in Claude Code: `claude mcp add oneticker -- node "$PWD/apps/mcp/bin/oneticker-mcp.mjs"`. Prompt it with "what's the best way to buy $500 of nvidia right now?", then ask it to replay the verdict with `check_gate` using the `routeId`.
+5. CLI, all five tickers: `pnpm oneticker quote NVDA buy 500`, and the same for TSLA, QQQ, CRCL, MSTR.
+6. `/tape` in the web terminal: pick NVDA, then show the four cards.
+7. Execution: ask Claude Code to buy $10 of NVDAon. Show the `execute_route` preview. With `EXEC_MODE=preview`, a confirm returns `not-sent`. Only fund the wallet and switch `EXEC_MODE=agentic-wallet` if you decide to do the real trade; the cap is $25.
