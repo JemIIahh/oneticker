@@ -4,6 +4,8 @@
 
 A routing and safety layer for tokenized stocks on BNB Chain. Built for BNB Hack: Tokenized Stocks Edition.
 
+**Web terminal:** https://oneticker.vercel.app. Until a live price feed is hosted it shows saved quotes from 23 Sep and says so on every page; `/tape` shows what the recorder saw over a weekend.
+
 ## Status
 
 Checked on 6 October 2026. Each row points at the evidence.
@@ -15,7 +17,7 @@ Checked on 6 October 2026. Each row points at the evidence.
 | MCP server | Working: five read tools, plus a local `execute_route` that previews and sends nothing in `EXEC_MODE=preview`. 30 tests | [`apps/mcp`](apps/mcp) |
 | Wallet Skill | Written and tried twice in Claude Code: bare-ticker resolution and a CAUTION verdict pass. A BLOCK has not appeared live | [`skills/oneticker`](skills/oneticker), [`docs/skill-demo.md`](docs/skill-demo.md) |
 | The Tape | Recording since 22 Sep, with gaps. It ran on Railway until the trial ended on 23 Sep, then elsewhere, and it recorded about half of the possible runs over weekend 2 | [`docs/tape-findings.md`](docs/tape-findings.md) |
-| Web terminal | Built: route panel, stock pages, a 72-hour chart and `/tape`. Run it locally with `pnpm --filter web dev` | [`apps/web`](apps/web) |
+| Web terminal | Live at [oneticker.vercel.app](https://oneticker.vercel.app): route panel, stock pages and `/tape`. It shows saved quotes (labelled) until a live feed is hosted; run it against the Docker Tape with `pnpm --filter web dev` | [`apps/web`](apps/web) |
 | Mainnet trade | **None yet.** `EXEC_MODE=preview`, wallet unfunded | [`docs/RESEARCH.md`](docs/RESEARCH.md) |
 | Agent Studio agent, x402, intents | **Not built.** Cut for time | [`PLAN.md`](PLAN.md) |
 
