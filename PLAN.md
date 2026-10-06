@@ -53,7 +53,7 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 ### T5 · Router and CLI · A · Fri 25 to Sun 27
 - [x] `quote_route` logic: quote every venue, rank by net SEP, map error codes to exclusions (SPEC 3.6). (Built early, 22 Sep: `packages/core/src/router/quote.ts`, pure and unit-tested — 10 tests — ready to reuse for the T8 MCP tool.)
 - [x] `pnpm oneticker quote NVDA buy 500` prints ranked routes and exclusions for all 5 instruments. (`scripts/cli.ts`; both sides tested for NVDA and MSTR. Degrades to per-venue exclusions when the API is unreachable, which is all we could test today — no VPN connected during this run.)
-- [ ] Run it during market hours on Friday and again on Saturday. Save both outputs; this is the first look at off-hours behavior.
+- [x] Run it during market hours on Friday and again on Saturday. Save both outputs; this is the first look at off-hours behavior. (Friday and Saturday were missed. Instead, on Tue 6 Oct: an overnight baseline at 07:19 UTC, `docs/quotes/quotes-20261006T0719Z.txt`, and two US-open captures in REGULAR hours with live Binance quotes, `docs/quotes/quotes-20261006T1333Z.txt` and `docs/quotes/quotes-20261006T1336Z.txt`. The 13:33 run had transient failures for CRCL (NETWORK_ERROR) and MSTR (40103) over the VPN; both are kept as evidence and the 13:36 run is clean. A mid-session capture follows at 17:07 UTC.)
 
 ### T6 · Terminal design and shell · C · Mon 21 to Sun 27
 - [x] Screens designed: instrument page, route panel, week clock, `/tape`. (6 Oct: `/tape` now shows the weekend-2 finding with a chart, four stat cards and the coverage caveat; checked at 1280 and 500 px.)

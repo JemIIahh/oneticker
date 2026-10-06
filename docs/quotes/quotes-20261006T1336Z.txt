@@ -1,0 +1,63 @@
+# oneticker quote, buy $500, captured Tue 06 Oct 2026 13:36 UTC
+# exit country: FR
+
+NVDA  buy $500
+market: REGULAR
+reference: $241.2523 per share (Binance's derived price — not an independent quote)
+24/7 perp: $241.6100 per share (the live price while Wall Street is closed)
+1. NVDAon   ondo     $241.4310/share     +7 bps  GO  via LiquidMesh via Metric
+2. NVDAB    bstocks  $241.5085/share    +11 bps  GO  via LiquidMesh via Elfomofi + Uniswap V4 + Kipseli + Tessera V
+Excluded:
+  NVDAx    xstocks  No liquidity from any vendor right now (40374)
+
+---
+
+TSLA  buy $500
+market: REGULAR
+reference: $382.0800 per share (Binance's derived price — not an independent quote)
+24/7 perp: $382.2831 per share (the live price while Wall Street is closed)
+1. TSLAon   ondo     $381.7879/share     -8 bps  GO  via LiquidMesh via Rfq Native
+2. TSLAB    bstocks  $382.3224/share     +6 bps  GO  via LiquidMesh via Uniswap V3 + Rfq Neptunex + Metric + Pancakeswap V3
+Excluded:
+  TSLAx    xstocks  No liquidity from any vendor right now (40374)
+
+---
+
+QQQ  buy $500
+market: REGULAR
+reference: $759.0598 per share (Binance's derived price — not an independent quote)
+24/7 perp: $759.7624 per share (the live price while Wall Street is closed)
+1. QQQB     bstocks  $759.6428/share     +8 bps  GO  via LiquidMesh via Kipseli
+2. QQQon    ondo     $922.3320/share  +2151 bps  BLOCK  via LiquidMesh via Rfq Halfmoon + Pancakeswap V3
+     Paying 2151 bps over the last reference price
+     2077 bps of price impact at this size versus $100
+Excluded:
+  QQQx     xstocks  No liquidity from any vendor right now (40374)
+
+---
+
+CRCL  buy $500
+market: REGULAR
+reference: $84.8600 per share (Binance's derived price — not an independent quote)
+24/7 perp: not available
+1. CRCLB    bstocks  $85.0573/share    +23 bps  CAUTION  via LiquidMesh via Rfq Neptunex
+     Executable price is 131 bps away from the oracle
+2. CRCLon   ondo     $89.9515/share   +600 bps  BLOCK  via LiquidMesh via Rfq Halfmoon + Pancakeswap V3 + Uniswap V3
+     Paying 600 bps over the last reference price
+     447 bps of price impact at this size versus $100
+Excluded:
+  CRCLx    xstocks  No liquidity from any vendor right now (40374)
+
+---
+
+MSTR  buy $500
+market: REGULAR
+reference: $167.8600 per share (Binance's derived price — not an independent quote)
+24/7 perp: $168.1709 per share (the live price while Wall Street is closed)
+1. MSTRB    bstocks  $168.2458/share    +23 bps  GO  via LiquidMesh via Rfq Halfmoon + Pancakeswap V3 + Rfq Neptunex
+Excluded:
+  MSTRon   ondo     No liquidity from any vendor right now (40374)
+  MSTRx    xstocks  No liquidity from any vendor right now (40374)
+
+---
+

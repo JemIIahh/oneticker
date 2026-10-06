@@ -1,0 +1,62 @@
+# oneticker quote, buy $500, captured Tue 06 Oct 2026 13:33 UTC
+# exit country: FR
+
+NVDA  buy $500
+market: REGULAR
+reference: $242.0916 per share (Binance's derived price — not an independent quote)
+24/7 perp: $242.4300 per share (the live price while Wall Street is closed)
+1. NVDAB    bstocks  $242.0937/share     +0 bps  GO  via LiquidMesh via Kipseli
+2. NVDAon   ondo     $242.1215/share     +1 bps  GO  via LiquidMesh via Metric
+Excluded:
+  NVDAx    xstocks  No liquidity from any vendor right now (40374)
+
+---
+
+TSLA  buy $500
+market: REGULAR
+reference: $381.3300 per share (Binance's derived price — not an independent quote)
+24/7 perp: $381.5300 per share (the live price while Wall Street is closed)
+1. TSLAon   ondo     $380.9186/share    -11 bps  GO  via LiquidMesh via Rfq Native
+2. TSLAB    bstocks  $381.4197/share     +2 bps  GO  via LiquidMesh via Pancakeswap V3 + Tessera V
+Excluded:
+  TSLAx    xstocks  No liquidity from any vendor right now (40374)
+
+---
+
+QQQ  buy $500
+market: REGULAR
+reference: $759.3496 per share (Binance's derived price — not an independent quote)
+24/7 perp: $760.1100 per share (the live price while Wall Street is closed)
+1. QQQB     bstocks  $759.8824/share     +7 bps  GO  via LiquidMesh via Tessera V
+2. QQQon    ondo     $922.3320/share  +2146 bps  BLOCK  via LiquidMesh via Rfq Halfmoon + Pancakeswap V3
+     Paying 2146 bps over the last reference price
+     2076 bps of price impact at this size versus $100
+Excluded:
+  QQQx     xstocks  No liquidity from any vendor right now (40374)
+
+---
+
+CRCL  buy $500
+market: REGULAR
+reference: $84.7900 per share (Binance's derived price — not an independent quote)
+24/7 perp: $84.6947 per share (the live price while Wall Street is closed)
+No venue can quote right now.
+Excluded:
+  CRCLB    bstocks  Shares-per-token ratio unavailable, so this price cannot be compared per share (NO_SHARE_RATIO)
+  CRCLon   ondo     Quote service could not be reached (NETWORK_ERROR)
+  CRCLx    xstocks  Quote service could not be reached (NETWORK_ERROR)
+
+---
+
+MSTR  buy $500
+market: REGULAR
+reference: none available
+24/7 perp: not available
+1. MSTRB    bstocks  $168.4777/share          —  CAUTION  via LiquidMesh via Rfq Halfmoon + Topaz Cl + Pancakeswap V3
+     No reference price available
+Excluded:
+  MSTRon   ondo     Venue returned error 40103 (40103)
+  MSTRx    xstocks  Venue returned error 40103 (40103)
+
+---
+
