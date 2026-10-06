@@ -125,7 +125,7 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 ### T15 · Tape analysis · A and C · Mon 5 to Tue 6
 - [x] Analysis scripts: weekend premium per issuer, Sunday-night on-chain vs Monday open, oracle staleness, cross-issuer spreads. (`pnpm --filter tape analyze`, 6 Oct. Pool-vs-perp premium, oracle lag and age, and cross-issuer regret are done. Only bStocks has a pool, so no premium per issuer. Sunday night against Monday's open is not possible: no equity reference in the Tape, and the Monday open has no Binance data because the VPN was off.)
 - [x] `/tape` page (C) and a one-sentence headline finding with its chart. (6 Oct.)
-- [ ] `dx/metrics.md` generated from `api_calls`: p50 / p95 latency and error rate per endpoint, and error-code counts.
+- [x] `dx/metrics.md` generated from `api_calls`: p50 / p95 latency and error rate per endpoint, and error-code counts. (6 Oct: `pnpm --filter tape metrics`; two sections, neither from a clean hosted run, so the latency is labelled as not Binance's own. Regenerate from a hosted Tape's database once one runs.)
 
 ### T16 · Demo video · C · Wed 7 to Thu 8
 - [ ] 4:00 or shorter, following SPEC section 10. Uploaded unlisted.

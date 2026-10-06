@@ -133,7 +133,7 @@ The hackathon lists ten suggested builds. Three of them (cross-protocol arbitrag
 
 ## Developer Experience Report
 
-See [`dx/REPORT.md`](dx/REPORT.md). Raw, timestamped evidence is in [`dx/LOG.md`](dx/LOG.md); measured API latency and error rates will be in `dx/metrics.md`.
+See [`dx/REPORT.md`](dx/REPORT.md). Raw, timestamped evidence is in [`dx/LOG.md`](dx/LOG.md); measured API latency and error rates are in [`dx/metrics.md`](dx/metrics.md).
 
 ## Disclaimer
 

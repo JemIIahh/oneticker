@@ -9,7 +9,8 @@
     "once": "node --env-file-if-exists=../../.env --import tsx src/main.ts once",
     "start": "node --env-file-if-exists=../../.env --import tsx src/main.ts start",
     "check": "node --env-file-if-exists=../../.env --import tsx src/main.ts check",
-    "analyze": "node --env-file-if-exists=../../.env --import tsx src/analyze.ts"
+    "analyze": "node --env-file-if-exists=../../.env --import tsx src/analyze.ts",
+    "metrics": "node --env-file-if-exists=../../.env --import tsx src/metrics-cli.ts"
   },
   "dependencies": {
     "@oneticker/clients": "workspace:*",
