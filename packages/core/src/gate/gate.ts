@@ -40,14 +40,26 @@ export function checkGate(input: GateInput, policy: Policy = defaultPolicy): Gat
   if (input.halted) add('BLOCK', 'VENUE_HALTED', 'Venue is halted (corporate action or issuer pause)');
   if (input.multiplierPending) add('CAUTION', 'MULTIPLIER_PENDING', 'A BEP-677 multiplier change is scheduled; balances and prices will rescale');
 
+  // The 24/7 perp is the one live price of the stock while Wall Street is closed, so it is a second opinion then. It is
+  // skipped during the regular session, when a real reference exists and the perp only adds basis noise.
+  const perp = input.perpSep ?? null;
+  const perpGap = perp !== null && input.marketState !== 'REGULAR' ? bps(input.executableSep, perp) : null;
+  const perpGrade = perpGap !== null && policy.perpDivergenceBps ? grade(adverse(perpGap), policy.perpDivergenceBps) : 'GO';
+
   if (input.referenceSep === null) {
     add('CAUTION', 'REF_MISSING', 'No reference price available');
   } else {
     if (input.marketState !== 'REGULAR' && input.referenceAgeSec > policy.referenceAgeSec.caution) {
-      add('CAUTION', 'REF_STALE', `Reference price is ${formatDuration(input.referenceAgeSec)} old (US market ${input.marketState.toLowerCase()})`);
+      // When the perp has nothing to flag, say where the price sits against it, so a stale reference still carries information.
+      const perpNote = perpGap !== null && perpGrade === 'GO' ? `; the executable price is ${fmtBps(perpGap)} ${perpGap >= 0 ? 'above' : 'below'} the live 24/7 perp` : '';
+      add('CAUTION', 'REF_STALE', `Reference price is ${formatDuration(input.referenceAgeSec)} old (US market ${input.marketState.toLowerCase()})${perpNote}`);
     }
     const premium = adverse(bps(input.executableSep, input.referenceSep));
     add(grade(premium, policy.premiumBps), 'PREMIUM_HIGH', `${against} ${fmtBps(premium)} ${dir} the last reference price`);
+  }
+
+  if (perpGap !== null && perpGrade !== 'GO') {
+    add(perpGrade, 'PERP_DIVERGENCE', `${against} ${fmtBps(adverse(perpGap))} ${dir} the live 24/7 perp, the only price of the stock while the US market is closed`);
   }
 
   if (input.oracleSep !== null && input.oracleAgeSec !== null) {

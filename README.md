@@ -10,16 +10,16 @@ Checked on 6 October 2026. Each row points at the evidence.
 
 | Part | State | Evidence |
 |---|---|---|
-| Core library: registry, market clock, per-share prices, router, gate | Working. 62 tests, including a boundary test for every gate rule | [`packages/core`](packages/core) |
+| Core library: registry, market clock, per-share prices, router, gate | Working. 70 tests, including a boundary test for every gate rule | [`packages/core`](packages/core) |
 | CLI | Working: `pnpm oneticker quote NVDA buy 500` ranks routes and explains exclusions | [`scripts/cli.ts`](scripts/cli.ts) |
-| MCP server | Working: five read tools, plus a local `execute_route` that previews and sends nothing in `EXEC_MODE=preview`. 29 tests | [`apps/mcp`](apps/mcp) |
+| MCP server | Working: five read tools, plus a local `execute_route` that previews and sends nothing in `EXEC_MODE=preview`. 30 tests | [`apps/mcp`](apps/mcp) |
 | Wallet Skill | Written and tried twice in Claude Code: bare-ticker resolution and a CAUTION verdict pass. A BLOCK has not appeared live | [`skills/oneticker`](skills/oneticker), [`docs/skill-demo.md`](docs/skill-demo.md) |
 | The Tape | Recording since 22 Sep, with gaps. It ran on Railway until the trial ended on 23 Sep, then elsewhere, and it recorded about half of the possible runs over weekend 2 | [`docs/tape-findings.md`](docs/tape-findings.md) |
 | Web terminal | Built: route panel, stock pages, a 72-hour chart and `/tape`. Run it locally with `pnpm --filter web dev` | [`apps/web`](apps/web) |
 | Mainnet trade | **None yet.** `EXEC_MODE=preview`, wallet unfunded | [`docs/RESEARCH.md`](docs/RESEARCH.md) |
 | Agent Studio agent, x402, intents | **Not built.** Cut for time | [`PLAN.md`](PLAN.md) |
 
-166 tests pass across five packages (`pnpm -r test`).
+182 tests pass across five packages (`pnpm -r test`).
 
 ## The problem
 
@@ -29,7 +29,7 @@ Checked on 6 October 2026. Each row points at the evidence.
 
 ## What OneTicker does
 
-Give it a ticker and an amount. It resolves every issuer's token, normalizes prices to one share, quotes every execution path, tells you which venues cannot fill and why in plain English, and runs a deterministic safety gate that returns GO, CAUTION or BLOCK with reasons.
+Give it a ticker and an amount. It resolves every issuer's token, normalizes prices to one share, quotes every execution path, tells you which venues cannot fill and why in plain English, and runs a deterministic safety gate that returns GO, CAUTION or BLOCK with reasons, cross-checking against the live 24/7 perp while Wall Street is closed.
 
 Delivered from one core:
 
@@ -106,7 +106,7 @@ Each is verified against saved API responses; details and evidence in [`docs/RES
 - **xStocks on BSC have no liquidity.** All five tokens return `40374` for a $100 quote.
 - **The bStocks collateral index was not frozen after the close.** Binance's FAQ says it stays fixed while the US market is closed. On a weekday evening, three hours after the close, it moved on every poll. It equals the TradFi perp's index price.
 - **Ondo's quotes fall apart with size.** At $1,000 Ondo was more than 10% above bStocks in 45 to 64% of samples, and at $10,000 in 77 to 96%, routed through thin pools. Always choosing bStocks over Ondo cost about 2 bps on average.
-- **The gate's reference-age rule fires on 95% of closed-hour samples by itself.** With a last-close reference the verdict is CAUTION for nearly every closed hour whatever the prices do; replayed with the live perp as the reference it is GO in 99 to 100% of closed-hour samples. The default thresholds are guesses and this weekend never tested them.
+- **The gate's reference-age rule fires on 95% of closed-hour samples by itself.** With a last-close reference the verdict is CAUTION for nearly every closed hour whatever the prices do. So on 6 Oct the gate gained a cross-check against the live 24/7 perp while the US market is closed (`PERP_DIVERGENCE`, policy `default@2`): in the weekend data it fired on 2 of 1,933 closed-hour samples, and every stale-reference CAUTION now says how far the price sits from the perp. The thresholds (75 and 200 bps) are guesses; the weekend never tested them.
 - **The Web3 API geo-blocks by exit country, with an undocumented code.** `40304 "compliance restriction"` came back from US, Singapore and Netherlands servers, but not from a French exit.
 
 ## Where this fits

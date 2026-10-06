@@ -114,6 +114,34 @@ describe('quoteRoute', () => {
     expect(sell.routes[0]!.premiumBps).toBe(buy.routes[0]!.premiumBps);
   });
 
+  describe('the 24/7 perp', () => {
+    const SAT = new Date('2026-10-03T12:00:00.000Z'); // Saturday, US market closed
+    const input = (perpSep?: number | null) => ({
+      ticker: 'NVDA',
+      side: 'buy' as const,
+      amountUsd: 500,
+      referenceSep: 226.7,
+      now: SAT,
+      ...(perpSep === undefined ? {} : { perpSep }),
+      venues: [venue({ issuer: 'bstocks', symbol: 'NVDAB', execPxAtAmount: 227, execPxAt100: 227, oraclePxAtToken: 227, oracleAt: new Date(SAT.getTime() - 600_000) })],
+    });
+
+    it('gives each route its distance to the perp and feeds the gate', () => {
+      const result = quoteRoute(input(225)); // buying 227 against a 225 perp: about 89 bps over
+      expect(result.perpSep).toBe(225);
+      expect(result.routes[0]!.perpBps).toBeCloseTo(bps(227, 225), 6);
+      expect(result.routes[0]!.gate.reasons.map((r) => r.code)).toContain('PERP_DIVERGENCE');
+    });
+
+    it('with no perp, perpBps is null and the verdict is what it was before the rule existed', () => {
+      const without = quoteRoute(input());
+      expect(without.perpSep).toBeNull();
+      expect(without.routes[0]!.perpBps).toBeNull();
+      expect(without.routes[0]!.gate).toEqual(quoteRoute(input(null)).routes[0]!.gate);
+      expect(without.routes[0]!.gate.reasons.map((r) => r.code)).not.toContain('PERP_DIVERGENCE');
+    });
+  });
+
   it('reports onchain price and age per share', () => {
     const at = new Date(NOW.getTime() - 90_000);
     const result = quoteRoute({

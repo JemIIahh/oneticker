@@ -1,9 +1,10 @@
 {
-  "id": "default@1",
-  "note": "Starting thresholds from SPEC 3.5. Guesses until the Tape shows what normal looks like; retune in week three.",
+  "id": "default@2",
+  "note": "Starting thresholds from SPEC 3.5. Guesses until the Tape shows what normal looks like; retune in week three. default@2 adds the 24/7 perp cross-check (6 Oct): the largest gap to the perp in the first weekend's samples was 36 bps, so these two numbers are untested.",
   "referenceAgeSec": { "caution": 3600 },
   "premiumBps": { "caution": 75, "block": 200 },
   "oracleAgeSec": { "caution": 3600, "block": 7200 },
   "oracleDivergenceBps": { "caution": 100, "block": 300 },
-  "impactBps": { "caution": 50, "block": 150 }
+  "impactBps": { "caution": 50, "block": 150 },
+  "perpDivergenceBps": { "caution": 75, "block": 200 }
 }

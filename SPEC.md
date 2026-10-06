@@ -108,7 +108,7 @@ A deterministic, explainable policy. Input: a route and the latest snapshot. Out
     { "code": "REF_STALE", "detail": "Reference price is 38h 12m old (US market closed since Fri 16:00 ET)" },
     { "code": "PREMIUM_HIGH", "detail": "Paying 112 bps over the last reference price" }
   ],
-  "policy": "default@1"
+  "policy": "default@2"
 }
 ```
 
@@ -120,6 +120,7 @@ Starting policy. These thresholds are guesses until the Tape shows what normal l
 | Premium vs last reference | over 75 bps | over 200 bps |
 | Oracle age | over heartbeat (3,600s) | over 2x heartbeat |
 | Oracle vs executable divergence | over 100 bps | over 300 bps |
+| Price vs the live 24/7 perp, only while the market is closed (added 6 Oct, `default@2`) | over 75 bps adverse | over 200 bps adverse |
 | Price impact at requested size vs $100 | over 50 bps | over 150 bps |
 | Corporate action | multiplier change pending | venue halted |
 

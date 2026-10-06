@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { ApiCall } from '../web3';
-import { readCollateralIndex, readPerp, readSpotPrice } from './public';
+import { readCollateralIndex, readPerp, readPerpMark, readSpotPrice } from './public';
 
 const fixture = (name: string) => readFileSync(new URL(`../../../../fixtures/binance/${name}`, import.meta.url), 'utf8');
 const respond = (status: number, body: string): typeof fetch => async () => new Response(body, { status });
@@ -17,6 +17,11 @@ describe('public Binance readers (from fixtures/binance, 22 Sep 2026)', () => {
   it('parses the TradFi perp', async () => {
     const { value } = await readPerp('NVDAUSDT', { fetch: respond(200, fixture('fapi-premiumIndex-NVDAUSDT-20260922T230858Z.json')) });
     expect(value).toMatchObject({ symbol: 'NVDAUSDT', markPrice: 228.5, indexPrice: 228.41077025, lastFundingRate: 0.00020304 });
+  });
+
+  it('readPerpMark returns the mark price per share, and null when the host is blocked', async () => {
+    expect(await readPerpMark('NVDA', { fetch: respond(200, fixture('fapi-premiumIndex-NVDAUSDT-20260922T230858Z.json')) })).toBe(228.5);
+    expect(await readPerpMark('NVDA', { fetch: respond(451, '{"code":0,"msg":"restricted"}') })).toBeNull();
   });
 
   it('parses the spot ticker', async () => {

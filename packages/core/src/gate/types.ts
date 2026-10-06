@@ -8,6 +8,7 @@ export type ReasonCode =
   | 'PREMIUM_HIGH'
   | 'ORACLE_STALE'
   | 'ORACLE_DIVERGENCE'
+  | 'PERP_DIVERGENCE'
   | 'IMPACT_HIGH'
   | 'MULTIPLIER_PENDING'
   | 'VENUE_HALTED';
@@ -35,6 +36,8 @@ export interface Policy {
   oracleAgeSec: Threshold;
   oracleDivergenceBps: Threshold;
   impactBps: Threshold;
+  /** Executable price against the live 24/7 perp while the US market is closed. Optional: a policy without it skips the rule. */
+  perpDivergenceBps?: Threshold;
 }
 
 /** What the gate sees for one route. Every price is a share-equivalent price (SEP) in USD; null means unknown. */
@@ -50,6 +53,11 @@ export interface GateInput {
   executableSep100: number | null;
   oracleSep: number | null;
   oracleAgeSec: number | null;
+  /**
+   * SEP of the Binance TradFi perpetual on the stock, which trades 24/7. While the US market is closed it is the only live
+   * price of the stock. Absent or null means unknown: the rule is skipped and the verdict is unchanged.
+   */
+  perpSep?: number | null;
   multiplierPending: boolean;
   halted: boolean;
 }

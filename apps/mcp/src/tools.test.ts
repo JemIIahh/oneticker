@@ -34,6 +34,7 @@ function venue(overrides: Partial<RouteVenueInput>): RouteVenueInput {
 const gathered: Gathered = {
   referenceSep: 227.9,
   referenceSource: 'binance-derived',
+  perpSep: null,
   venues: [
     venue({ shareRatio: 1.0007782237528078 }),
     venue({ issuer: 'ondo', symbol: 'NVDAon', shareRatio: 1.0017152, execPxAtAmount: 229.1, execPxAt100: 229, oraclePxAtToken: null, oracleAt: null }),
@@ -104,6 +105,24 @@ describe('quote_route and check_gate', () => {
     expect(g.verdicts.find((v) => v.symbol === 'NVDAx')).toMatchObject({ status: 'excluded', verdict: null });
     expect(routeIdOf(q.input!)).toBe(q.routeId);
     expect(g).not.toHaveProperty('warning');
+  });
+
+  it('checks the price against the live 24/7 perp on a closed weekend, and replays it', async () => {
+    const withPerp: ToolDeps = { ...fakeDeps(SATURDAY), gather: async () => ({ ...structuredClone(gathered), perpSep: 226.5 }) };
+    const q = await quoteRouteTool(withPerp, { instrument: 'NVDA', side: 'buy', amountUsd: 500, includeInput: true });
+    expect(q.perpSep).toBe(226.5);
+    expect(q.input).toMatchObject({ perpSep: 226.5 });
+    const nvdab = q.routes.find((r) => r.symbol === 'NVDAB')!;
+    expect(nvdab.perpBps).toBeCloseTo(((228.5 / 1.0007782237528078) / 226.5 - 1) * 10_000, 6);
+    expect(nvdab.gate.reasons.map((r) => r.code)).toContain('PERP_DIVERGENCE');
+
+    const g = checkGateTool(withPerp, q.routeId);
+    expect(g.inputHashMatches).toBe(true);
+    expect(g.verdicts.find((v) => v.symbol === 'NVDAB')?.reasons).toEqual(nvdab.gate.reasons);
+
+    const without = await quoteRouteTool(fakeDeps(SATURDAY), { instrument: 'NVDA', side: 'buy', amountUsd: 500 });
+    expect(without.perpSep).toBeNull();
+    expect(without.routeId).not.toBe(q.routeId); // the perp is part of what the gate saw
   });
 
   it('warns when the replayed quote is stale', async () => {

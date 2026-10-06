@@ -33,6 +33,7 @@ interface Row {
   exec_px_1k: number | null;
   exec_px_10k: number | null;
   pool_px: number | null;
+  onchain_px: number | null;
   oracle_px: number | null;
   oracle_updated_at: string | null;
   perp_mark_px: number | null;
@@ -49,7 +50,7 @@ const to = arg('to') ?? '9999-12-31T00:00:00.000Z';
 
 const rows = db
   .prepare(
-    `SELECT s.run_id, s.ts, s.instrument, s.venue, s.share_ratio, s.exec_px_100, s.exec_px_1k, s.exec_px_10k, s.pool_px, s.oracle_px, s.oracle_updated_at, u.perp_mark_px
+    `SELECT s.run_id, s.ts, s.instrument, s.venue, s.share_ratio, s.exec_px_100, s.exec_px_1k, s.exec_px_10k, s.pool_px, s.onchain_px, s.oracle_px, s.oracle_updated_at, u.perp_mark_px
        FROM snapshots s LEFT JOIN underlying u ON u.run_id = s.run_id AND u.instrument = s.instrument
       WHERE s.ts >= ? AND s.ts <= ? ORDER BY s.ts`,
   )
@@ -65,6 +66,7 @@ for (const r of rows) {
     ratio: r.share_ratio,
     exec: { '100': r.exec_px_100, '1k': r.exec_px_1k, '10k': r.exec_px_10k },
     pool: r.pool_px,
+    onchainPx: r.onchain_px,
     oraclePx: r.oracle_px,
     oracleUpdatedAt: r.oracle_updated_at,
   };

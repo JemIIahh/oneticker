@@ -175,6 +175,7 @@ export async function quoteRouteTool(deps: ToolDeps, args: { instrument: string;
     side: args.side,
     amountUsd: args.amountUsd,
     referenceSep: gathered.referenceSep,
+    ...(gathered.perpSep !== null ? { perpSep: gathered.perpSep } : {}),
     venues: gathered.venues,
     now: deps.now(),
   };
@@ -200,6 +201,7 @@ function summarize(result: QuoteRouteResult) {
     marketState: result.clock.state,
     referenceAgeSec: result.clock.referenceAgeSec,
     referenceSep: result.referenceSep,
+    perpSep: result.perpSep,
     best: result.routes[0] ? { symbol: result.routes[0].symbol, issuer: result.routes[0].issuer, verdict: result.routes[0].gate.verdict } : null,
     routes: result.routes,
     excluded: result.excluded,

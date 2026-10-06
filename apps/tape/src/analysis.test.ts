@@ -7,7 +7,7 @@ const THU_OPEN = '2026-10-01T15:00:00.000Z';
 
 function venue(over: Partial<VenueSample> & { px?: number } = {}): VenueSample {
   const px = over.px ?? null;
-  return { ratio: 1, exec: { '100': px, '1k': px, '10k': px }, pool: null, oraclePx: null, oracleUpdatedAt: null, ...over };
+  return { ratio: 1, exec: { '100': px, '1k': px, '10k': px }, pool: null, onchainPx: null, oraclePx: null, oracleUpdatedAt: null, ...over };
 }
 const sample = (ts: string, venues: Sample['venues'], perp: number | null = null, instrument = 'US:NVDA'): Sample => ({ ts, instrument, perp, venues });
 
@@ -63,19 +63,28 @@ describe('analyze', () => {
     expect(f.oracleAgeMin.weekend.p50).toBe(30);
   });
 
-  it('replays the shipped gate on the cheapest $1,000 route with the perp as a live reference', () => {
-    const calm = sample(SAT, { bstocks: venue({ px: 100, oraclePx: 100, oracleUpdatedAt: '2026-10-03T11:50:00.000Z' }) }, 100);
-    const rich = sample(SAT, { bstocks: venue({ px: 103, oraclePx: 100, oracleUpdatedAt: '2026-10-03T11:50:00.000Z', exec: { '100': 100, '1k': 103, '10k': 103 } }) }, 100);
+  it('replays the shipped gate on the cheapest $1,000 route, perp cross-check included', () => {
+    const fresh = '2026-10-03T11:50:00.000Z';
+    const calm = sample(SAT, { bstocks: venue({ px: 100, onchainPx: 100, oraclePx: 100, oracleUpdatedAt: fresh }) }, 100);
+    const rich = sample(SAT, { bstocks: venue({ px: 103, onchainPx: 100, oraclePx: 100, oracleUpdatedAt: fresh, exec: { '100': 100, '1k': 103, '10k': 103 } }) }, 100);
     const f = analyze([calm, rich], 2);
     expect(f.gateReplay.weekend.n).toBe(2);
-    expect(f.gateReplay.weekend.verdicts.GO).toBe(1);
-    expect(f.gateReplay.weekend.verdicts.BLOCK).toBe(1); // 300 bps over the perp and over the oracle
-    expect(f.gateReplay.weekend.reasons.PREMIUM_HIGH).toBe(1);
+    expect(f.gateReplay.weekend.verdicts).toEqual({ GO: 0, CAUTION: 1, BLOCK: 1 }); // closed, so the stale reference cautions both
+    expect(f.gateReplay.weekend.reasons.REF_STALE).toBe(2);
+    expect(f.gateReplay.weekend.reasons.PERP_DIVERGENCE).toBe(1); // 300 bps over the perp
   });
 
-  it('skips the replay when there is no perp or no quote', () => {
-    const f = analyze([sample(SAT, { bstocks: venue({ px: 100 }) }, null), sample(SAT, { bstocks: venue() }, 100)], 2);
-    expect(f.gateReplay.weekend.n).toBe(0);
+  it('does not apply the perp rule during the regular session', () => {
+    const s = sample(THU_OPEN, { bstocks: venue({ px: 103, onchainPx: 103, exec: { '100': 103, '1k': 103, '10k': 103 } }) }, 100);
+    const f = analyze([s], 1);
+    expect(f.gateReplay.open.n).toBe(1);
+    expect(f.gateReplay.open.reasons.PERP_DIVERGENCE).toBeUndefined();
+  });
+
+  it('still replays when the perp is unknown, and skips samples with no quote', () => {
+    const f = analyze([sample(SAT, { bstocks: venue({ px: 100, onchainPx: 100 }) }, null), sample(SAT, { bstocks: venue() }, 100)], 2);
+    expect(f.gateReplay.weekend.n).toBe(1);
+    expect(f.gateReplay.weekend.reasons.PERP_DIVERGENCE).toBeUndefined();
   });
 
   it('flags an issuer that charges over 10% more than the cheaper one', () => {

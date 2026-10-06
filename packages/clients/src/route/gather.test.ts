@@ -2,7 +2,7 @@ import { instruments } from '@oneticker/core';
 import type { PublicClient } from 'viem';
 import { describe, expect, it, vi } from 'vitest';
 import { Web3ApiError, type Web3Client, type Web3Response } from '../web3';
-import { gatherRouteInputs } from './gather';
+import { gatherRouteInputs, type GatherDeps } from './gather';
 
 vi.mock('../chain', () => ({
   APRO_FEEDS_BSC: {},
@@ -59,6 +59,15 @@ describe('gatherRouteInputs', () => {
     const v = await byIssuer(fakeWeb3({ rwaFails: true, quoteCode: '40304' }));
     expect(v.ondo?.quoteError).toBe('40304');
     expect(v.bstocks?.quoteError).toBe('40304');
+  });
+
+  it('reads the perp alongside the prices, and leaves it null when it is not asked for or cannot be read', async () => {
+    const withPerp = (perp: GatherDeps['perp']) => gatherRouteInputs({ web3: null, chain: {} as PublicClient, ...(perp ? { perp } : {}) }, { instrument: nvda, side: 'buy', amountUsd: 500 });
+    expect((await withPerp(async (ticker) => (ticker === 'NVDA' ? 226.5 : null))).perpSep).toBe(226.5);
+    expect((await withPerp(undefined)).perpSep).toBeNull();
+    expect((await withPerp(async () => null)).perpSep).toBeNull();
+    expect((await withPerp(async () => Number.NaN)).perpSep).toBeNull();
+    expect((await withPerp(async () => { throw new Error('boom'); })).perpSep).toBeNull();
   });
 
   it('marks every venue NO_API_KEYS without a client', async () => {

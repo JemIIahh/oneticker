@@ -96,3 +96,9 @@ export async function readPerp(symbol: string, opts: PublicCallOptions = {}) {
     : null;
   return { value, raw };
 }
+
+/** The perp's mark price per share for a ticker (`NVDA` reads `NVDAUSDT`), or null when Binance's futures host cannot be reached. */
+export async function readPerpMark(ticker: string, opts: PublicCallOptions = {}): Promise<number | null> {
+  const { value } = await readPerp(`${ticker}USDT`, { timeoutMs: 4_000, ...opts });
+  return value && Number.isFinite(value.markPrice) && value.markPrice > 0 ? value.markPrice : null;
+}

@@ -71,7 +71,7 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 ### T7 · Gate · A · Mon 28
 - [x] `packages/core/policy/default.json` and the gate engine from SPEC 3.5. (Built early, 22 Sep: `packages/core/src/gate`.)
 - [x] A test for every rule, including a weekend fixture that produces CAUTION. (20 tests; the weekend case uses 22 Sep APRO and multiplier numbers.)
-- [x] One short note in `docs/` on what weekend 1 looked like in the Tape, used to sanity-check thresholds. (Weekend 1 was not recorded; `docs/tape-findings.md` covers weekend 2, partly: the gate's reference-age rule alone fires on 95% of closed-hour samples, and premium and oracle rules never reached CAUTION on a weekend. Thresholds left at `default@1`; the weekend never tested them.)
+- [x] One short note in `docs/` on what weekend 1 looked like in the Tape, used to sanity-check thresholds. (Weekend 1 was not recorded; `docs/tape-findings.md` covers weekend 2, partly: the gate's reference-age rule alone fires on 95% of closed-hour samples, and premium and oracle rules never reached CAUTION on a weekend. Thresholds left as guesses; the weekend never tested them. 6 Oct: added the PERP_DIVERGENCE cross-check, policy `default@2`.)
 
 ### T8 · MCP server · A · Tue 29 to Wed 30
 - [x] `apps/mcp` exposes `resolve_instrument`, `get_market_state`, `get_price_surfaces`, `quote_route`, `check_gate` over stdio and HTTP.

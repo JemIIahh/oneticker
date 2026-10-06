@@ -15,6 +15,8 @@ export interface GatherDeps {
   chain: PublicClient;
   /** RFQ quotes for Ondo and xStocks need a wallet address (40001 otherwise). Public, not a secret. */
   quoteWallet?: string;
+  /** The 24/7 TradFi perp's mark price per share for a ticker, or null when it cannot be read. Omitted: not read, no network. */
+  perp?: (ticker: string) => Promise<number | null>;
 }
 
 export interface GatherRequest {
@@ -28,6 +30,8 @@ export interface Gathered {
   /** Binance's `referencePrice`: derived from the token price, not an independent quote (docs/RESEARCH.md item 1). */
   referenceSep: number | null;
   referenceSource: 'binance-derived' | null;
+  /** Binance TradFi perp mark price per share: the live price of the stock while the US market is closed. Null when unknown. */
+  perpSep: number | null;
 }
 
 interface RwaItem {
@@ -197,7 +201,8 @@ async function buildVenue(deps: GatherDeps, req: GatherRequest, venue: Venue, on
 
 /** Everything quoteRoute needs for one instrument, fetched live. */
 export async function gatherRouteInputs(deps: GatherDeps, req: GatherRequest): Promise<Gathered> {
-  const onchain = await fetchOnchain(deps.web3, req.instrument);
+  // The perp is read alongside the on-chain prices so it adds no latency, and never fails the quote.
+  const [onchain, perpSep] = await Promise.all([fetchOnchain(deps.web3, req.instrument), deps.perp ? deps.perp(req.instrument.ticker).catch(() => null) : Promise.resolve(null)]);
   const venues = await Promise.all(req.instrument.venues.map((v) => buildVenue(deps, req, v, onchain)));
-  return { venues, referenceSep: onchain.referenceSep, referenceSource: onchain.referenceSep === null ? null : 'binance-derived' };
+  return { venues, referenceSep: onchain.referenceSep, referenceSource: onchain.referenceSep === null ? null : 'binance-derived', perpSep: perpSep !== null && Number.isFinite(perpSep) && perpSep > 0 ? perpSep : null };
 }

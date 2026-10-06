@@ -5,7 +5,7 @@
 // Wall Street is closed, so it is the yardstick for the off-hours numbers. It is not ground truth: there is no equity
 // reference in the Tape yet (Finnhub is pending), and a perp carries its own basis.
 
-import { checkGate, defaultPolicy, marketClock, type GateInput, type MarketState, type Verdict } from '@oneticker/core';
+import { checkGate, defaultPolicy, marketClock, type GateInput, type MarketClock, type Verdict } from '@oneticker/core';
 
 export type Issuer = 'bstocks' | 'ondo' | 'xstocks';
 export type Group = 'open' | 'weeknight' | 'weekend';
@@ -18,6 +18,8 @@ export interface VenueSample {
   ratio: number | null;
   exec: Record<Size, number | null>;
   pool: number | null;
+  /** On-chain token price, the source of Binance's derived reference. */
+  onchainPx: number | null;
   oraclePx: number | null;
   oracleUpdatedAt: string | null;
 }
@@ -98,7 +100,7 @@ export interface Findings {
   /** APRO oracle price against the perp, bps. */
   oracleVsPerp: Record<Group, Quantiles & { beyondCaution: number; beyondBlock: number; maxAbs: number | null }>;
   oracleAgeMin: Record<Group, Quantiles>;
-  /** What the shipped gate says about the cheapest $1,000 route if its reference were the live perp. */
+  /** The shipped gate (perp cross-check included) on the cheapest $1,000 route in each sample. */
   gateReplay: Record<Group, GateReplay>;
   /** Share of closed-market samples where the shipped gate's reference-age rule fires on its own (clock only). */
   refStaleShareClosed: number;
@@ -106,8 +108,11 @@ export interface Findings {
 
 const perGroup = <T>(make: () => T): Record<Group, T> => ({ open: make(), weeknight: make(), weekend: make() });
 
-/** The cheapest quoted route at $1,000 as a gate input, with the perp standing in as a live reference. */
-function replayInput(s: Sample, state: MarketState): GateInput | null {
+/**
+ * The cheapest quoted route at $1,000 as the gate saw routes at the time: Binance's derived reference (the venue's own
+ * on-chain price per share, as the router uses it), the market clock's reference age, and the 24/7 perp cross-check.
+ */
+function replayInput(s: Sample, clock: MarketClock): GateInput | null {
   let best: { issuer: Issuer; px: number } | null = null;
   for (const issuer of ['bstocks', 'ondo', 'xstocks'] as const) {
     const px = execSep(s.venues[issuer], '1k');
@@ -117,15 +122,17 @@ function replayInput(s: Sample, state: MarketState): GateInput | null {
   const v = s.venues[best.issuer]!;
   const oracleSep = sep(v.oraclePx, v.ratio);
   const oracleAgeSec = v.oracleUpdatedAt ? Math.max(0, (Date.parse(s.ts) - Date.parse(v.oracleUpdatedAt)) / 1000) : null;
+  const reference = sep(s.venues.bstocks?.onchainPx ?? null, s.venues.bstocks?.ratio ?? null) ?? sep(v.onchainPx, v.ratio);
   return {
     side: 'buy',
-    marketState: state,
-    referenceAgeSec: 0,
-    referenceSep: s.perp,
+    marketState: clock.state,
+    referenceAgeSec: clock.referenceAgeSec,
+    referenceSep: reference,
     executableSep: best.px,
     executableSep100: execSep(v, '100'),
     oracleSep,
     oracleAgeSec: oracleSep === null ? null : oracleAgeSec,
+    ...(s.perp !== null ? { perpSep: s.perp } : {}),
     multiplierPending: false,
     halted: false,
   };
@@ -180,7 +187,7 @@ export function analyze(samples: Sample[], runs: number): Findings {
       closed++;
       if (clock.referenceAgeSec > defaultPolicy.referenceAgeSec.caution) refStale++;
     }
-    const input = s.perp !== null ? replayInput(s, clock.state) : null;
+    const input = replayInput(s, clock);
     if (input) {
       const res = checkGate(input);
       replay[g].n++;

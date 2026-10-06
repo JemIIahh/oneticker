@@ -23,7 +23,7 @@ export default async function TapePage({ searchParams }: { searchParams: Promise
     { big: weekendGap === null ? '—' : `${Math.round(weekendGap)} bps`, text: 'Largest gap between the on-chain pool and the 24/7 perp in any weekend sample.', note: openGap === null ? undefined : `At the open: ${Math.round(openGap)} bps` },
     { big: pct(ondoWorse.ondoOver10pct), text: 'Of weekend $1,000 quotes had Ondo more than 10% above bStocks.', note: `bStocks was cheaper ${pct(ondoWorse.bstocksCheapest)} of the time` },
     { big: String(xstocks), text: 'xStocks quotes returned in this window. No liquidity from any vendor.', note: 'Excluded with the real error, 40374' },
-    { big: pct(tape.refStaleShareClosed), text: 'Of closed-hour samples are CAUTION from the clock alone, before the gate looks at a price.', note: 'Reference price is hours old' },
+    { big: pct(tape.refStaleShareClosed), text: 'Of closed-hour samples are CAUTION from the clock alone, before the gate looks at a price.', note: 'Each now says how far the price is from the 24/7 perp' },
   ];
 
   return (

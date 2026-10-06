@@ -1,6 +1,6 @@
 // Real I/O for the tools: live Web3 API and BSC reads for quote_route, the Tape's HTTP API for get_price_surfaces.
 
-import { createAgenticWalletAdapter, createBscClient, createWeb3Client, gatherRouteInputs, type Web3Client } from '@oneticker/clients';
+import { createAgenticWalletAdapter, createBscClient, createWeb3Client, gatherRouteInputs, readPerpMark, type Web3Client } from '@oneticker/clients';
 import type { ExecDeps, ExecMode } from './execute';
 import { RouteStore, type TapeLatest, type ToolDeps } from './tools';
 
@@ -15,7 +15,7 @@ export function liveDeps(env: NodeJS.ProcessEnv = process.env): ToolDeps {
   const tapeUrl = (env.TAPE_API_URL ?? DEFAULT_TAPE_API_URL).replace(/\/$/, '');
 
   return {
-    gather: (req) => gatherRouteInputs({ web3, chain, quoteWallet: env.TAPE_QUOTE_WALLET }, req),
+    gather: (req) => gatherRouteInputs({ web3, chain, quoteWallet: env.TAPE_QUOTE_WALLET, perp: (ticker) => readPerpMark(ticker) }, req),
     async tapeLatest() {
       try {
         const res = await fetch(`${tapeUrl}/api/latest`, { signal: AbortSignal.timeout(8_000) });

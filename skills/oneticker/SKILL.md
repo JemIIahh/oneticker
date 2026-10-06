@@ -78,11 +78,12 @@ Each reason has a `code` and a `detail` sentence. Use the detail, and add contex
 
 | Code | What it means for the user |
 |---|---|
-| `REF_STALE` | The US market is closed; the last real stock price is this old. The token can drift from where the stock will open. |
+| `REF_STALE` | The US market is closed; the last real stock price is this old. The token can drift from where the stock will open. The detail may end with how far the price sits from the live 24/7 perp; pass that on, it is the best live check available. |
 | `REF_MISSING` | No independent stock price to compare against. The trade is not checked against the real market. |
 | `PREMIUM_HIGH` | Buying above (or selling below) the last reference price by this much. |
 | `ORACLE_STALE` | The on-chain price oracle has not updated for longer than its heartbeat. |
 | `ORACLE_DIVERGENCE` | The executable price is far from the oracle's price. |
+| `PERP_DIVERGENCE` | While the US market is closed, the price is far from the live 24/7 perp, the only live price of the stock. Buying above it (or selling below it) is the adverse case. |
 | `IMPACT_HIGH` | The order is large for current liquidity; a smaller order costs less per share. |
 | `MULTIPLIER_PENDING` | A dividend or split adjustment is scheduled; balances and prices will rescale. |
 | `VENUE_HALTED` | The issuer paused this token. |

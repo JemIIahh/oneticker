@@ -39,6 +39,8 @@ export interface RouteOk {
   onchainAgeSec: number | null;
   /** vs the instrument's referenceSep; same raw formula on both sides, not side-adjusted (the gate's PREMIUM_HIGH rule is). */
   premiumBps: number | null;
+  /** vs the live 24/7 perp, same raw formula as premiumBps; null when the perp is unknown. */
+  perpBps: number | null;
   vendor: string | null;
   gate: GateResult;
 }
@@ -57,6 +59,8 @@ export interface QuoteRouteInput {
   amountUsd: number;
   /** An independent share-equivalent reference price; null when none is available (SPEC: use Finnhub, not Binance's derived one). */
   referenceSep: number | null;
+  /** Binance TradFi perp on the stock, per share: the live price while the US market is closed. Omitted when unknown. */
+  perpSep?: number | null;
   venues: RouteVenueInput[];
   now?: Date;
 }
@@ -68,6 +72,7 @@ export interface QuoteRouteResult {
   asOf: string;
   clock: MarketClock;
   referenceSep: number | null;
+  perpSep: number | null;
   /** Ranked best first: cheapest SEP to buy, richest SEP to sell. */
   routes: RouteOk[];
   excluded: RouteExcluded[];
@@ -99,6 +104,8 @@ export function quoteRoute(input: QuoteRouteInput): QuoteRouteResult {
     const oracleSep = v.oraclePxAtToken !== null ? v.oraclePxAtToken / v.shareRatio : null;
     const oracleAgeSec = age(now, v.oracleAt);
     const premiumBps = input.referenceSep !== null ? bps(sep, input.referenceSep) : null;
+    const perpSep = input.perpSep ?? null;
+    const perpBps = perpSep !== null ? bps(sep, perpSep) : null;
 
     const gate = checkGate({
       side: input.side,
@@ -109,14 +116,15 @@ export function quoteRoute(input: QuoteRouteInput): QuoteRouteResult {
       executableSep100: sep100,
       oracleSep,
       oracleAgeSec,
+      ...(perpSep !== null ? { perpSep } : {}),
       multiplierPending: v.multiplierPending,
       halted: v.halted,
     });
 
-    routes.push({ status: 'ok', issuer: v.issuer, symbol: v.symbol, address: v.address, sep, sharesPerToken: v.shareRatio, onchainSep, onchainAgeSec: age(now, v.onchainAt), premiumBps, vendor: v.quoteVendor, gate });
+    routes.push({ status: 'ok', issuer: v.issuer, symbol: v.symbol, address: v.address, sep, sharesPerToken: v.shareRatio, onchainSep, onchainAgeSec: age(now, v.onchainAt), premiumBps, perpBps, vendor: v.quoteVendor, gate });
   }
 
   routes.sort((a, b) => (input.side === 'buy' ? a.sep - b.sep : b.sep - a.sep));
 
-  return { ticker: input.ticker, side: input.side, amountUsd: input.amountUsd, asOf: now.toISOString(), clock, referenceSep: input.referenceSep, routes, excluded };
+  return { ticker: input.ticker, side: input.side, amountUsd: input.amountUsd, asOf: now.toISOString(), clock, referenceSep: input.referenceSep, perpSep: input.perpSep ?? null, routes, excluded };
 }

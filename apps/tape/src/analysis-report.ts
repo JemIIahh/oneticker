@@ -80,9 +80,12 @@ export function renderReport(f: Findings, meta: ReportMeta): string {
   out.push('');
   out.push('## 4. The gate, replayed');
   out.push('');
+  const closedN = f.gateReplay.weeknight.n + f.gateReplay.weekend.n;
+  const closedPerp = (f.gateReplay.weeknight.reasons.PERP_DIVERGENCE ?? 0) + (f.gateReplay.weekend.reasons.PERP_DIVERGENCE ?? 0);
   out.push(
-    `The shipped gate (\`${policy.id}\`) run over the cheapest $1,000 route in each sample, with the perp as a live reference (reference age zero) so the premium rule has something real to compare against. ` +
-      `Separately, the gate's reference-age rule needs no price at all: it fires on ${pct(f.refStaleShareClosed)} of closed-market samples (older than ${policy.referenceAgeSec.caution / 60} minutes since the last close), so with a last-close reference the verdict is CAUTION for essentially every closed hour.`,
+    `The shipped gate (\`${policy.id}\`) run over the cheapest $1,000 route in each sample, with the inputs the router uses: Binance's derived reference, the market clock's reference age and, while the US market is closed, the live 24/7 perp as a cross-check. ` +
+      `The reference-age rule needs no price at all: it fires on ${pct(f.refStaleShareClosed)} of closed-market samples (more than ${policy.referenceAgeSec.caution / 60} minutes since the last close), so the verdict is CAUTION for nearly every closed hour. ` +
+      `The perp rule is what makes that CAUTION informative: it fired on ${closedN === 0 ? 'n/a' : pct(closedPerp / closedN)} of closed-hour samples (${closedPerp} of ${closedN}), and when it does not fire the stale-reference reason now says how far the price sits from the perp.`,
   );
   out.push('');
   out.push(table(['Market', 'Samples', 'GO', 'CAUTION', 'BLOCK', 'Reasons that fired'], GROUPS.map((g) => {

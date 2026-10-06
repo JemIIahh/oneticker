@@ -3,7 +3,7 @@
 //
 //   pnpm oneticker quote NVDA buy 500
 
-import { createBscClient, createWeb3Client, gatherRouteInputs, type Web3Client } from '@oneticker/clients';
+import { createBscClient, createWeb3Client, gatherRouteInputs, readPerpMark, type Web3Client } from '@oneticker/clients';
 import { formatDuration, instruments, quoteRoute } from '@oneticker/core';
 
 function usage(): never {
@@ -33,15 +33,16 @@ const chain = createBscClient(process.env.BSC_RPC_URL);
 if (!web3) console.error('note: BINANCE_WEB3_API_KEY / BINANCE_WEB3_API_SECRET not set — every venue will show excluded (NO_API_KEYS)\n');
 
 async function main(): Promise<void> {
-  const { venues, referenceSep } = await gatherRouteInputs(
-    { web3, chain, quoteWallet: process.env.TAPE_QUOTE_WALLET },
+  const { venues, referenceSep, perpSep } = await gatherRouteInputs(
+    { web3, chain, quoteWallet: process.env.TAPE_QUOTE_WALLET, perp: (ticker) => readPerpMark(ticker) },
     { instrument: instrument!, side, amountUsd },
   );
-  const result = quoteRoute({ ticker: instrument!.ticker, side, amountUsd, referenceSep, venues, now: new Date() });
+  const result = quoteRoute({ ticker: instrument!.ticker, side, amountUsd, referenceSep, ...(perpSep !== null ? { perpSep } : {}), venues, now: new Date() });
 
   console.log(`${result.ticker}  ${result.side} $${result.amountUsd}`);
   console.log(`market: ${result.clock.state}${result.clock.state !== 'REGULAR' ? ` (reference ${formatDuration(result.clock.referenceAgeSec)} old)` : ''}`);
   console.log(`reference: ${result.referenceSep !== null ? `$${result.referenceSep.toFixed(4)} per share (Binance's derived price — not an independent quote)` : 'none available'}`);
+  console.log(`24/7 perp: ${result.perpSep !== null ? `$${result.perpSep.toFixed(4)} per share (the live price while Wall Street is closed)` : 'not available'}`);
   console.log('');
 
   if (result.routes.length === 0) console.log('No venue can quote right now.');

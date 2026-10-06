@@ -23,7 +23,7 @@ const execAt = (sep: number, rest: Partial<GateInput> = {}): GateInput => ({ ...
 
 describe('checkGate', () => {
   it('returns GO with no reasons on a clean route', () => {
-    expect(checkGate(clean)).toEqual({ verdict: 'GO', reasons: [], policy: 'default@1' });
+    expect(checkGate(clean)).toEqual({ verdict: 'GO', reasons: [], policy: 'default@2' });
   });
 
   it('is deterministic', () => {
@@ -75,6 +75,58 @@ describe('checkGate', () => {
     const base = { ...clean, referenceSep: null, oracleSep: null, oracleAgeSec: null }; // isolate the rule
     expect(checkGate({ ...base, executableSep: 226.78 * 1.0051 }).reasons.map((r) => r.code)).toEqual(['REF_MISSING', 'IMPACT_HIGH']);
     expect(checkGate({ ...base, executableSep: 226.78 * 1.0151 }).verdict).toBe('BLOCK');
+  });
+
+  describe('PERP_DIVERGENCE (the live 24/7 perp, only while the US market is closed)', () => {
+    const SEP = 226.74;
+    /** A closed-market route whose only moving part is the perp: reference, quote, $100 quote and oracle all sit at SEP. */
+    const closed = (perp: number | null | undefined, rest: Partial<GateInput> = {}): GateInput => ({
+      ...clean,
+      marketState: 'WEEKEND',
+      referenceAgeSec: 3 * 3600,
+      referenceSep: SEP,
+      executableSep: SEP,
+      executableSep100: SEP,
+      oracleSep: SEP,
+      ...(perp === undefined ? {} : { perpSep: perp }),
+      ...rest,
+    });
+    const perpHits = (input: GateInput) => checkGate(input).reasons.filter((r) => r.code === 'PERP_DIVERGENCE');
+
+    it('cautions over 75 bps and blocks over 200 bps above the perp for a buyer', () => {
+      expect(perpHits(closed(SEP / 1.0074))).toEqual([]);
+      expect(checkGate(closed(SEP / 1.0076))).toMatchObject({ verdict: 'CAUTION' });
+      expect(perpHits(closed(SEP / 1.0076))).toEqual([{ code: 'PERP_DIVERGENCE', detail: 'Paying 76 bps over the live 24/7 perp, the only price of the stock while the US market is closed' }]);
+      expect(checkGate(closed(SEP / 1.0201))).toMatchObject({ verdict: 'BLOCK' });
+    });
+
+    it('a price below the perp is fine for a buyer and adverse for a seller', () => {
+      expect(perpHits(closed(SEP * 1.01))).toEqual([]);
+      expect(perpHits(closed(SEP * 1.01, { side: 'sell' }))).toEqual([{ code: 'PERP_DIVERGENCE', detail: 'Receiving 99 bps under the live 24/7 perp, the only price of the stock while the US market is closed' }]);
+    });
+
+    it('is skipped during the regular session, where a real reference exists', () => {
+      expect(perpHits(closed(SEP / 1.03, { marketState: 'REGULAR', referenceAgeSec: 0 }))).toEqual([]);
+    });
+
+    it('is skipped when the perp is unknown, and then changes nothing', () => {
+      expect(checkGate(closed(null))).toEqual(checkGate(closed(undefined)));
+      expect(perpHits(closed(null))).toEqual([]);
+    });
+
+    it('a stale reference says where the price sits against the perp when the perp has nothing to flag', () => {
+      const stale = checkGate(closed(SEP * 1.0012));
+      expect(stale.reasons).toEqual([{ code: 'REF_STALE', detail: 'Reference price is 3h 00m old (US market weekend); the executable price is 12 bps below the live 24/7 perp' }]);
+      // When the perp does flag, the finding is its own reason and the stale reason does not repeat it.
+      const flagged = checkGate(closed(SEP / 1.0101));
+      expect(flagged.reasons.map((r) => r.code).sort()).toEqual(['PERP_DIVERGENCE', 'REF_STALE']);
+      expect(flagged.reasons.find((r) => r.code === 'REF_STALE')!.detail).toBe('Reference price is 3h 00m old (US market weekend)');
+    });
+
+    it('a policy without the threshold skips the rule', () => {
+      const { perpDivergenceBps: _drop, ...rest } = defaultPolicy;
+      expect(checkGate(closed(SEP / 1.03), rest).reasons.map((r) => r.code)).toEqual(['REF_STALE']);
+    });
   });
 
   it('MULTIPLIER_PENDING is a caution and VENUE_HALTED a block', () => {
