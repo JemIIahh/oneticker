@@ -10,6 +10,10 @@ import { Verdict, VerdictDisc, VERDICT_TEXT } from './Verdict';
  * The product in one sentence: "Buy NVDA with $500", answered with the best token, its price per share and the
  * gate's signal. Ranked by price per share among issuers that can fill; the others sit beside it.
  */
+/** A live feed refreshes every minute and the Tape runs every five; older than this means the saved fixtures are showing. */
+const STALE_AFTER_SEC = 15 * 60;
+const SAVED_AT = new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+
 export function Router({ views, initial, now, lock = false }: { views: InstrumentView[]; initial: string; now: number; lock?: boolean }) {
   const [ticker, setTicker] = useState(initial);
   const [amount, setAmount] = useState(500);
@@ -22,6 +26,20 @@ export function Router({ views, initial, now, lock = false }: { views: Instrumen
 
   return (
     <section aria-label="Find the best route">
+      {ageSec > STALE_AFTER_SEC && (
+        <p role="status" className="mb-8 max-w-3xl rounded-2xl border border-caution/40 bg-caution/10 p-4 text-sm leading-relaxed">
+          <strong className="font-semibold">Saved quotes, not live.</strong> These are from {SAVED_AT.format(new Date(view.asOf))} UTC ({duration(ageSec)} ago) because the live price feed is offline, so the prices and verdicts here are out of date. For
+          live quotes use the CLI or MCP server in the{' '}
+          <a className="underline underline-offset-4" href="https://github.com/JemIIahh/oneticker#quick-start">
+            README
+          </a>
+          , or see what the Tape recorded over a weekend on{' '}
+          <Link className="underline underline-offset-4" href="/tape">
+            /tape
+          </Link>
+          .
+        </p>
+      )}
       <form className="font-display text-[clamp(2.4rem,7vw,5rem)] font-semibold leading-[1.05] tracking-[-0.035em]" onSubmit={(e) => e.preventDefault()}>
         <span className="text-muted">Buy </span>
         {lock ? (

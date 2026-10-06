@@ -61,7 +61,7 @@ export default async function InstrumentPage({ params }: { params: Promise<{ tic
             <p className="text-muted">
               {history
                 ? 'The Tape has not recorded enough of this stock yet. The chart fills in as it runs, every five minutes.'
-                : 'No price history here: this page is not connected to the Tape (the 5-minute price recorder).'}
+                : <>No live price history: the Tape (the 5-minute price recorder) is not connected to this page right now. See what it recorded over a weekend on <Link className="underline underline-offset-4 hover:text-ink" href={`/tape?s=${view.ticker}`}>/tape</Link>.</>}
             </p>
           )}
         </div>
