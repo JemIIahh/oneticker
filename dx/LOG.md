@@ -241,3 +241,19 @@ These came from desk research, not from our own use. **None of them go in the re
 - Severity: slowed us
 - Suggestion:
 - 2026-09-24 11:31 UTC, same Render service (still `gcp-us-west1`) with the Web3 API keys now set: `/api/v1/dex/market/rwa/price` and `/api/v1/dex/aggregator/quote` both HTTP 200 `{"code":40304,"msg":"Service not available due to compliance restriction","success":false}`; spot still 451. Same result as Railway `sfo` on 22 Sep: a US server gets 40304 from the Web3 API with valid keys.
+
+### 2026-10-01 11:12 UTC · claude (laptop over a French VPN) · Agentic Wallet
+- Did: `baw wallet status --json` (found `UNCONNECTED`), then `baw auth signin --json` and `baw auth verify --qrCodeId <id> --json`, scanned in the Binance app. Then `baw wallet settings --json`.
+- Expected: a session of up to 7 days, as noted on 22 Sep (CLAUDE.md: "48 h idle and 7 days at most", read from `baw wallet settings`). The 22 Sep sign-in had lasted until some time before 1 Oct 10:44 UTC.
+- Actual: sign-in worked first time. `baw wallet settings --json` now shows `"maxSigninDuration": "48h"`, `"inactiveSignoutDuration": "48h"`, `"dailyLimit": 50000`, `"tradeAllTokens": false`. A 48 h maximum from 1 Oct 11:15 UTC ends the session on 3 Oct, before the 5 Oct market open. Status from the Lagos network without the VPN on 6 Oct: `{"success":false,"error":{"code":50001004,"name":"DNS_RESOLVE_FAILED","message":"Host not found (www.binance.com)"}}`.
+- Time lost: 5
+- Severity: annoyance
+- Suggestion:
+
+### 2026-10-06 07:45 UTC · claude (laptop over a French VPN, Docker Tape) · Web3 API / aggregator quote
+- Did: read the Tape's own `snapshots` table for 1 Oct 10:44 UTC to 6 Oct 06:40 UTC (`pnpm --filter tape analyze`, output in `docs/tape-findings.md`). Each snapshot holds `GET /api/v1/dex/aggregator/quote` buy quotes at $100, $1,000 and $10,000 for the bStocks and Ondo token of one stock.
+- Expected: a per-share price that moves by a few bps with size (price impact), as the bStocks quotes do.
+- Actual: every Ondo quote came back HTTP 200 with `success: true`. One example, NVDAon, 4 Oct 15:34 UTC: $239.01 per token at $100, $244.55 at $1,000, $2,127.32 at $10,000 (shares-per-token ratio 1.0017). Across all samples where both issuers quoted, Ondo was more than 10% above the cheaper issuer in 62% (US open), 64% (weeknights) and 45% (weekend) of $1,000 quotes, and in 91%, 96% and 77% of $10,000 quotes. bStocks stayed within about 8 bps of the cheaper price at p90. Nothing in the response marks a quote as unusable; the price is only visible by comparing sizes.
+- Time lost: 0
+- Severity: annoyance
+- Suggestion:

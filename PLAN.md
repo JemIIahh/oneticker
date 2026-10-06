@@ -46,7 +46,7 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 
 ### T4 · Core: market state, SEP, oracle · A and B · Wed 23 to Fri 25
 - [x] Market calendar and state engine with unit tests at 10 or more boundary timestamps (Friday close, Sunday 20:00 ET, pre-market open, DST offset). `packages/core/src/market`, 17 boundary cases plus holiday and early close; wired into the Tape's `market_state`.
-- [ ] SEP normalization per venue. During market hours, NVDA SEP across all venues lands within a sane band of the reference.
+- [x] SEP normalization per venue. During market hours, NVDA SEP across all venues lands within a sane band of the reference. (6 Oct: with the 24/7 perp as the yardstick, NVDA's bStocks pool per share sits at p10/p50/p90 -30 / -3 / +20 bps during the US open, and the cheapest $100 quote sits a median 4 bps below the perp. Ondo is the outlier at size: its $10,000 quote was a median 3.6 to 8.6 times the cheaper issuer's price; xStocks never quotes. `docs/tape-findings.md`.)
 - [x] APRO reader (B): feed addresses found, `answer` and `updatedAt` read; unverified item 6 answered. (22 Sep: `packages/clients/src/chain/`, plus a BEP-677 multiplier reader; both recorded by the Tape every 5 minutes, keys or no keys. MSTRB has no APRO feed.)
 - [x] Collateral index surface (B), if a public endpoint exists; unverified item 7 answered either way. (22 Sep: yes, an undocumented `bapi` endpoint, not frozen 3 h after a weekday close; see `docs/RESEARCH.md` item 7. The Tape now records it (`index_px`), plus Binance spot (`cex_px`), the PancakeSwap v3 pool price and depth read from BSC (`pool_px`, `pool_depth_usd`; works even where Binance blocks us), and per instrument the TradFi perp (`underlying` table).)
 
@@ -56,7 +56,7 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 - [ ] Run it during market hours on Friday and again on Saturday. Save both outputs; this is the first look at off-hours behavior.
 
 ### T6 · Terminal design and shell · C · Mon 21 to Sun 27
-- [ ] Screens designed: instrument page, route panel, week clock, `/tape`. (22 Sep: first three built as a working shell; `/tape` is a placeholder until weekend-1 data.)
+- [x] Screens designed: instrument page, route panel, week clock, `/tape`. (6 Oct: `/tape` now shows the weekend-2 finding with a chart, four stat cards and the coverage caveat; checked at 1280 and 500 px.)
 - [x] Next.js shell rendering the instrument page from saved fixtures (no live backend needed). (`apps/web`, 22 Sep. `pnpm --filter web dev`, then `/s/NVDA`; add `?at=2026-09-26T10:12:00Z` to preview a closed-market state.)
 - [x] README draft and demo storyboard started. (23 Sep: README matches what works today, with install lines, tools, safety design and verified findings; `docs/storyboard.md` maps SPEC section 10 to what exists, with open items marked.)
 
@@ -71,7 +71,7 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 ### T7 · Gate · A · Mon 28
 - [x] `packages/core/policy/default.json` and the gate engine from SPEC 3.5. (Built early, 22 Sep: `packages/core/src/gate`.)
 - [x] A test for every rule, including a weekend fixture that produces CAUTION. (20 tests; the weekend case uses 22 Sep APRO and multiplier numbers.)
-- [ ] One short note in `docs/` on what weekend 1 looked like in the Tape, used to sanity-check thresholds.
+- [x] One short note in `docs/` on what weekend 1 looked like in the Tape, used to sanity-check thresholds. (Weekend 1 was not recorded; `docs/tape-findings.md` covers weekend 2, partly: the gate's reference-age rule alone fires on 95% of closed-hour samples, and premium and oracle rules never reached CAUTION on a weekend. Thresholds left at `default@1`; the weekend never tested them.)
 
 ### T8 · MCP server · A · Tue 29 to Wed 30
 - [x] `apps/mcp` exposes `resolve_instrument`, `get_market_state`, `get_price_surfaces`, `quote_route`, `check_gate` over stdio and HTTP.
@@ -108,7 +108,9 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 - [x] Week clock and 72-hour surfaces chart with closed-market shading. (23 Sep: the redesign's week strip, plus a 72-hour chart on `/s/<ticker>` from the Tape's `/api/history`, per share: 24/7 perp, PancakeSwap pool, best $100 quote. Closed hours shaded from the market clock; zooms to the recorded range until 72 h exist; crosshair tooltip with pool vs perp in bps; hourly table view. Colors validated all-pairs in both themes.)
 - [ ] Deployed on Vercel; works at phone width. (23 Sep: phone width checked at a true 390 px with mobile emulation, no horizontal overflow. Plain `--window-size` screenshots are misleading: headless Chrome's minimum is 500 px. Vercel still needs the Root Directory set to `apps/web`.)
 
-**Cut decision, Thu 1 Oct.** If behind, cut in this order: (1) T12 intents, (2) RFQ execution (keep AMM), (3) T10 Agent Studio (keep MCP and the skill), (4) the `/tape` page (put the chart in the README instead).
+**Cut decision, Tue 6 Oct: T12 (intents) and T10 (Agent Studio) are cut.** Neither was started, three working days remain, and T10 alone needs an x402 payment and a 72-hour uptime proof that cannot finish before Fri 9 Oct. The submission claims the main track and the Agentic Wallet / Wallet Skills track only. Keep the Tape, the gate, MCP read tools, the instrument page, the DX report and the video.
+
+**Original cut order, Thu 1 Oct.** If behind, cut in this order: (1) T12 intents, (2) RFQ execution (keep AMM), (3) T10 Agent Studio (keep MCP and the skill), (4) the `/tape` page (put the chart in the README instead).
 **Never cut:** the Tape, the gate, MCP read tools, the instrument page, the DX report, the video.
 
 **Sat 3 Oct:** full demo dry run, end to end, following SPEC section 10.
@@ -121,8 +123,8 @@ Deadline: **Sunday 11 Oct 2026, 12:00 UTC** (13:00 Lagos). Target submission: **
 - [ ] Screen-record the weekend-2 intent turning GO and executing at the open. Without intents, record the gate changing verdict at the open and a manual execute.
 
 ### T15 · Tape analysis · A and C · Mon 5 to Tue 6
-- [ ] Analysis scripts: weekend premium per issuer, Sunday-night on-chain vs Monday open, oracle staleness, cross-issuer spreads.
-- [ ] `/tape` page (C) and a one-sentence headline finding with its chart.
+- [x] Analysis scripts: weekend premium per issuer, Sunday-night on-chain vs Monday open, oracle staleness, cross-issuer spreads. (`pnpm --filter tape analyze`, 6 Oct. Pool-vs-perp premium, oracle lag and age, and cross-issuer regret are done. Only bStocks has a pool, so no premium per issuer. Sunday night against Monday's open is not possible: no equity reference in the Tape, and the Monday open has no Binance data because the VPN was off.)
+- [x] `/tape` page (C) and a one-sentence headline finding with its chart. (6 Oct.)
 - [ ] `dx/metrics.md` generated from `api_calls`: p50 / p95 latency and error rate per endpoint, and error-code counts.
 
 ### T16 · Demo video · C · Wed 7 to Thu 8
