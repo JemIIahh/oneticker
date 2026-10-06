@@ -1,0 +1,70 @@
+# oneticker quote, buy $500, captured Tue 06 Oct 2026 07:19 UTC
+# exit country: FR
+
+NVDA  buy $500
+market: OVERNIGHT (reference 11h 19m old)
+reference: $239.9732 per share (Binance's derived price — not an independent quote)
+24/7 perp: $240.3700 per share (the live price while Wall Street is closed)
+1. NVDAB    bstocks  $240.2037/share    +10 bps  CAUTION  via LiquidMesh via Rfq Halfmoon + Pancakeswap V3
+     Reference price is 11h 19m old (US market overnight); the executable price is 7 bps below the live 24/7 perp
+2. NVDAon   ondo     $240.4989/share    +22 bps  CAUTION  via LiquidMesh via Rfq Halfmoon + Pancakeswap V3 + Uniswap V4
+     Reference price is 11h 19m old (US market overnight); the executable price is 5 bps above the live 24/7 perp
+Excluded:
+  NVDAx    xstocks  No liquidity from any vendor right now (40374)
+
+---
+
+TSLA  buy $500
+market: OVERNIGHT (reference 11h 19m old)
+reference: $380.3800 per share (Binance's derived price — not an independent quote)
+24/7 perp: $380.7090 per share (the live price while Wall Street is closed)
+1. TSLAon   ondo     $380.0174/share    -10 bps  CAUTION  via LiquidMesh via Rfq Native
+     Reference price is 11h 19m old (US market overnight); the executable price is 18 bps below the live 24/7 perp
+2. TSLAB    bstocks  $380.6508/share     +7 bps  CAUTION  via LiquidMesh via Uniswap V4 + Metric + Pancakeswap V3 + Uniswap V3 + Rfq Neptunex
+     Reference price is 11h 19m old (US market overnight); the executable price is 2 bps below the live 24/7 perp
+Excluded:
+  TSLAx    xstocks  No liquidity from any vendor right now (40374)
+
+---
+
+QQQ  buy $500
+market: OVERNIGHT (reference 11h 19m old)
+reference: $756.6715 per share (Binance's derived price — not an independent quote)
+24/7 perp: $757.4530 per share (the live price while Wall Street is closed)
+1. QQQB     bstocks  $757.1216/share     +6 bps  CAUTION  via LiquidMesh via Metric
+     Reference price is 11h 19m old (US market overnight); the executable price is 4 bps below the live 24/7 perp
+2. QQQon    ondo     $879.3702/share  +1622 bps  BLOCK  via LiquidMesh via Rfq Halfmoon + Pancakeswap V3
+     Paying 1622 bps over the last reference price
+     Paying 1610 bps over the live 24/7 perp, the only price of the stock while the US market is closed
+     1544 bps of price impact at this size versus $100
+     Reference price is 11h 19m old (US market overnight)
+Excluded:
+  QQQx     xstocks  No liquidity from any vendor right now (40374)
+
+---
+
+CRCL  buy $500
+market: OVERNIGHT (reference 11h 19m old)
+reference: $83.1800 per share (Binance's derived price — not an independent quote)
+24/7 perp: $83.1944 per share (the live price while Wall Street is closed)
+1. CRCLon   ondo     $83.1574/share     -3 bps  CAUTION  via LiquidMesh via Rfq Native
+     Reference price is 11h 19m old (US market overnight); the executable price is 4 bps below the live 24/7 perp
+2. CRCLB    bstocks  $83.2424/share     +8 bps  CAUTION  via LiquidMesh via Rfq Neptunex
+     Reference price is 11h 19m old (US market overnight); the executable price is 6 bps above the live 24/7 perp
+Excluded:
+  CRCLx    xstocks  No liquidity from any vendor right now (40374)
+
+---
+
+MSTR  buy $500
+market: OVERNIGHT (reference 11h 20m old)
+reference: $163.5600 per share (Binance's derived price — not an independent quote)
+24/7 perp: $163.6800 per share (the live price while Wall Street is closed)
+1. MSTRB    bstocks  $163.8824/share    +20 bps  CAUTION  via LiquidMesh via Rfq Neptunex
+     Reference price is 11h 20m old (US market overnight); the executable price is 12 bps above the live 24/7 perp
+Excluded:
+  MSTRon   ondo     No liquidity from any vendor right now (40374)
+  MSTRx    xstocks  No liquidity from any vendor right now (40374)
+
+---
+
