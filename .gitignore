@@ -15,8 +15,8 @@ keystore*/
 .studio/wallets/
 .baw/
 
-# data
-data/
+# data: the root folder holds Tape databases and backups; apps/web/src/data is committed analysis output
+/data/
 *.sqlite
 *.sqlite-journal
 .vercel/

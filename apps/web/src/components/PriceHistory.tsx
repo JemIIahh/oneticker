@@ -162,7 +162,7 @@ export function PriceHistory({ history }: { history: History }) {
       )}
 
       <div ref={box} className="relative mt-4">
-        <svg width={width} height={HEIGHT} role="img" aria-label="Price per share over the last 72 hours" className="block overflow-visible">
+        <svg width={width} height={HEIGHT} role="img" aria-label={`Price per share over ${Math.round((history.to - history.from) / 3_600_000)} hours`} className="block overflow-visible">
           {closed.map(([a, b]) => (
             <rect key={a} x={x(a)} y={m.top} width={Math.max(0, x(b) - x(a))} height={plotH} className="fill-ink/[0.05]" />
           ))}

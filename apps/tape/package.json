@@ -8,7 +8,8 @@
     "test": "vitest run --passWithNoTests",
     "once": "node --env-file-if-exists=../../.env --import tsx src/main.ts once",
     "start": "node --env-file-if-exists=../../.env --import tsx src/main.ts start",
-    "check": "node --env-file-if-exists=../../.env --import tsx src/main.ts check"
+    "check": "node --env-file-if-exists=../../.env --import tsx src/main.ts check",
+    "analyze": "node --env-file-if-exists=../../.env --import tsx src/analyze.ts"
   },
   "dependencies": {
     "@oneticker/clients": "workspace:*",
