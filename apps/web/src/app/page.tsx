@@ -3,6 +3,9 @@ import { StockList } from '@/components/StockList';
 import { WeekStrip } from '@/components/WeekStrip';
 import { getAllInstruments } from '@/lib/data';
 
+// Reading live quotes for five stocks can take a few seconds when the cache is cold.
+export const maxDuration = 30;
+
 export default async function Home() {
   const views = await getAllInstruments();
 

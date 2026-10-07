@@ -1,5 +1,7 @@
-// What the pages call. Live from the Tape when TAPE_API_URL is set and answering; otherwise the saved fixtures.
+// What the pages call. Live from the Tape when TAPE_API_URL is set and answering; otherwise live straight from Binance when
+// keys are configured on the server; otherwise the saved fixtures.
 import { instruments, type Instrument } from '@oneticker/core';
+import { directViews } from './direct';
 import { fixtureView } from './fixtures';
 import { fetchLatest, liveViews } from './live';
 import type { InstrumentView } from './view';
@@ -16,6 +18,11 @@ export async function getAllInstruments(at?: Date): Promise<InstrumentView[]> {
     const views = liveViews(payload, now);
     // A live feed with no Binance prices at all (e.g. the 40304 compliance block) is worse than the fixtures.
     if (views.some((v) => v.venues.some((venue) => venue.execSep !== null || venue.onchainSep !== null))) return views;
+  }
+  // An explicit `at` previews a closed-market state from fixtures, so it never reads live.
+  if (!at) {
+    const direct = await directViews(now);
+    if (direct?.some((v) => v.venues.some((venue) => venue.execSep !== null))) return direct;
   }
   return instruments.map((i) => fixtureView(i.ticker, at)!);
 }

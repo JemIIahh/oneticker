@@ -5,7 +5,11 @@ import { Router } from '@/components/Router';
 import { getAllInstruments, listInstruments } from '@/lib/data';
 import { getHistory, HISTORY_HOURS } from '@/lib/history';
 import { bps, duration, usd } from '@/lib/format';
+import { isStale, savedAtLabel } from '@/lib/stale';
 import type { VenueView } from '@/lib/view';
+
+// Reading live quotes for five stocks can take a few seconds when the cache is cold.
+export const maxDuration = 30;
 
 export function generateStaticParams() {
   return listInstruments().map((i) => ({ ticker: i.ticker }));
@@ -26,6 +30,7 @@ export default async function InstrumentPage({ params }: { params: Promise<{ tic
   if (!view) notFound();
   const instrumentId = listInstruments().find((i) => i.ticker === view.ticker)!.id;
   const history = await getHistory(instrumentId);
+  const stale = isStale(view.asOf, Date.now());
 
   return (
     <div className="pt-10 sm:pt-14">
@@ -71,7 +76,7 @@ export default async function InstrumentPage({ params }: { params: Promise<{ tic
         <h2 id="numbers" className="font-display text-3xl font-semibold tracking-[-0.025em]">
           The numbers, per share
         </h2>
-        <div className="mt-8 overflow-x-auto rounded-3xl border border-line bg-surface">
+        <div className={`mt-8 overflow-x-auto rounded-3xl border border-line bg-surface ${stale ? 'opacity-60' : ''}`}>
           <table className="w-full min-w-[640px] text-left">
             <thead>
               <tr className="border-b border-line">
@@ -103,6 +108,7 @@ export default async function InstrumentPage({ params }: { params: Promise<{ tic
             </tbody>
           </table>
         </div>
+        {stale && <p className="mt-4 text-sm text-muted">Saved quotes from {savedAtLabel(view.asOf)}, not live. These numbers are out of date.</p>}
         <p className="mt-4 text-sm text-muted">
           Reference price{view.referenceSep !== null && ` $${usd(view.referenceSep)}`}: {view.referenceNote}.
         </p>

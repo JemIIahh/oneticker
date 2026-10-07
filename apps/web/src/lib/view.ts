@@ -54,6 +54,8 @@ export interface ViewInput {
   now: Date;
   referenceSep: number | null;
   referenceNote: string;
+  /** The 24/7 TradFi perp per share, when read. The gate cross-checks against it while the US market is closed. */
+  perpSep?: number | null;
   venues: VenueInput[];
 }
 
@@ -87,6 +89,7 @@ export function buildView(input: ViewInput): InstrumentView {
             executableSep100: execSep,
             oracleSep: oracle?.sep ?? null,
             oracleAgeSec: oracle?.ageSec ?? null,
+            ...(input.perpSep != null ? { perpSep: input.perpSep } : {}),
             multiplierPending: v.multiplierPending,
             halted: false,
           });

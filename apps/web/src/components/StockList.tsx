@@ -1,12 +1,16 @@
 import Link from 'next/link';
 import type { InstrumentView } from '@/lib/view';
 import { usd } from '@/lib/format';
+import { isStale, savedAtLabel } from '@/lib/stale';
 import { Verdict } from './Verdict';
 
 /** Every covered stock in one row: which issuers can fill it (lit dots), the best price per share, and the signal. */
 export function StockList({ views, className = '' }: { views: InstrumentView[]; className?: string }) {
+  const first = views[0];
+  const stale = first ? isStale(first.asOf, Date.now()) : false;
   return (
-    <ul className={`divide-y divide-line overflow-hidden rounded-3xl border border-line bg-surface ${className}`}>
+    <div className={className}>
+    <ul className={`divide-y divide-line overflow-hidden rounded-3xl border border-line bg-surface ${stale ? 'opacity-60' : ''}`}>
       {views.map((r) => {
         const quotable = r.venues.filter((v) => v.quote.ok && v.execSep !== null).sort((a, b) => a.execSep! - b.execSep!);
         const best = quotable[0];
@@ -39,5 +43,7 @@ export function StockList({ views, className = '' }: { views: InstrumentView[]; 
         );
       })}
     </ul>
+    {stale && first && <p className="mt-4 text-sm text-muted">Saved quotes from {savedAtLabel(first.asOf)}, not live. Verdicts and prices here are out of date.</p>}
+    </div>
   );
 }

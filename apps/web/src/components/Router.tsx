@@ -4,16 +4,13 @@ import Link from 'next/link';
 import { useState } from 'react';
 import type { InstrumentView } from '@/lib/view';
 import { duration, usd } from '@/lib/format';
+import { isStale, savedAtLabel } from '@/lib/stale';
 import { Verdict, VerdictDisc, VERDICT_TEXT } from './Verdict';
 
 /**
  * The product in one sentence: "Buy NVDA with $500", answered with the best token, its price per share and the
  * gate's signal. Ranked by price per share among issuers that can fill; the others sit beside it.
  */
-/** A live feed refreshes every minute and the Tape runs every five; older than this means the saved fixtures are showing. */
-const STALE_AFTER_SEC = 15 * 60;
-const SAVED_AT = new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
-
 export function Router({ views, initial, now, lock = false }: { views: InstrumentView[]; initial: string; now: number; lock?: boolean }) {
   const [ticker, setTicker] = useState(initial);
   const [amount, setAmount] = useState(500);
@@ -23,8 +20,8 @@ export function Router({ views, initial, now, lock = false }: { views: Instrumen
   const excluded = view.venues.filter((v) => !v.quote.ok);
   const best = quotable[0];
   const ageSec = Math.max(0, Math.floor((now - Date.parse(view.asOf)) / 1000));
-  const stale = ageSec > STALE_AFTER_SEC;
-  const savedAt = `${SAVED_AT.format(new Date(view.asOf))} UTC`;
+  const stale = isStale(view.asOf, now);
+  const savedAt = savedAtLabel(view.asOf);
 
   return (
     <section aria-label="Find the best route">
