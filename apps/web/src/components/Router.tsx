@@ -23,12 +23,14 @@ export function Router({ views, initial, now, lock = false }: { views: Instrumen
   const excluded = view.venues.filter((v) => !v.quote.ok);
   const best = quotable[0];
   const ageSec = Math.max(0, Math.floor((now - Date.parse(view.asOf)) / 1000));
+  const stale = ageSec > STALE_AFTER_SEC;
+  const savedAt = `${SAVED_AT.format(new Date(view.asOf))} UTC`;
 
   return (
     <section aria-label="Find the best route">
-      {ageSec > STALE_AFTER_SEC && (
+      {stale && (
         <p role="status" className="mb-8 max-w-3xl rounded-2xl border border-caution/40 bg-caution/10 p-4 text-sm leading-relaxed">
-          <strong className="font-semibold">Saved quotes, not live.</strong> These are from {SAVED_AT.format(new Date(view.asOf))} UTC ({duration(ageSec)} ago) because the live price feed is offline, so the prices and verdicts here are out of date. For
+          <strong className="font-semibold">Saved quotes, not live.</strong> These are from {savedAt} ({duration(ageSec)} ago) because the live price feed is offline, so the prices and verdicts here are out of date. For
           live quotes use the CLI or MCP server in the{' '}
           <a className="underline underline-offset-4" href="https://github.com/JemIIahh/oneticker#quick-start">
             README
@@ -80,20 +82,20 @@ export function Router({ views, initial, now, lock = false }: { views: Instrumen
         </label>
       </form>
 
-      <p className="mt-4 text-muted">{view.name}. Three issuers sell it as a token on BNB Chain; here is the one to buy.</p>
+      <p className="mt-4 text-muted">{view.name}. Three issuers sell it as a token on BNB Chain; {stale ? 'this was the best one when the quotes were saved.' : 'here is the one to buy.'}</p>
 
-      <div key={`${view.ticker}`} className="settle mt-10 grid gap-4 lg:grid-cols-[1.35fr_1fr]">
+      <div key={`${view.ticker}`} className={`settle mt-10 grid gap-4 lg:grid-cols-[1.35fr_1fr] ${stale ? 'opacity-60' : ''}`}>
         {best && best.gate ? (
           <div className="rounded-3xl border border-line bg-surface p-6 sm:p-8">
             <div className="flex items-center gap-5">
               <VerdictDisc value={best.gate.verdict} className="h-12 w-12" />
               <div>
                 <p className="font-display text-3xl font-semibold tracking-[-0.02em]">{VERDICT_TEXT[best.gate.verdict].word}</p>
-                <p className="text-sm text-muted">{VERDICT_TEXT[best.gate.verdict].meaning}</p>
+                <p className="text-sm text-muted">{stale ? `As of ${savedAt}, not now` : VERDICT_TEXT[best.gate.verdict].meaning}</p>
               </div>
             </div>
 
-            <p className="mt-8 text-muted">Best route</p>
+            <p className="mt-8 text-muted">{stale ? 'Best route then' : 'Best route'}</p>
             <p className="font-display text-4xl font-semibold tracking-[-0.03em]">
               {best.symbol}
               <span className="ml-3 font-sans text-lg font-normal tracking-normal text-muted">on {best.label}</span>
