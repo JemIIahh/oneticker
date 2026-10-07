@@ -4,7 +4,7 @@
 
 A routing and safety layer for tokenized stocks on BNB Chain. Built for BNB Hack: Tokenized Stocks Edition.
 
-**Web terminal:** https://oneticker.vercel.app. Until a live price feed is hosted it shows saved quotes from 23 Sep and says so on every page; `/tape` shows what the recorder saw over a weekend.
+**Web terminal:** https://oneticker.vercel.app. Live quotes, read straight from Binance's Web3 API by a function in Vercel's Paris region (`/api/status` shows the source and region). If that read fails it falls back to saved quotes and says so on every page. `/tape` shows what the recorder saw over a weekend.
 
 ## Status
 
@@ -17,7 +17,7 @@ Checked on 6 October 2026. Each row points at the evidence.
 | MCP server | Working: five read tools, plus a local `execute_route` that previews and sends nothing in `EXEC_MODE=preview`. 30 tests | [`apps/mcp`](apps/mcp) |
 | Wallet Skill | Written and tried twice in Claude Code: bare-ticker resolution and a CAUTION verdict pass. A BLOCK has not appeared live | [`skills/oneticker`](skills/oneticker), [`docs/skill-demo.md`](docs/skill-demo.md) |
 | The Tape | Recording since 22 Sep, with gaps. It ran on Railway until the trial ended on 23 Sep, then elsewhere, and it recorded about half of the possible runs over weekend 2 | [`docs/tape-findings.md`](docs/tape-findings.md) |
-| Web terminal | Live at [oneticker.vercel.app](https://oneticker.vercel.app): route panel, stock pages and `/tape`. It shows saved quotes (labelled) until a live feed is hosted; run it against the Docker Tape with `pnpm --filter web dev` | [`apps/web`](apps/web) |
+| Web terminal | Live at [oneticker.vercel.app](https://oneticker.vercel.app): route panel, stock pages and `/tape`, with live quotes from a Paris function and labelled saved quotes as the fallback | [`apps/web`](apps/web) |
 | Mainnet trade | **None yet.** `EXEC_MODE=preview`, wallet unfunded | [`docs/RESEARCH.md`](docs/RESEARCH.md) |
 | Agent Studio agent, x402, intents | **Not built.** Cut for time | [`PLAN.md`](PLAN.md) |
 
@@ -109,7 +109,7 @@ Each is verified against saved API responses; details and evidence in [`docs/RES
 - **The bStocks collateral index was not frozen after the close.** Binance's FAQ says it stays fixed while the US market is closed. On a weekday evening, three hours after the close, it moved on every poll. It equals the TradFi perp's index price.
 - **Ondo's quotes fall apart with size.** At $1,000 Ondo was more than 10% above bStocks in 45 to 64% of samples, and at $10,000 in 77 to 96%, routed through thin pools. Always choosing bStocks over Ondo cost about 2 bps on average.
 - **The gate's reference-age rule fires on 95% of closed-hour samples by itself.** With a last-close reference the verdict is CAUTION for nearly every closed hour whatever the prices do. So on 6 Oct the gate gained a cross-check against the live 24/7 perp while the US market is closed (`PERP_DIVERGENCE`, policy `default@2`): in the weekend data it fired on 2 of 1,933 closed-hour samples, and every stale-reference CAUTION now says how far the price sits from the perp. The thresholds (75 and 200 bps) are guesses; the weekend never tested them.
-- **The Web3 API geo-blocks by exit country, with an undocumented code.** `40304 "compliance restriction"` came back from US, Singapore and Netherlands servers, but not from a French exit.
+- **The Web3 API geo-blocks by exit country, with an undocumented code.** `40304 "compliance restriction"` came back from US, Singapore and Netherlands servers, but not from a French exit. A Vercel function pinned to Paris (`cdg1`) with the same key was answered normally (7 Oct).
 
 ## Where this fits
 

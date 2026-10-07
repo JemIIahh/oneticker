@@ -257,3 +257,11 @@ These came from desk research, not from our own use. **None of them go in the re
 - Time lost: 0
 - Severity: annoyance
 - Suggestion:
+
+### 2026-10-07 14:09 UTC · claude (Vercel Function in cdg1, Paris) · Web3 API / geo-block
+- Did: deployed a Next.js page that calls `GET /api/v1/dex/market/rwa/price`, `/api/v1/dex/market/price` and `/api/v1/dex/aggregator/quote` with the same API key as before, from a Vercel serverless function with the project's function region set to `cdg1` (`VERCEL_REGION=cdg1`). `curl https://oneticker.vercel.app/api/status`.
+- Expected: `40304 "Service not available due to compliance restriction"`, as from Railway sfo, Singapore and Amsterdam (22 Sep) and Render us-west (24 Sep).
+- Actual: `{"directRead":true,"region":"cdg1","live":true,"asOf":"2026-10-07T14:08:53.806Z","venuesQuoted":9,"exclusions":{"40374":6}}`. No 40304. 9 of 15 venues quoted; the 6 exclusions are the five xStocks tokens and MSTRon, all `40374`. The same project's default function region before the change was `iad1`.
+- Time lost: 0
+- Severity: annoyance
+- Suggestion:
